@@ -75,6 +75,7 @@
               "BuildDocumentation",
               "Clean",
               "Compile",
+              "GenerateVersion",
               "Restore"
             ]
           }
@@ -93,6 +94,7 @@
               "BuildDocumentation",
               "Clean",
               "Compile",
+              "GenerateVersion",
               "Restore"
             ]
           }
