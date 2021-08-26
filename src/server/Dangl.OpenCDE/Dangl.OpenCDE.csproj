@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Dangl.OpenCDE.Data\Dangl.OpenCDE.Data.csproj" />
+  </ItemGroup>
+
 </Project>
