@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.Core", "src\s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.Shared", "src\server\Dangl.OpenCDE.Shared\Dangl.OpenCDE.Shared.csproj", "{D5FBED4F-8C8B-4534-A39B-B5F0A2502CD2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.Core.Tests", "tests\Dangl.OpenCDE.Core.Tests\Dangl.OpenCDE.Core.Tests.csproj", "{FDDB486F-98DA-408C-B7DB-EBE578019B07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{D5FBED4F-8C8B-4534-A39B-B5F0A2502CD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5FBED4F-8C8B-4534-A39B-B5F0A2502CD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5FBED4F-8C8B-4534-A39B-B5F0A2502CD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDDB486F-98DA-408C-B7DB-EBE578019B07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDDB486F-98DA-408C-B7DB-EBE578019B07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDDB486F-98DA-408C-B7DB-EBE578019B07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDDB486F-98DA-408C-B7DB-EBE578019B07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +81,7 @@ Global
 		{EF78FF04-9C25-4777-9513-975321D947C5} = {6333DD57-A41F-40D7-B9E1-E631DA4449A2}
 		{6C537AC0-4A10-4890-A8FD-E86722FD871C} = {6333DD57-A41F-40D7-B9E1-E631DA4449A2}
 		{D5FBED4F-8C8B-4534-A39B-B5F0A2502CD2} = {6333DD57-A41F-40D7-B9E1-E631DA4449A2}
+		{FDDB486F-98DA-408C-B7DB-EBE578019B07} = {7C5FD3B2-CBFE-40E7-96B6-DB120FF061D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {329C7D44-A1D5-4259-9763-EDF13C1842B5}
