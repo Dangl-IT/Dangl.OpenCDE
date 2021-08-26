@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE", "src\server\Dangl.OpenCDE\Dangl.OpenCDE.csproj", "{7E37C406-223A-4F8D-849F-2553FE7849AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dangl.OpenCDE", "src\server\Dangl.OpenCDE\Dangl.OpenCDE.csproj", "{7E37C406-223A-4F8D-849F-2553FE7849AA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3EF93093-22B7-47DE-BFD2-A0936AC03E13}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{6333DD57-A41F-40D7-B9E1-E631DA4449A2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7C5FD3B2-CBFE-40E7-96B6-DB120FF061D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.TestUtilities", "tests\Dangl.OpenCDE.TestUtilities\Dangl.OpenCDE.TestUtilities.csproj", "{92CA2E98-AD78-4610-A5AC-B9F04DDDB9E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.Tests.Integration", "tests\Dangl.OpenCDE.Tests.Integration\Dangl.OpenCDE.Tests.Integration.csproj", "{7F6A991C-6DD4-4097-BB3B-8607187F32B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +25,14 @@ Global
 		{7E37C406-223A-4F8D-849F-2553FE7849AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E37C406-223A-4F8D-849F-2553FE7849AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E37C406-223A-4F8D-849F-2553FE7849AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92CA2E98-AD78-4610-A5AC-B9F04DDDB9E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92CA2E98-AD78-4610-A5AC-B9F04DDDB9E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92CA2E98-AD78-4610-A5AC-B9F04DDDB9E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92CA2E98-AD78-4610-A5AC-B9F04DDDB9E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F6A991C-6DD4-4097-BB3B-8607187F32B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F6A991C-6DD4-4097-BB3B-8607187F32B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F6A991C-6DD4-4097-BB3B-8607187F32B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F6A991C-6DD4-4097-BB3B-8607187F32B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -26,6 +40,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{7E37C406-223A-4F8D-849F-2553FE7849AA} = {6333DD57-A41F-40D7-B9E1-E631DA4449A2}
 		{6333DD57-A41F-40D7-B9E1-E631DA4449A2} = {3EF93093-22B7-47DE-BFD2-A0936AC03E13}
+		{92CA2E98-AD78-4610-A5AC-B9F04DDDB9E3} = {7C5FD3B2-CBFE-40E7-96B6-DB120FF061D6}
+		{7F6A991C-6DD4-4097-BB3B-8607187F32B4} = {7C5FD3B2-CBFE-40E7-96B6-DB120FF061D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {329C7D44-A1D5-4259-9763-EDF13C1842B5}
