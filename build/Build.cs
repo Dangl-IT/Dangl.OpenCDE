@@ -16,7 +16,14 @@ using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.DocFX.DocFXTasks;
 using static Nuke.Common.IO.TextTasks;
+using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
+using static Nuke.Common.Tools.Docker.DockerTasks;
 using Nuke.Common.Tools.DocFX;
+using Nuke.Common.Tools.Docker;
+using Nuke.Common.Tools.Coverlet;
+using System.IO;
+using Nuke.Common.Tools.ReportGenerator;
+using System.Xml.Linq;
 
 [CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
@@ -124,4 +131,76 @@ namespace Dangl.OpenCDE.Shared
             DeleteFile(DocsDirectory / "CHANGELOG.md");
         });
 
+    Target Coverage => _ => _
+        .DependsOn(Compile)
+        .Requires(() => Configuration == "Debug")
+        .Executes(() =>
+        {
+            Logger.Normal("Ensuring that latest SQL Docker image is present");
+            DockerPull(c => c.SetName("dangl/mssql-tmpfs:latest"));
+
+            var testProjects = GlobFiles(TestsDirectory, "**/*.csproj")
+                // The test utilities are excluded as they don't contain any tests
+                .Where(t => !t.EndsWith("Dangl.OpenCDE.TestUtilities.csproj"));
+            try
+            {
+                DotNetTest(c => c
+                    .EnableCollectCoverage()
+                    .SetCoverletOutputFormat(CoverletOutputFormat.cobertura)
+                    .EnableNoBuild()
+                    .SetTestAdapterPath(".")
+                    .AddProcessEnvironmentVariable("DANGL_OPENCDE_IGNORE_SQLSERVER_PARALLEL_LIMIT", "true")
+                    .SetProcessArgumentConfigurator(a => a
+                        .Add($"/p:Include=[Dangl.OpenCDE.*]*")
+                        .Add($"/p:ExcludeByFile=\"{SourceDirectory / "Dangl.OpenCDE" / "Migrations" }*.cs\"")
+                        .Add($"/p:Exclude=[Dangl.OpenCDE.TestUtilities]*"))
+                    .CombineWith(cc => testProjects
+                        .Select(testProject =>
+                        {
+                            var projectDirectory = Path.GetDirectoryName(testProject);
+                            var projectName = Path.GetFileNameWithoutExtension(testProject);
+                            return cc
+                             .SetProjectFile(testProject)
+                             .SetLoggers($"xunit;LogFilePath={OutputDirectory / projectName}_testresults.xml")
+                             .SetCoverletOutput($"{OutputDirectory / projectName}_coverage.xml");
+                        })),
+                            degreeOfParallelism: Environment.ProcessorCount,
+                            completeOnFailure: true);
+            }
+            finally
+            {
+                EnsureTestFilesHaveUniqueTimestamp();
+
+                // Merge coverage reports, otherwise they might not be completely
+                // picked up by Jenkins
+                ReportGenerator(c => c
+                    .SetFramework("net5.0")
+                    .SetReports(OutputDirectory / "*_coverage.xml")
+                    .SetTargetDirectory(OutputDirectory)
+                    .SetReportTypes(ReportTypes.Cobertura));
+            }
+        });
+
+    private void EnsureTestFilesHaveUniqueTimestamp()
+    {
+        var testResults = GlobFiles(OutputDirectory, "*_testresults.xml").ToList();
+        var runtime = DateTime.Now;
+
+        foreach (var testResultFile in testResults)
+        {
+            // The "run-time" attributes of the assemblies is ensured to be unique for each single assembly by this test,
+            // since in Jenkins, the format is internally converted to JUnit. Aterwards, results with the same timestamps are
+            // ignored. See here for how the code is translated to JUnit format by the Jenkins plugin:
+            // https://github.com/jenkinsci/xunit-plugin/blob/d970c50a0501f59b303cffbfb9230ba977ce2d5a/src/main/resources/org/jenkinsci/plugins/xunit/types/xunitdotnet-2.0-to-junit.xsl#L75-L79
+            var xDoc = XDocument.Load(testResultFile);
+            var assemblyNodes = xDoc.Root.Elements().Where(e => e.Name.LocalName == "assembly");
+            foreach (var assemblyNode in assemblyNodes)
+            {
+                assemblyNode.SetAttributeValue("run-time", $"{runtime:HH:mm:ss}");
+                runtime = runtime.AddSeconds(1);
+            }
+
+            xDoc.Save(testResultFile);
+        }
+    }
 }

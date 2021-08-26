@@ -75,6 +75,7 @@
               "BuildDocumentation",
               "Clean",
               "Compile",
+              "Coverage",
               "GenerateVersion",
               "Restore"
             ]
@@ -94,6 +95,7 @@
               "BuildDocumentation",
               "Clean",
               "Compile",
+              "Coverage",
               "GenerateVersion",
               "Restore"
             ]
