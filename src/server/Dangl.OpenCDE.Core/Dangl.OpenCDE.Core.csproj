@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Dangl.OpenCDE.Core\Dangl.OpenCDE.Core.csproj" />
+    <ProjectReference Include="..\Dangl.OpenCDE.Data\Dangl.OpenCDE.Data.csproj" />
   </ItemGroup>
 
 </Project>

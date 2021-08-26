@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.Data", "src\server\Dangl.OpenCDE.Data\Dangl.OpenCDE.Data.csproj", "{EF78FF04-9C25-4777-9513-975321D947C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.Core", "src\server\Dangl.OpenCDE.Core\Dangl.OpenCDE.Core.csproj", "{6C537AC0-4A10-4890-A8FD-E86722FD871C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{EF78FF04-9C25-4777-9513-975321D947C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF78FF04-9C25-4777-9513-975321D947C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF78FF04-9C25-4777-9513-975321D947C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C537AC0-4A10-4890-A8FD-E86722FD871C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C537AC0-4A10-4890-A8FD-E86722FD871C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C537AC0-4A10-4890-A8FD-E86722FD871C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C537AC0-4A10-4890-A8FD-E86722FD871C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +67,7 @@ Global
 		{92CA2E98-AD78-4610-A5AC-B9F04DDDB9E3} = {7C5FD3B2-CBFE-40E7-96B6-DB120FF061D6}
 		{7F6A991C-6DD4-4097-BB3B-8607187F32B4} = {7C5FD3B2-CBFE-40E7-96B6-DB120FF061D6}
 		{EF78FF04-9C25-4777-9513-975321D947C5} = {6333DD57-A41F-40D7-B9E1-E631DA4449A2}
+		{6C537AC0-4A10-4890-A8FD-E86722FD871C} = {6333DD57-A41F-40D7-B9E1-E631DA4449A2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {329C7D44-A1D5-4259-9763-EDF13C1842B5}
