@@ -1,40 +1,70 @@
+using Dangl.AspNetCore.FileHandling.Azure;
+using Dangl.OpenCDE.Core.Configuration;
+using Dangl.OpenCDE.Data;
+using Dapper.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Dangl.OpenCDE
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public Startup(IConfiguration configuration,
+            IWebHostEnvironment webHostEnvironment)
         {
+            Configuration = configuration;
+            WebHostEnvironment = webHostEnvironment;
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public IConfiguration Configuration { get; }
+        public IWebHostEnvironment WebHostEnvironment { get; }
+
+        public void ConfigureServices(IServiceCollection services)
         {
-            if (env.IsDevelopment())
+            var openCdeSettings = Configuration.Get<OpenCdeSettings>();
+            if (openCdeSettings.StorageSettings == null)
             {
-                app.UseDeveloperExceptionPage();
+                openCdeSettings.StorageSettings = new StorageSettings();
             }
 
-            app.UseRouting();
+            var sqlServerConnectionString = Configuration.GetConnectionString("SqlServer");
+            openCdeSettings.Validate();
+            services.AddOpenCdeServices(openCdeSettings);
 
-            app.UseEndpoints(endpoints =>
+            if (!string.IsNullOrWhiteSpace(openCdeSettings.ApplicationInsightsInstrumentationKey))
             {
-                endpoints.MapGet("/", async context =>
+                services.AddApplicationInsightsTelemetry(openCdeSettings.ApplicationInsightsInstrumentationKey);
+            }
+
+            services.AddDbContext<CdeDbContext>(sqlBuilder =>
+                sqlBuilder.UseSqlServer(sqlServerConnectionString, options => options.MigrationsAssembly(typeof(Startup).Assembly.GetName().Name)));
+
+            if (!openCdeSettings.StorageSettings.UseCustomFileManager)
+            {
+                if (!string.IsNullOrWhiteSpace(openCdeSettings.StorageSettings.AzureBlobFileManagerConnectionString))
                 {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-            });
+                    services.AddAzureBlobFileManager(openCdeSettings.StorageSettings.AzureBlobFileManagerConnectionString);
+                    services.AddTransient<Data.IO.AzureBlobStorageInitializer>(_ => new Data.IO.AzureBlobStorageInitializer(openCdeSettings.StorageSettings.AzureBlobFileManagerConnectionString));
+                }
+                else
+                {
+                    throw new Exception("Failed to instantiate correct storage from given options, neither Azure nor a custom file manager was specified.");
+                }
+            }
+
+            services.AddDbConnectionFactory(_ => new SqlConnection(sqlServerConnectionString));
+            services.AddTransient<IDapperSqlConnectionProvider, DapperSqlConnectionProvider>();
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            var openCdeSettings = Configuration.Get<OpenCdeSettings>();
+            app.ConfigureOpenCdeApp(env, openCdeSettings.DanglIdentitySettings);
         }
     }
 }
