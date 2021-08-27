@@ -24,6 +24,8 @@ using Nuke.Common.Tools.Coverlet;
 using System.IO;
 using Nuke.Common.Tools.ReportGenerator;
 using System.Xml.Linq;
+using static Nuke.Common.Tools.NSwag.NSwagTasks;
+using Nuke.Common.Tools.NSwag;
 
 [CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
@@ -203,4 +205,16 @@ namespace Dangl.OpenCDE.Shared
             xDoc.Save(testResultFile);
         }
     }
+
+    Target BuildFrontendSwaggerClient => _ => _
+    .Executes(() =>
+    {
+        var nSwagConfigPath = SourceDirectory / "server" / "Dangl.OpenCDE" / "nswag.json";
+
+        NSwagExecuteDocument(x => x
+                .SetProcessWorkingDirectory(SourceDirectory / "server" / "Dangl.OpenCDE")
+                .SetProcessEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development")
+                .SetNSwagRuntime("NetCore31")
+                .SetInput(nSwagConfigPath));
+    });
 }
