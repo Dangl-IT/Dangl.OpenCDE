@@ -504,6 +504,65 @@ export class DocumentsClient {
         return _observableOf<DocumentGet>(<any>null);
     }
 
+    getDocumentById(projectId: string, documentId: string): Observable<DocumentGet> {
+        let url_ = this.baseUrl + "/api/projects/{projectId}/documents/{documentId}";
+        if (projectId === undefined || projectId === null)
+            throw new Error("The parameter 'projectId' must be defined.");
+        url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
+        if (documentId === undefined || documentId === null)
+            throw new Error("The parameter 'documentId' must be defined.");
+        url_ = url_.replace("{documentId}", encodeURIComponent("" + documentId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetDocumentById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetDocumentById(<any>response_);
+                } catch (e) {
+                    return <Observable<DocumentGet>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<DocumentGet>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetDocumentById(response: HttpResponseBase): Observable<DocumentGet> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <DocumentGet>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<DocumentGet>(<any>null);
+    }
+
     downloadDocument(projectId: string, documentId: string): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/projects/{projectId}/documents/{documentId}/content";
         if (projectId === undefined || projectId === null)
@@ -1128,12 +1187,12 @@ export interface PaginationResultOfDocumentGet {
 }
 
 export interface DocumentGet {
-    id?: string;
-    projectId?: string;
-    name?: string | undefined;
+    id: string;
+    projectId: string;
+    name: string;
     description?: string | undefined;
-    createdAtUtc?: Date;
-    contentAvailable?: boolean;
+    createdAtUtc: Date;
+    contentAvailable: boolean;
     fileName?: string | undefined;
     fileSizeInBytes?: number | undefined;
 }
@@ -1171,7 +1230,7 @@ export interface FrontendConfigGet {
     danglIconsBaseUrl: string;
     danglIdentityUrl: string;
     applicationInsightsInstrumentationKey?: string | undefined;
-    environment?: string | undefined;
+    environment: string;
     danglIdentityClientId: string;
     requiredScope: string;
 }
@@ -1184,10 +1243,10 @@ export interface PaginationResultOfProjectGet {
 }
 
 export interface ProjectGet {
-    id?: string;
-    name?: string | undefined;
+    id: string;
+    name: string;
     description?: string | undefined;
-    identiconId?: string;
+    identiconId: string;
 }
 
 export interface ProjectPost {
@@ -1196,10 +1255,10 @@ export interface ProjectPost {
 }
 
 export interface StatusGet {
-    isHealthy?: boolean;
-    version?: string | undefined;
-    informationalVersion?: string | undefined;
-    environment?: string | undefined;
+    isHealthy: boolean;
+    version: string;
+    informationalVersion: string;
+    environment: string;
 }
 
 export interface FileParameter {

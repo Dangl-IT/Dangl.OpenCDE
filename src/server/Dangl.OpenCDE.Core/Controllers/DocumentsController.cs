@@ -8,10 +8,12 @@ using LightQuery.Client;
 using LightQuery.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -52,6 +54,30 @@ namespace Dangl.OpenCDE.Core.Controllers
                 .ProjectTo<DocumentGet>(_mapper.ConfigurationProvider);
 
             return Ok(documents);
+        }
+
+        [HttpGet("{documentId}")]
+        [ProducesResponseType(typeof(DocumentGet), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetDocumentById(Guid projectId, Guid documentId)
+        {
+            if (!await _projectsRepository.CheckIfProjectExistsAsync(projectId))
+            {
+                return NotFound();
+            }
+
+            var document = await _documentsRepository
+                .GetAllDocumentsForProject(projectId, null)
+                .Where(d => d.Id == documentId)
+                .ProjectTo<DocumentGet>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+
+            if (document == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(document);
         }
 
         [HttpGet("{documentId}/content")]

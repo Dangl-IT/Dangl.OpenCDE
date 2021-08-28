@@ -136,6 +136,68 @@ namespace Dangl.OpenCDE.Tests.Integration.Controllers
             }
         }
 
+        public class GetDocumentById : ControllerTestBase<DocumentGet>
+        {
+            private Guid _projectId = Projects.Project01.Id;
+            private Guid _documentId = Documents.Project01_Document01.Id;
+
+            public GetDocumentById(SqlServerDockerCollectionFixture fixture) : base(fixture)
+            {
+            }
+
+            protected override HttpRequestMessage GetRequest()
+            {
+                var url = AppendQueryString($"/api/projects/{_projectId}/documents/{_documentId}");
+                return new HttpRequestMessage(HttpMethod.Get, url);
+            }
+
+            [Fact]
+            public async Task UnauthorizedForAnonymousUser()
+            {
+                _client = _testHelper.GetAnonymousClient();
+                await MakeRequest();
+                Assert.Equal(HttpStatusCode.Unauthorized, _response.StatusCode);
+            }
+
+            [Fact]
+            public async Task OkForAuthenticatedUser()
+            {
+                await MakeRequest();
+                Assert.Equal(HttpStatusCode.OK, _response.StatusCode);
+            }
+
+            [Fact]
+            public async Task CorrectResponse()
+            {
+                await MakeRequest();
+                Assert.Equal(_documentId, _deserializedResponse.Id);
+            }
+
+            [Fact]
+            public async Task NotFoundForInvalidProjectId()
+            {
+                _projectId = Guid.NewGuid();
+                await MakeRequest();
+                Assert.Equal(HttpStatusCode.NotFound, _response.StatusCode);
+            }
+
+            [Fact]
+            public async Task NotFoundForInvalidDocumentId()
+            {
+                _documentId = Guid.NewGuid();
+                await MakeRequest();
+                Assert.Equal(HttpStatusCode.NotFound, _response.StatusCode);
+            }
+
+            [Fact]
+            public async Task NotFoundForDocumentAndProjectIdMismatch()
+            {
+                _documentId = Documents.Project02_Document01.Id;
+                await MakeRequest();
+                Assert.Equal(HttpStatusCode.NotFound, _response.StatusCode);
+            }
+        }
+
         public class DownloadDocumentAsync : ControllerTestBase
         {
             // Info: For testing, we're not creating an Azurite container, so we're just using the
