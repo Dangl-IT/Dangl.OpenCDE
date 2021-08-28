@@ -73,6 +73,7 @@
             "enum": [
               "BuildDocFxMetadata",
               "BuildDocumentation",
+              "BuildFrontendSwaggerClient",
               "Clean",
               "Compile",
               "Coverage",
@@ -93,6 +94,7 @@
             "enum": [
               "BuildDocFxMetadata",
               "BuildDocumentation",
+              "BuildFrontendSwaggerClient",
               "Clean",
               "Compile",
               "Coverage",
