@@ -15,16 +15,6 @@ pipeline {
         IGNORE_NORMALISATION_GIT_HEAD_MOVE = 1
     }
     stages {
-		stage ('Deploy Docker') {
-			agent {
-				node {
-					label 'linux'
-				}
-			}
-			steps {
-				sh 'bash build.sh PushDocker'
-			}
-		}
         stage ('Test') {
             steps {
                 powershell './build.ps1 Coverage -Configuration Debug'
@@ -59,6 +49,16 @@ pipeline {
                 powershell './build.ps1 UploadDocumentation+PublishGitHubRelease -Configuration Release'
             }
         }
+		stage ('Deploy Docker') {
+			agent {
+				node {
+					label 'linux'
+				}
+			}
+			steps {
+				sh 'bash build.sh PushDocker'
+			}
+		}
     }
     post {
         always {
