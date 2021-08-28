@@ -453,12 +453,9 @@ export const version = {{
         {
             var changeLog = GetCompleteChangeLog(ChangelogFile);
 
-            ZipFile.CreateFromDirectory(PublishDirectory, OutputDirectory / "Server_Windows_x64.zip");
-
             WebDocu(s => s
                 .SetDocuBaseUrl(DocuBaseUrl)
                 .SetDocuApiKey(DocuApiKey)
-                .SetAssetFilePaths(new string[] { OutputDirectory / "Server_Windows_x64.zip" })
                 .SetMarkdownChangelog(changeLog)
                 .SetSourceDirectory(OutputDirectory / "docs")
                 .SetVersion(GitVersion.NuGetVersion)
