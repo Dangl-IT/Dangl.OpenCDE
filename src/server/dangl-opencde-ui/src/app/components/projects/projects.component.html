@@ -1,0 +1,56 @@
+<h1>Projects</h1>
+
+<div fxLayoutGap="12px" class="project-filter" fxLayout="row">
+  <mat-form-field>
+    <input matInput placeholder="Search" [(ngModel)]="filter" />
+  </mat-form-field>
+  <div>
+    <button mat-raised-button color="primary" routerLink="create">
+      Create Project
+    </button>
+  </div>
+</div>
+
+<table
+  mat-table
+  [dataSource]="projectsService"
+  matSort
+  (matSortChange)="onSort($any($event))"
+>
+  <ng-container matColumnDef="identiconId">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let row" matRipple>
+      <img
+        class="project-icon"
+        [diIcon]="row.identiconId"
+        [rectangleSize]="48"
+      />
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="name">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let row" matRipple>{{ row.name }}</td>
+  </ng-container>
+  <ng-container matColumnDef="description">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Description</th>
+    <td mat-cell *matCellDef="let row" matRipple>
+      {{ row.description }}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    class="table-tr"
+    [routerLink]="row.id"
+  ></tr>
+</table>
+<mat-paginator
+  *ngIf="projectsPaginated"
+  [length]="projectsPaginated.totalCount"
+  [pageSize]="projectsPaginated.pageSize"
+  [pageIndex]="projectsService.page - 1"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="onPage($event)"
+>
+</mat-paginator>

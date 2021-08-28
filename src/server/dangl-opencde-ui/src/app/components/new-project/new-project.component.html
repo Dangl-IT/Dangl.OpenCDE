@@ -1,0 +1,40 @@
+<h1>Create a Project</h1>
+<opencde-upload-progress
+  [settings]="settingsProgress"
+></opencde-upload-progress>
+<mat-divider class="main-divider"></mat-divider>
+<mat-card class="card">
+  <form [formGroup]="newProjectForm" (ngSubmit)="createProject()">
+    <mat-card-content>
+      <div fxLayout="row" class="p10">
+        <mat-form-field appearance="fill">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" required />
+          <mat-error *ngIf="newProjectForm.get('name')?.hasError('required')"
+            >Name is required</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <mat-divider></mat-divider>
+      <div fxLayout="row" class="p10">
+        <mat-form-field appearance="fill">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+      </div>
+      <mat-divider></mat-divider>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        type="submit"
+        mat-flat-button
+        color="primary"
+        class="create-btn"
+        [disabled]="!newProjectForm.valid || settingsProgress.isLoading"
+      >
+        Create
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>
+<mat-divider class="main-divider"></mat-divider>

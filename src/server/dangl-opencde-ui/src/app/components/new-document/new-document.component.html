@@ -1,0 +1,87 @@
+<h1>Create a Document</h1>
+<opencde-upload-progress
+  [settings]="settingsProgress"
+></opencde-upload-progress>
+<mat-divider class="main-divider"></mat-divider>
+<mat-card class="card">
+  <form [formGroup]="documentCreationForm" (ngSubmit)="createDocument()">
+    <mat-card-content>
+      <div fxLayout="row" class="p10">
+        <mat-form-field appearance="fill">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" required />
+          <mat-error>Name is required</mat-error>
+        </mat-form-field>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="p10">
+        <div
+          *ngIf="!documentCreationForm.value.documentFile"
+          class="container"
+          opencdeDragAndDrop
+          (fileDropped)="onFileDropped($any($event))"
+        >
+          <input
+            type="file"
+            #documentFile
+            id="documentFile"
+            (change)="fileBrowseHandler($event)"
+            accept=".ifc,.ifczip"
+          />
+          <mat-icon
+            class="upload-file-icon"
+            svgIcon="opencde_file_upload"
+          ></mat-icon>
+          <div class="main-text">Drag and drop any *document file here</div>
+          <div>or</div>
+          <button
+            type="button"
+            mat-flat-button
+            color="primary"
+            class="sub-text"
+            (click)="documentFile.click()"
+          >
+            Browse for file
+          </button>
+        </div>
+        <div class="files-list" *ngIf="documentCreationForm.value.documentFile">
+          <div class="single-file">
+            <mat-icon class="file-icon" svgIcon="opencde_file"></mat-icon>
+            <div class="info">
+              <h4 class="name">
+                {{ documentCreationForm.value.documentFile.data.name }}
+              </h4>
+              <p class="size">
+                {{
+                  documentCreationForm.value.documentFile.data.size | fileSize
+                }}
+              </p>
+            </div>
+            <div class="delete" (click)="deleteFile('documentFile')">
+              <mat-icon class="delete-icon" svgIcon="opencde_delete"></mat-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <mat-divider></mat-divider>
+      <div class="p10">
+        To create the model correctly, you need to convert the file from the IFC
+        to wexbim format
+      </div>
+      <mat-divider></mat-divider>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        type="submit"
+        mat-flat-button
+        color="primary"
+        class="create-btn"
+        [disabled]="documentCreationForm.invalid || settingsProgress.isLoading"
+      >
+        Create
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>
+<mat-divider class="main-divider"></mat-divider>

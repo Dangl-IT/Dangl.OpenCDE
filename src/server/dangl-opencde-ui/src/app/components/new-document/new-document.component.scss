@@ -1,0 +1,158 @@
+.card {
+  margin: 20px auto;
+  max-width: 400px;
+}
+
+.main-divider.mat-divider {
+  border-top-width: 4px;
+}
+
+.label {
+  min-width: 100px;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+.create-btn {
+  width: 100%;
+}
+
+.container {
+  border: dashed 1px #979797;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+  text-align: center;
+
+  input {
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+  }
+
+  .main-text {
+    color: #38424c;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .sub-text {
+    cursor: pointer;
+    margin-top: 5px;
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.fileover {
+  animation: shake 1s;
+  animation-iteration-count: infinite;
+}
+
+.files-list {
+  margin-top: 1.5rem;
+}
+
+.single-file {
+  align-items: center;
+  border: dashed 1px #979797;
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+
+  .delete {
+    align-self: flex-end;
+    cursor: pointer;
+    display: flex;
+    margin-left: 0.5rem;
+  }
+
+  .name {
+    color: #353f4a;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .size {
+    color: #a4a4a4;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0;
+    margin-bottom: 0.25rem;
+  }
+
+  .info {
+    width: 100%;
+  }
+}
+
+/* Shake animation */
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+
+  20% {
+    transform: translate(-3px, 0) rotate(1deg);
+  }
+
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+
+  90% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}
+
+.upload-file-icon {
+  height: 35px;
+  width: 35px;
+}
+
+.file-icon {
+  height: 50px;
+  width: 50px;
+}
+
+.delete-icon {
+  height: 26px;
+  width: 26px;
+}

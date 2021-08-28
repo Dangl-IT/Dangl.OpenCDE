@@ -1,0 +1,8 @@
+<h1>Login</h1>
+
+<p *ngIf="processingLoginResponse">Processing login response...</p>
+
+<ng-container *ngIf="error">
+  <p>An error occured.</p>
+  <code *ngIf="errorMessage">{{ errorMessage }}</code>
+</ng-container>

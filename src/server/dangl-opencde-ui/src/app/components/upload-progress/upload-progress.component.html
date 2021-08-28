@@ -1,0 +1,7 @@
+<mat-progress-bar
+  class="progress"
+  *ngIf="settings?.isLoading"
+  [mode]="settings ? settings.mode : 'indeterminate'"
+  [value]="settings?.value"
+  [color]="settings?.color"
+></mat-progress-bar>

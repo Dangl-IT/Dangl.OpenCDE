@@ -1,0 +1,24 @@
+<ng-container *ngIf="userInfo">
+  <button
+    mat-button
+    fxLayout="row"
+    fxLayoutGap="8px"
+    [matMenuTriggerFor]="menu"
+  >
+    <img
+      class="profile-image"
+      *ngIf="userInfo?.identiconId"
+      [diIcon]="userInfo.identiconId"
+      [rectangleSize]="30"
+    />
+    <span id="username-nav">
+      {{ userInfo?.username }}
+    </span>
+  </button>
+</ng-container>
+<mat-menu #menu>
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>power_settings_new</mat-icon>
+    <span>Logout</span>
+  </button>
+</mat-menu>

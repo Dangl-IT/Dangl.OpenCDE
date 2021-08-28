@@ -1,0 +1,22 @@
+<h1>Document Detail</h1>
+
+<opencde-upload-progress
+  *ngIf="settingsProgress.isLoading"
+  [settings]="settingsProgress"
+></opencde-upload-progress>
+
+<div *ngIf="!settingsProgress.isLoading && document">
+  <p *ngIf="!document.contentAvailable">
+    This document does not yet have content available
+  </p>
+  <a
+    *ngIf="document.contentAvailable"
+    mat-raised-button
+    color="primary"
+    href="/api/projects/{{ document.projectId }}/documents/{{
+      document.id
+    }}/content?access_token={{ accessToken }}"
+  >
+    Download
+  </a>
+</div>

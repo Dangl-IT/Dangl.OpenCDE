@@ -1,0 +1,23 @@
+<div fxFlexFill fxLayoutAlign="center center">
+  <mat-card>
+    <mat-card-header>
+      <h1>
+        <span>Welcome to the OpenCDE example app!</span>
+      </h1>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        Dangl.<strong>OpenCDE</strong> is a service intended to demonstrage the
+        buildingSMART International OpenCDE Documents API specification.
+      </p>
+      <div *ngIf="!userInfo">
+        <p>Please login in or register a new account to access this service.</p>
+      </div>
+    </mat-card-content>
+    <mat-card-actions *ngIf="!userInfo">
+      <div fxLayout="row">
+        <a fxFlex="100" mat-button (click)="login()">Login</a>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</div>

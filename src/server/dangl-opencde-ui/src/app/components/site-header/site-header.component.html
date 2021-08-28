@@ -1,0 +1,21 @@
+<dangl-header
+  logoInitials="GD"
+  prefix="Dangl."
+  postfix="OpenCDE"
+  [preReleaseVersion]="preReleaseVersion"
+  [preReleaseBuildDate]="preReleaseBuildDate"
+  (menuButtonClicked)="toggleMenuButton()"
+  [showPrerelease]="showPreReleaseHeader"
+  [showMenuButton]="!!userInfo"
+>
+  <div fxLayout="row" fxLayoutGap="10px">
+    <ng-container *ngIf="userInfo; else notUser">
+      <opencde-user-info [userInfo]="userInfo"></opencde-user-info>
+    </ng-container>
+    <ng-template #notUser>
+      <button mat-button (click)="login()">
+        <span>Login / Register</span>
+      </button>
+    </ng-template>
+  </div>
+</dangl-header>
