@@ -44,7 +44,6 @@ using static Nuke.WebDocu.WebDocuTasks;
 using Nuke.WebDocu;
 
 [CheckBuildProjectConfigurations]
-[ShutdownDotNetAfterServerBuild]
 class Build : NukeBuild
 {
     public static int Main () => Execute<Build>(x => x.Compile);

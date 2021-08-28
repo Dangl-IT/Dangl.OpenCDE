@@ -16,8 +16,13 @@ pipeline {
     }
     stages {
         stage ('Test') {
+			agent {
+				node {
+					label 'linux'
+				}
+			}
             steps {
-                powershell './build.ps1 Coverage -Configuration Debug'
+                sh 'bash build.sh Coverage -Configuration Debug'
             }
             post {
                 always {
@@ -45,8 +50,13 @@ pipeline {
             }
         }
         stage ('Publish Docs & Assets') {
+			agent {
+				node {
+					label 'linux'
+				}
+			}
             steps {
-                powershell './build.ps1 UploadDocumentation+PublishGitHubRelease -Configuration Release'
+                sh 'bash build.sh UploadDocumentation+PublishGitHubRelease -Configuration Release'
             }
         }
 		stage ('Deploy Docker') {
