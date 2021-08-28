@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
+import { AppConfigService } from '../../services/app-config.service';
 import { AuthenticationMessenger } from '@dangl/angular-dangl-identity-client';
 import { AuthenticationService } from '../../services/authentication.service';
 import { SidebarService } from '../../services/sidebar.service';
@@ -25,9 +26,10 @@ export class SiteHeaderComponent implements OnInit, OnDestroy {
   constructor(
     private sidebarService: SidebarService,
     private authenticationService: AuthenticationService,
-    private authenticationMessenger: AuthenticationMessenger
+    private authenticationMessenger: AuthenticationMessenger,
+    appConfigService: AppConfigService
   ) {
-    if (!environment.production) {
+    if (appConfigService.getFrontendConfig().environment !== 'Production') {
       this.showPreReleaseHeader = true;
     }
     this.preReleaseVersion = version.version;

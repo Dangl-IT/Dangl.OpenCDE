@@ -352,3 +352,7 @@ MigrationBackup/
 docs/code/
 
 output/
+
+src/server/Dangl.OpenCDE/wwwroot/dist/
+
+src/server/Dangl.OpenCDE/wwwroot/assets/

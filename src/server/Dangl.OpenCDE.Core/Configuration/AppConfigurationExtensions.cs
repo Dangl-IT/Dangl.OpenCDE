@@ -1,4 +1,4 @@
-using Dangl.Data.Shared.AspNetCore;
+﻿using Dangl.Data.Shared.AspNetCore;
 using Dangl.Identity.Client.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -63,6 +63,19 @@ namespace Dangl.OpenCDE.Core.Configuration
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSpa(spa =>
+            {
+                if (environment.IsDevelopment())
+                {
+                    spa.Options.SourcePath = "../dangl-opencde-ui";
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                }
+                else
+                {
+                    spa.Options.DefaultPage = "/dist/index.html";
+                }
             });
 
             return app;

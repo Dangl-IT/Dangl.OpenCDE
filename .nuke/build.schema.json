@@ -18,6 +18,12 @@
           "type": "boolean",
           "description": "Indicates to continue a previously failed build attempt"
         },
+        "DanglCiCdTeamsWebhookUrl": {
+          "type": "string"
+        },
+        "DockerImageName": {
+          "type": "string"
+        },
         "Help": {
           "type": "boolean",
           "description": "Shows the help text for this build assembly"
@@ -72,12 +78,16 @@
             "type": "string",
             "enum": [
               "BuildDocFxMetadata",
+              "BuildDocker",
               "BuildDocumentation",
+              "BuildFrontend",
               "BuildFrontendSwaggerClient",
               "Clean",
               "Compile",
               "Coverage",
+              "FrontEndRestore",
               "GenerateVersion",
+              "Publish",
               "Restore"
             ]
           }
@@ -93,12 +103,16 @@
             "type": "string",
             "enum": [
               "BuildDocFxMetadata",
+              "BuildDocker",
               "BuildDocumentation",
+              "BuildFrontend",
               "BuildFrontendSwaggerClient",
               "Clean",
               "Compile",
               "Coverage",
+              "FrontEndRestore",
               "GenerateVersion",
+              "Publish",
               "Restore"
             ]
           }
