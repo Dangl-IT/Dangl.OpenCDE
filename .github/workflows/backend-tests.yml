@@ -1,0 +1,17 @@
+name: backend-tests
+
+on:
+  push:
+    paths:
+      - "src/**"
+      - "tests/**"
+
+jobs:
+  backend-tests:
+    name: backend-tests
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.owner.login  == 'Dangl-IT' }}
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run './build.cmd Coverage -Configuration Debug'
+        run: ./build.cmd Coverage -Configuration Debug
