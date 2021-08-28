@@ -1173,7 +1173,7 @@ export interface FrontendConfigGet {
     applicationInsightsInstrumentationKey?: string | undefined;
     environment?: string | undefined;
     danglIdentityClientId: string;
-    version: string;
+    requiredScope: string;
 }
 
 export interface PaginationResultOfProjectGet {

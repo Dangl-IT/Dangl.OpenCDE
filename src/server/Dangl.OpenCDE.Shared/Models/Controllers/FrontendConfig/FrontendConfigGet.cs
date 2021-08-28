@@ -16,5 +16,8 @@ namespace Dangl.OpenCDE.Shared.Models.Controllers.FrontendConfig
 
         [Required]
         public string DanglIdentityClientId { get; set; }
+
+        [Required]
+        public string RequiredScope { get; set; }
     }
 }

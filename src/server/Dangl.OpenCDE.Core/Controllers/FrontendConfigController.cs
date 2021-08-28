@@ -1,4 +1,5 @@
 ﻿using Dangl.OpenCDE.Core.Configuration;
+using Dangl.OpenCDE.Shared;
 using Dangl.OpenCDE.Shared.Models.Controllers.FrontendConfig;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -84,7 +85,8 @@ window.danglOpenCdeFrontendConfig = "
                 DanglIdentityUrl = _settings.DanglIdentitySettings.BaseUri,
                 DanglIconsBaseUrl = _settings.DanglIconsBaseUrl,
                 ApplicationInsightsInstrumentationKey = _settings.ApplicationInsightsInstrumentationKey,
-                Environment = _environment.EnvironmentName
+                Environment = _environment.EnvironmentName,
+                RequiredScope = _settings.DanglIdentitySettings.RequiredScope
             };
         }
     }
