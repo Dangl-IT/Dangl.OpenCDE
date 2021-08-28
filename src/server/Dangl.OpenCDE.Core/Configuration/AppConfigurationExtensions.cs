@@ -1,4 +1,4 @@
-﻿using Dangl.Data.Shared.AspNetCore;
+using Dangl.Data.Shared.AspNetCore;
 using Dangl.Identity.Client.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,6 +37,8 @@ namespace Dangl.OpenCDE.Core.Configuration
             app.UseHttpsRedirection();
 
             app.UseOpenCdeVersionHeader();
+
+            app.UseStaticFiles();
 
             app.UseDanglIdentityJwtTokenAuthentication(danglIdentitySettings.BaseUri, danglIdentitySettings.BaseUri, new System.Collections.Generic.List<string>
             {
