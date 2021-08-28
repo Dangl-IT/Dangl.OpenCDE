@@ -24,6 +24,7 @@
     "@angular/platform-browser": "~12.2.0",
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",
+    "@auth0/angular-jwt": "5.0.2",
     "@dangl/angular-material-shared": "2.2.0",
     "@dangl/angular-dangl-identity-client": "3.4.0-beta0017",
     "ng-dangl-icons": "^1.0.6",
