@@ -1,5 +1,6 @@
 # Dangl.OpenCDE
-This is an open source sample implementation of the buildingSMART OpenCDE Documents API
+This is an open source sample implementation of the buildingSMART OpenCDE Documents API. A live demo can be found here:  
+https://opencde-dev.dangl.dev/
 
 ## Downloads
 
