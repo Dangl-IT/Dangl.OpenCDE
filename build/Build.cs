@@ -372,7 +372,7 @@ export const version = {{
         .Requires(() => DockerRegistryUrl)
         .Requires(() => DockerRegistryUsername)
         .Requires(() => DockerRegistryPassword)
-        .OnlyWhenDynamic(() => IsOnBranch("master") || IsOnBranch("dev"))
+        .OnlyWhenDynamic(() => IsOnBranch("main") || IsOnBranch("develop"))
         .Executes(async () =>
         {
             DockerLogin(x => x
@@ -384,7 +384,7 @@ export const version = {{
             await PushDockerWithTag("dev");
             await EnsureAppIsAtLatestVersionAsync("https://opencde-dev.dangl.dev/api/status");
 
-            if (IsOnBranch("master"))
+            if (IsOnBranch("main"))
             {
                 await PushDockerWithTag("latest");
                 await PushDockerWithTag(GitVersion.SemVer);
@@ -463,7 +463,7 @@ export const version = {{
 
     Target PublishGitHubRelease => _ => _
          .Requires(() => GitHubAuthenticationToken)
-         .OnlyWhenDynamic(() => IsOnBranch("master"))
+         .OnlyWhenDynamic(() => IsOnBranch("main"))
          .Executes(async () =>
          {
              var releaseTag = $"v{GitVersion.MajorMinorPatch}";
