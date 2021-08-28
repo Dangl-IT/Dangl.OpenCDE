@@ -12,6 +12,7 @@ namespace Dangl.OpenCDE.Shared.Models.Controllers.FrontendConfig
 
         public string ApplicationInsightsInstrumentationKey { get; set; }
 
+        [Required]
         public string Environment { get; set; }
 
         [Required]
