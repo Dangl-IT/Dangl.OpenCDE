@@ -3,6 +3,7 @@ using Dangl.OpenCDE.Shared.Models.Controllers.Status;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Dangl.OpenCDE.Core.Controllers
 {
@@ -26,7 +27,7 @@ namespace Dangl.OpenCDE.Core.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("")]
-        [ProducesResponseType(typeof(StatusGet), 200)]
+        [ProducesResponseType(typeof(StatusGet), (int)HttpStatusCode.OK)]
         public IActionResult GetStatus()
         {
             var status = new StatusGet

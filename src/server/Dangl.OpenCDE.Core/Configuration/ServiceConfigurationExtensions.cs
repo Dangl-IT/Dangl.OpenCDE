@@ -86,6 +86,8 @@ namespace Dangl.OpenCDE.Core.Configuration
             // to Https since it would assume that requests are incoming via plain http
             services.Configure<ForwardedHeadersOptions>(options => options.ForwardedHeaders = ForwardedHeaders.All);
 
+            services.AddHttpClient();
+
             return services;
         }
     }
