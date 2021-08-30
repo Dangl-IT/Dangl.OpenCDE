@@ -93,7 +93,7 @@ class Build : NukeBuild
     {
         if (IsServerBuild)
         {
-            SendTeamsMessage("Build Failed", $"Target {target} failed for Dangl.BavariaBim, " +
+            SendTeamsMessage("Build Failed", $"Target {target} failed for Dangl.OpenCDE, " +
                         $"Branch: {GitRepository.Branch}", true);
         }
     }
