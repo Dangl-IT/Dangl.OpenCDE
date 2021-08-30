@@ -303,6 +303,22 @@ export const version = {{
                 .SetProcessEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development")
                 .SetNSwagRuntime("NetCore31")
                 .SetInput(nSwagConfigPath));
+
+        nSwagConfigPath = SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "nswag.json";
+
+        NSwagExecuteDocument(x => x
+                .SetProcessWorkingDirectory(SourceDirectory / "client" / "Dangl.OpenCDE.Client")
+                .SetProcessEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development")
+                .SetNSwagRuntime("NetCore31")
+                .SetInput(nSwagConfigPath));
+
+        nSwagConfigPath = SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "nswag-opencde.nswag";
+
+        NSwagExecuteDocument(x => x
+                .SetProcessWorkingDirectory(SourceDirectory / "client" / "Dangl.OpenCDE.Client")
+                .SetProcessEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development")
+                .SetNSwagRuntime("NetCore31")
+                .SetInput(nSwagConfigPath));
     });
 
     Target FrontEndRestore => _ => _
