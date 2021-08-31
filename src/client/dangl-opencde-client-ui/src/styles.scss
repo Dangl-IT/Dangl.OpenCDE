@@ -5,6 +5,7 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -12,4 +13,8 @@ body {
 
 .dark-bg {
   background-color: $color-dark;
+}
+
+.full-width {
+  width: 100%;
 }
