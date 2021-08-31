@@ -698,4 +698,32 @@ export const version = {{
         {
             SignExecutablesInFolder(ExecutablesToSignFolder);
         });
+
+    Target BuildDatabaseSeedUtility => _ => _
+        .DependsOn(Restore)
+        .DependsOn(Clean)
+        .Executes(() =>
+        {
+            DotNetPublish(c => c
+                .SetProject(RootDirectory / "utils" / "Dangl.OpenCDE.DataSeed")
+                .SetConfiguration(Configuration)
+                .SetRuntime("win-x64")
+                .SetOutput(OutputDirectory / "Dangl.OpenCDE.DataSeed"));
+
+            ZipFile.CreateFromDirectory(OutputDirectory / "Dangl.OpenCDE.DataSeed", OutputDirectory / "Dangl.OpenCDE.DataSeed.zip");
+            DeleteDirectory(OutputDirectory / "Dangl.OpenCDE.DataSeed");
+        });
+
+    Target PublishDatabaseSeedUtility => _ => _
+        .DependsOn(BuildDatabaseSeedUtility)
+        .Executes(() =>
+        {
+            // Upload to DanglDocu
+            // We're relying on earlier build steps having created the version already on DanglDocu
+            AssetFileUpload(s => s
+                .SetDocuBaseUrl(DocuBaseUrl)
+                .SetDocuApiKey(DocuApiKey)
+                .SetVersion(GitVersion.NuGetVersion)
+                .SetAssetFilePaths(GlobFiles(OutputDirectory, "*.zip").ToArray()));
+        });
 }

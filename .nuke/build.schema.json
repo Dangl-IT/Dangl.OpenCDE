@@ -126,6 +126,7 @@
             "type": "string",
             "enum": [
               "BuildClientFrontend",
+              "BuildDatabaseSeedUtility",
               "BuildDocFxMetadata",
               "BuildDocker",
               "BuildDocumentation",
@@ -138,6 +139,7 @@
               "FrontEndRestore",
               "GenerateVersion",
               "Publish",
+              "PublishDatabaseSeedUtility",
               "PublishElectronApp",
               "PublishGitHubRelease",
               "PushDocker",
@@ -158,6 +160,7 @@
             "type": "string",
             "enum": [
               "BuildClientFrontend",
+              "BuildDatabaseSeedUtility",
               "BuildDocFxMetadata",
               "BuildDocker",
               "BuildDocumentation",
@@ -170,6 +173,7 @@
               "FrontEndRestore",
               "GenerateVersion",
               "Publish",
+              "PublishDatabaseSeedUtility",
               "PublishElectronApp",
               "PublishGitHubRelease",
               "PushDocker",
