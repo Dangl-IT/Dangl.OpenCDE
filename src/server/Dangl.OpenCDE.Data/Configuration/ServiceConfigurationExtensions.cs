@@ -11,6 +11,7 @@ namespace Dangl.OpenCDE.Data.Configuration
             // Repositories
             services.AddTransient<IProjectsRepository, ProjectsRepository>();
             services.AddTransient<IDocumentsRepository, DocumentsRepository>();
+            services.AddTransient<IOpenCdeDocumentSelectionRepository, OpenCdeDocumentSelectionRepository>();
 
             // File Service
             services.AddTransient<ICdeAppFileHandler, CdeAppFileHandler>();

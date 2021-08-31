@@ -11,6 +11,8 @@ namespace Dangl.OpenCDE.Data.Repository
     {
         IQueryable<DocumentDto> GetAllDocumentsForProject(Guid projectId, string filter);
 
+        Task<RepositoryResult<DocumentDto>> GetDocumentByIdAsync(Guid documentId);
+
         Task<RepositoryResult<DocumentDto>> SaveDocumentMetadataForProjectAsync(Guid projectId, CreateDocumentDto metadata);
 
         Task<RepositoryResult<DocumentDto>> SaveDocumentContentAsync(Guid projectId, Guid documentId, IFormFile document);

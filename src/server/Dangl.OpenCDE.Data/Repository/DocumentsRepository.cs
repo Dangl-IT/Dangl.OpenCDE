@@ -39,6 +39,21 @@ namespace Dangl.OpenCDE.Data.Repository
                 .ProjectTo<DocumentDto>(_mapper.ConfigurationProvider);
         }
 
+        public async Task<RepositoryResult<DocumentDto>> GetDocumentByIdAsync(Guid documentId)
+        {
+            var document = await _context
+                .Documents
+                .ProjectTo<DocumentDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(d => d.Id == documentId
+                    && d.ContentAvailable);
+            if (document == null)
+            {
+                return RepositoryResult<DocumentDto>.Fail("There is no document with the given id present, or it has no content available.");
+            }
+
+            return RepositoryResult<DocumentDto>.Success(document);
+        }
+
         public async Task<RepositoryResult<DocumentFileResultDto>> GetDocumentDataAsync(Guid documentId)
         {
             var document = await _context
