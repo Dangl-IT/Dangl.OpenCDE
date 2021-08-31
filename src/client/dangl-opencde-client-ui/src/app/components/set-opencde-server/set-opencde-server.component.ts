@@ -1,6 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
+import { ManageServersModalComponent } from '../manage-servers-modal/manage-servers-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
+import { SettingsService } from '../../services/settings.service';
 
 @Component({
   selector: 'opencde-client-set-opencde-server',
@@ -8,12 +11,21 @@ import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.servi
   styleUrls: ['./set-opencde-server.component.scss'],
 })
 export class SetOpencdeServerComponent implements OnInit {
-  serverBaseAddress: string | null = 'https://localhost:5001/';
+  serverBaseAddress: string | null = null;
   @Output() onHasSelectedServerBaseAddress = new EventEmitter<void>();
 
-  constructor(private openCdeDiscoveryService: OpenCdeDiscoveryService) {}
+  constructor(
+    private openCdeDiscoveryService: OpenCdeDiscoveryService,
+    private settingsService: SettingsService,
+    private matDialog: MatDialog
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const settings = this.settingsService.getSettings();
+    if (settings.openCdeServers?.length > 0) {
+      this.serverBaseAddress = settings.openCdeServers[0];
+    }
+  }
 
   setServerBaseAddress(): void {
     if (!this.serverBaseAddress) {
@@ -24,5 +36,18 @@ export class SetOpencdeServerComponent implements OnInit {
       this.serverBaseAddress
     );
     this.onHasSelectedServerBaseAddress.next();
+  }
+
+  openManagementModal(): void {
+    this.matDialog
+      .open(ManageServersModalComponent, {
+        data: this.serverBaseAddress,
+      })
+      .afterClosed()
+      .subscribe((selectedUrl: string | null) => {
+        if (selectedUrl) {
+          this.serverBaseAddress = selectedUrl;
+        }
+      });
   }
 }

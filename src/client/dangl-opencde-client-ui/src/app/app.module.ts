@@ -9,10 +9,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { DanglIdentityModule } from '@dangl/angular-dangl-identity-client';
 import { DiscoverOpencdeApiComponent } from './components/discover-opencde-api/discover-opencde-api.component';
 import { MainStepperComponent } from './components/main-stepper/main-stepper.component';
+import { ManageServersModalComponent } from './components/manage-servers-modal/manage-servers-modal.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
@@ -39,6 +42,7 @@ import { ViewDocumentComponent } from './components/view-document/view-document.
     AuthenticateApiComponent,
     PrepareDocumentSelectionComponent,
     ViewDocumentComponent,
+    ManageServersModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,6 +62,8 @@ import { ViewDocumentComponent } from './components/view-document/view-document.
     ReactiveFormsModule,
     MatSelectModule,
     MatTabsModule,
+    MatDialogModule,
+    MatListModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

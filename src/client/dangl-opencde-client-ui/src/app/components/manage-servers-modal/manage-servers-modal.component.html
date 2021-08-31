@@ -1,0 +1,19 @@
+<h3>Manage OpenCDE Servers</h3>
+<button
+  mat-raised-button
+  color="primary"
+  (click)="saveCurrentServer()"
+  *ngIf="canSaveCurrentServer"
+>
+  Save Current Server
+</button>
+<mat-list role="list">
+  <mat-list-item role="listitem" *ngFor="let server of savedServers">
+    <button mat-icon-button (click)="deleteServer(server)">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <button mat-raised-button (click)="selectServer(server)">
+      {{ server }}
+    </button>
+  </mat-list-item>
+</mat-list>
