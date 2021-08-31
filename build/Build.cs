@@ -538,14 +538,14 @@ export const version = {{
 
             var windowsTargets = new[]
             {
-                new[] { "Windows_X86", "/target custom win-x86;win /electron-arch ia32" },
-                new[] { "Windows_X64", "/target win" }
+                new ElectronBuildConfig{ReleaseIdentifier = "Windows_X86", ElectronArguments = "/target custom win-x86;win /electron-arch ia32"},
+                new ElectronBuildConfig{ReleaseIdentifier = "Windows_X64", ElectronArguments = "/target win"}
             };
 
-            var unixTargets = new[]
+            var unixTargets = new []
             {
-                new[] { "Windows_X86", "/target osx" },
-                new[] { "Windows_X64", "/target linux" }
+                new ElectronBuildConfig{ReleaseIdentifier = "Linux", ElectronArguments = "/target linux"},
+                new ElectronBuildConfig{ReleaseIdentifier = "MacOS", ElectronArguments = "/target osx"},
             };
 
             if (BuildElectronWindowsTargets)
@@ -624,31 +624,32 @@ export const version = {{
         }
     }
 
-    void BuildElectronAppInternal(string[] electronOptions)
+    void BuildElectronAppInternal(ElectronBuildConfig electronBuildConfig)
     {
-        foreach (var electronOption in electronOptions)
+        EnsureCleanDirectory(SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin");
+
+        // Electron Build
+        SetVersionInElectronManifest();
+
+        var electronNet = ToolResolver.GetPathTool("electronize");
+        electronNet(arguments: $"build /dotnet-configuration Release {electronBuildConfig.ElectronArguments}",
+            workingDirectory: SourceDirectory / "client" / "Dangl.OpenCDE.Client"
+            );
+
+        var clientFiles = GlobFiles(SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin" / "Desktop", "*.exe", "*.snap", "*.AppImage", "*.zip", "*.dmg");
+
+        foreach (var clientFile in clientFiles)
         {
-            EnsureCleanDirectory(SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin");
-
-            var releaseIdentifier = electronOption[0];
-            var electronArguments = electronOption[1];
-
-            // Electron Build
-            SetVersionInElectronManifest();
-
-            var electronNet = ToolResolver.GetPathTool("electronize");
-            electronNet(arguments: $"build /dotnet-configuration Release {electronArguments}",
-                workingDirectory: SourceDirectory / "client" / "Dangl.OpenCDE.Client"
-                );
-
-            var clientFiles = GlobFiles(SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin" / "Desktop", "*.exe", "*.snap", "*.AppImage", "*.zip", "*.dmg");
-
-            foreach (var clientFile in clientFiles)
-            {
-                var fileName = Path.GetFileName(clientFile);
-                MoveFile(fileName, OutputDirectory / "electron" / $"{releaseIdentifier}_{fileName}");
-            }
+            var fileName = Path.GetFileName(clientFile);
+            MoveFile(fileName, OutputDirectory / "electron" / $"{electronBuildConfig.ElectronArguments}_{fileName}");
         }
+    }
+
+    private class ElectronBuildConfig
+    {
+        public string ReleaseIdentifier { get; set; }
+
+        public string ElectronArguments { get; set; }
     }
 
     Target PublishElectronApp => _ => _
