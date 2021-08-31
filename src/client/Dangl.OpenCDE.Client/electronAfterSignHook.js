@@ -2,6 +2,12 @@
 const path = require('path');
 
 exports.default = async function (context) {
+
+    if (process.platform !== 'win32') {
+        // Signing works only on Windows
+        return;
+    }
+
     // We're calling NUKE to sign the output files before they're being packaged
     const nukeCommand = `"./build.cmd" SignExecutables -ExecutablesToSignFolder "${context.appOutDir}"`;
     const rootDirectory = path.join(__dirname, '../../../');
