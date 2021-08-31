@@ -29,6 +29,9 @@ namespace Dangl.OpenCDE.Core.Tests
                 .DefinedTypes
                 .Where(t => typeof(ControllerBase).IsAssignableFrom(t))
                 .Where(t => t.GetCustomAttributes(true).Any(at => at is RouteAttribute))
+                .Where(t => t != typeof(Controllers.Foundations.AuthenticationController)
+                    && t != typeof(Controllers.Foundations.CurrentUserController)
+                    && t != typeof(Controllers.Foundations.VersionsController))
                 .Select(t => t.GetCustomAttributes(true).OfType<RouteAttribute>().First().Template)
                 .ToList();
             return routeAttributes;
