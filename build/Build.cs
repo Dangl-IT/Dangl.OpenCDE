@@ -657,7 +657,7 @@ export const version = {{
         foreach (var clientFile in clientFiles)
         {
             var fileName = Path.GetFileName(clientFile);
-            MoveFile(fileName, OutputDirectory / "electron" / $"{electronBuildConfig.ReleaseIdentifier}_{fileName}");
+            MoveFile(clientFile, OutputDirectory / "electron" / $"{electronBuildConfig.ReleaseIdentifier}_{fileName}");
         }
     }
 
