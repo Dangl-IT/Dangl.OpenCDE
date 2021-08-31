@@ -30,6 +30,22 @@
   >
     Authenticate
   </button>
+  <button
+    mat-raised-button
+    type="button"
+    [disabled]="authenticationInProgress"
+    (click)="loadConfig()"
+  >
+    Load Settings
+  </button>
+  <button
+    mat-raised-button
+    type="button"
+    [disabled]="authenticationInProgress"
+    (click)="saveSettings()"
+  >
+    Save Settings
+  </button>
 </form>
 
 <mat-spinner *ngIf="authenticationInProgress"></mat-spinner>

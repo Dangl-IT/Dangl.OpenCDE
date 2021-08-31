@@ -1,4 +1,10 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -10,36 +16,41 @@ import {
   OpenIdConnectAuthenticationParameters,
   OpenIdConnectFlowType,
 } from '../../generated/backend-client';
-import { filter, first } from 'rxjs/operators';
+import { filter, first, takeUntil } from 'rxjs/operators';
 
 import { AuthGet } from '../../generated/opencde-client';
 import { CdeClientHubService } from '../../services/cde-client-hub.service';
 import { GuidGenerator } from '@dangl/angular-material-shared';
+import { ManageOpenidConfigsModalComponent } from '../manage-openid-configs-modal/manage-openid-configs-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
+import { SettingsService } from '../../services/settings.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'opencde-client-authenticate-api',
   templateUrl: './authenticate-api.component.html',
   styleUrls: ['./authenticate-api.component.scss'],
 })
-export class AuthenticateApiComponent implements OnInit {
+export class AuthenticateApiComponent implements OnInit, OnDestroy {
   openIdForm: FormGroup;
   authenticationInformation: AuthGet | null = null;
   authenticationInProgress = false;
   lastAuthenticationFailed = false;
+  cdeServerBaseUrl: string | null = null;
   @Output() onAuthentication = new EventEmitter<void>();
+  private unsubscribe: Subject<void> = new Subject<void>();
 
   constructor(
     private openCdeDiscoveryService: OpenCdeDiscoveryService,
     formBuilder: FormBuilder,
     private cdeClientHubService: CdeClientHubService,
-    private openIdClient: OpenIdClient
+    private openIdClient: OpenIdClient,
+    private settingsService: SettingsService,
+    private matDialog: MatDialog
   ) {
     this.openIdForm = formBuilder.group({
-      clientId: new FormControl(
-        'a4e59a6a-a300-48e3-89a0-2cfbde8ce304',
-        Validators.required
-      ),
+      clientId: new FormControl('', Validators.required),
       clientSecret: new FormControl(''),
       flow: new FormControl('', Validators.required),
       requiredScope: new FormControl(''),
@@ -47,8 +58,28 @@ export class AuthenticateApiComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.openCdeDiscoveryService.foundationsBaseUrl
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((baseUrl) => {
+        let cdeServerBaseUrl = baseUrl.replace(/\/$/, '').toLowerCase();
+        if (cdeServerBaseUrl.endsWith('foundation')) {
+          cdeServerBaseUrl = cdeServerBaseUrl.substring(
+            0,
+            cdeServerBaseUrl.length - 'foundation'.length
+          );
+        }
+        this.cdeServerBaseUrl = cdeServerBaseUrl;
+
+        const settings = this.settingsService.getSettings();
+        if (settings.clientConfigurations[this.cdeServerBaseUrl]) {
+          this.applyLoadedConfig(
+            settings.clientConfigurations[this.cdeServerBaseUrl]
+          );
+        }
+      });
+
     this.openCdeDiscoveryService.foundationsAuthentication
-      .pipe(first())
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe((authenticationInformation) => {
         this.authenticationInformation = authenticationInformation;
 
@@ -80,25 +111,62 @@ export class AuthenticateApiComponent implements OnInit {
       });
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+  }
+
+  loadConfig(): void {
+    this.matDialog
+      .open(ManageOpenidConfigsModalComponent)
+      .afterClosed()
+      .subscribe(
+        (
+          authenticationParameters: OpenIdConnectAuthenticationParameters | null
+        ) => {
+          if (authenticationParameters) {
+            this.applyLoadedConfig(authenticationParameters);
+          }
+        }
+      );
+  }
+
+  private applyLoadedConfig(
+    authenticationParameters: OpenIdConnectAuthenticationParameters
+  ): void {
+    this.openIdForm.patchValue({
+      clientId: authenticationParameters.clientConfiguration.clientId,
+      clientSecret: authenticationParameters.clientConfiguration.clientSecret,
+      flow: authenticationParameters.flow,
+      requiredScope: authenticationParameters.clientConfiguration.requiredScope,
+    });
+  }
+
+  saveSettings(): void {
+    const authenticationParameters = this.getAuthenticationParameters();
+    if (authenticationParameters && this.cdeServerBaseUrl) {
+      switch (authenticationParameters.flow) {
+        case OpenIdConnectFlowType.Implicit:
+          authenticationParameters.flow = <any>'implicit_grant';
+          break;
+        case OpenIdConnectFlowType.AuthorizationCode:
+          authenticationParameters.flow = <any>'authorization_code_grant';
+          break;
+      }
+
+      this.settingsService.saveClientConfiguration(
+        this.cdeServerBaseUrl,
+        authenticationParameters
+      );
+    }
+  }
+
   authenticate(): void {
     if (!this.authenticationInformation) {
       return;
     }
 
     const clientState = GuidGenerator.generatePseudoRandomGuid();
-
-    let openIdFlow = OpenIdConnectFlowType.Implicit;
-    switch (this.openIdForm.value.flow) {
-      case 'implicit_grant':
-        openIdFlow = OpenIdConnectFlowType.Implicit;
-        break;
-      case 'authorization_code_grant':
-        openIdFlow = OpenIdConnectFlowType.AuthorizationCode;
-        break;
-      default:
-        alert('Unsupported OAuth2 flow type in this example');
-        return;
-    }
 
     this.cdeClientHubService.authenticationResultReceived
       .pipe(
@@ -114,8 +182,42 @@ export class AuthenticateApiComponent implements OnInit {
       });
 
     this.authenticationInProgress = true;
-    const authenticationParameters: OpenIdConnectAuthenticationParameters = {
-      clientState: clientState,
+
+    const authenticationParameters = this.getAuthenticationParameters();
+    if (!authenticationParameters) {
+      return;
+    }
+
+    authenticationParameters.clientState = clientState;
+
+    this.cdeClientHubService.setOpenIdAuthClientState(clientState);
+    this.openIdClient
+      .initiateOpenIdConnectImplicitLogin(authenticationParameters)
+      .subscribe(() => {});
+  }
+
+  private getAuthenticationParameters():
+    | OpenIdConnectAuthenticationParameters
+    | undefined {
+    if (!this.authenticationInformation) {
+      return;
+    }
+
+    let openIdFlow = OpenIdConnectFlowType.Implicit;
+    switch (this.openIdForm.value.flow) {
+      case 'implicit_grant':
+        openIdFlow = OpenIdConnectFlowType.Implicit;
+        break;
+      case 'authorization_code_grant':
+        openIdFlow = OpenIdConnectFlowType.AuthorizationCode;
+        break;
+      default:
+        alert('Unsupported OAuth2 flow type in this example');
+        return;
+    }
+
+    return {
+      clientState: '',
       flow: openIdFlow,
       clientConfiguration: {
         authorizeEndpoint: this.authenticationInformation.oauth2_auth_url!, // We're checking earlier to ensure this is present
@@ -125,10 +227,5 @@ export class AuthenticateApiComponent implements OnInit {
         tokenEndpoint: this.authenticationInformation.oauth2_token_url,
       },
     };
-
-    this.cdeClientHubService.setOpenIdAuthClientState(clientState);
-    this.openIdClient
-      .initiateOpenIdConnectImplicitLogin(authenticationParameters)
-      .subscribe(() => {});
   }
 }

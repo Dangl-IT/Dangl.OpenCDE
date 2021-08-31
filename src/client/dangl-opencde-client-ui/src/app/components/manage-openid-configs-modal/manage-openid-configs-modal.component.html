@@ -1,0 +1,11 @@
+<h3>Manage OpenID Configurations</h3>
+<mat-list role="list">
+  <mat-list-item role="listitem" *ngFor="let server of servers">
+    <button mat-icon-button (click)="deleteServer(server)">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <button mat-raised-button (click)="selectServer(server)">
+      {{ server }}
+    </button>
+  </mat-list-item>
+</mat-list>

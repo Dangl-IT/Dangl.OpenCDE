@@ -29,6 +29,7 @@ import { SiteFooterComponent } from './components/site-footer/site-footer.compon
 import { SiteHeaderComponent } from './components/site-header/site-header.component';
 import { UserInfoComponent } from './components/user-info/user-info.component';
 import { ViewDocumentComponent } from './components/view-document/view-document.component';
+import { ManageOpenidConfigsModalComponent } from './components/manage-openid-configs-modal/manage-openid-configs-modal.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { ViewDocumentComponent } from './components/view-document/view-document.
     PrepareDocumentSelectionComponent,
     ViewDocumentComponent,
     ManageServersModalComponent,
+    ManageOpenidConfigsModalComponent,
   ],
   imports: [
     BrowserModule,
