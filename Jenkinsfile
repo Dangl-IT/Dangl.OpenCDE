@@ -59,16 +59,35 @@ pipeline {
                 sh 'bash build.sh UploadDocumentation+PublishGitHubRelease -Configuration Release'
             }
         }
-		stage ('Deploy Docker') {
-			agent {
-				node {
-					label 'linux'
-				}
-			}
-			steps {
-				sh 'bash build.sh PushDocker'
-			}
-		}
+        stage ('Deployment') {
+            parallel {
+		        stage ('Deploy Docker') {
+		        	agent {
+		        		node {
+		        			label 'linux'
+		        		}
+		        	}
+		        	steps {
+		        		sh 'bash build.sh PushDocker'
+		        	}
+		        }
+		        stage ('Publish Electron App Windows') {
+		        	steps {
+                        powershell './build.ps1 PublishElectronApp -BuildElectronWindowsTargets'
+		        	}
+		        }
+		        stage ('Publish Electron App Linux & Mac') {
+		        	agent {
+		        		node {
+		        			label 'linux'
+		        		}
+		        	}
+		        	steps {
+		        		sh 'bash build.sh PublishElectronApp -BuildElectronUnixTargets'
+		        	}
+		        }
+            }
+        }
     }
     post {
         always {

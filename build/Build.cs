@@ -42,6 +42,8 @@ using Nuke.GitHub;
 using System.IO.Compression;
 using static Nuke.WebDocu.WebDocuTasks;
 using Nuke.WebDocu;
+using Newtonsoft.Json;
+using Nuke.Common.Utilities;
 
 [CheckBuildProjectConfigurations]
 class Build : NukeBuild
@@ -58,6 +60,13 @@ class Build : NukeBuild
     [Parameter] string KeyVaultClientId;
     [Parameter] string KeyVaultClientSecret;
 
+    // This parameter is only required if we're just calling the sign target
+    // to sign executables in a specific folder
+    [Parameter] string ExecutablesToSignFolder;
+
+    [Parameter] readonly bool BuildElectronWindowsTargets;
+    [Parameter] readonly bool BuildElectronUnixTargets;
+
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
@@ -70,6 +79,9 @@ class Build : NukeBuild
     [KeyVaultSecret] string GitHubAuthenticationToken;
     [KeyVaultSecret] string DocuBaseUrl;
     [KeyVaultSecret("DanglOpenCDE-DocuApiKey")] string DocuApiKey;
+    [KeyVaultSecret] string CodeSigningCertificateName;
+    [KeyVaultSecret] string CodeSigningCertificateKeyVaultBaseUrl;
+    [KeyVaultSecret] string CodeSigningKeyVaultTenantId;
 
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
@@ -82,6 +94,9 @@ class Build : NukeBuild
     AbsolutePath DocFxFile => RootDirectory / "docs" / "docfx.json";
     AbsolutePath ChangelogFile => RootDirectory / "CHANGELOG.md";
     AbsolutePath PublishDirectory => OutputDirectory / "publish";
+
+    [PackageExecutable("AzureSign", "tools/net5.0/any/AzureSignTool.dll")]
+    readonly Tool AzureSign;
 
     public Build()
     {
@@ -499,4 +514,170 @@ export const version = {{
                      .SetTag(releaseTag)
                      .SetToken(GitHubAuthenticationToken));
          });
+
+    Target BuildClientFrontend => _ => _
+        .DependsOn(Clean)
+        .DependsOn(Restore)
+        .DependsOn(GenerateVersion)
+        .Executes(() =>
+        {
+            var frontendDirectory = SourceDirectory / "client" / "dangl-opencde-client-ui";
+            NpmCi(c => c.SetProcessWorkingDirectory(frontendDirectory));
+            NpmRun(c => c
+                .SetCommand("build:production")
+                .SetProcessWorkingDirectory(frontendDirectory));
+        });
+
+    Target BuildElectronApp => _ => _
+        .DependsOn(BuildClientFrontend)
+        .Requires(() => CodeSigningCertificateName != null)
+        .Executes(() =>
+        {
+            // To ensure the tool is always up to date
+            DotNet("tool update ElectronNET.CLI -g");
+
+            var windowsTargets = new[]
+            {
+                new[] { "Windows_X86", "/target custom win-x86;win /electron-arch ia32" },
+                new[] { "Windows_X64", "/target win" }
+            };
+
+            var unixTargets = new[]
+            {
+                new[] { "Windows_X86", "/target osx" },
+                new[] { "Windows_X64", "/target linux" }
+            };
+
+            if (BuildElectronWindowsTargets)
+            {
+                foreach (var target in windowsTargets)
+                {
+                    BuildElectronAppInternal(target);
+                }
+            }
+            else
+            {
+                Logger.Normal("Not building Electron Windows targets, since it was not specified.");
+            }
+
+            if (BuildElectronUnixTargets)
+            {
+                foreach (var target in unixTargets)
+                {
+                    BuildElectronAppInternal(target);
+                }
+            }
+            else
+            {
+                Logger.Normal("Not building Electron Unix targets, since it was not specified.");
+            }
+
+            SignExecutablesInFolder(OutputDirectory / "electron");
+        });
+
+    private void SignExecutablesInFolder(string folderPath)
+    {
+        if (!IsWin)
+        {
+            Logger.Normal("Not signing any executables, since not running on Windows");
+            return;
+        }
+
+        ControlFlow.Assert(!string.IsNullOrWhiteSpace(CodeSigningCertificateKeyVaultBaseUrl), "!string.IsNullOrWhitespace(CodeSigningCertificateKeyVaultBaseUrl)");
+        ControlFlow.Assert(!string.IsNullOrWhiteSpace(KeyVaultClientId), "!string.IsNullOrWhitespace(KeyVaultClientId)");
+        ControlFlow.Assert(!string.IsNullOrWhiteSpace(KeyVaultClientSecret), "!string.IsNullOrWhitespace(KeyVaultClientSecret)");
+        ControlFlow.Assert(!string.IsNullOrWhiteSpace(CodeSigningKeyVaultTenantId), "!string.IsNullOrWhitespace(CodeSigningKeyVaultTenantId)");
+        ControlFlow.Assert(!string.IsNullOrWhiteSpace(CodeSigningCertificateName), "!string.IsNullOrWhitespace(CodeSigningCertificateName)");
+
+        Logger.Normal("Searching for files to sign in " + folderPath);
+        var inputFiles = GlobFiles(folderPath, "*.exe");
+
+        if (!inputFiles.Any())
+        {
+            Logger.Normal("No files to sign found");
+            return;
+        }
+
+        Logger.Normal("Signing " + inputFiles.Join(", "));
+
+        var filesListPath = OutputDirectory / $"{Guid.NewGuid()}.txt";
+        WriteAllText(filesListPath, inputFiles.Join(Environment.NewLine) + Environment.NewLine);
+
+        try
+        {
+            var azureSignArguments = new Arguments()
+                .Add("sign")
+                .Add("--azure-key-vault-url {0}", CodeSigningCertificateKeyVaultBaseUrl)
+                .Add("--azure-key-vault-client-id {0}", KeyVaultClientId)
+                .Add("--azure-key-vault-client-secret {0}", KeyVaultClientSecret)
+                .Add("--azure-key-vault-tenant-id {0}", CodeSigningKeyVaultTenantId)
+                .Add("--azure-key-vault-certificate {0}", CodeSigningCertificateName)
+                .Add("--input-file-list {0}", filesListPath)
+                .Add("--timestamp-rfc3161 {0}", "http://timestamp.digicert.com")
+                .ToString();
+
+            AzureSign(azureSignArguments);
+        }
+        finally
+        {
+            DeleteFile(filesListPath);
+        }
+    }
+
+    void BuildElectronAppInternal(string[] electronOptions)
+    {
+        foreach (var electronOption in electronOptions)
+        {
+            EnsureCleanDirectory(SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin");
+
+            var releaseIdentifier = electronOption[0];
+            var electronArguments = electronOption[1];
+
+            // Electron Build
+            SetVersionInElectronManifest();
+
+            var electronNet = ToolResolver.GetPathTool("electronize");
+            electronNet(arguments: $"build /dotnet-configuration Release {electronArguments}",
+                workingDirectory: SourceDirectory / "client" / "Dangl.OpenCDE.Client"
+                );
+
+            var clientFiles = GlobFiles(SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin" / "Desktop", "*.exe", "*.snap", "*.AppImage", "*.zip", "*.dmg");
+
+            foreach (var clientFile in clientFiles)
+            {
+                var fileName = Path.GetFileName(clientFile);
+                MoveFile(fileName, OutputDirectory / "electron" / $"{releaseIdentifier}_{fileName}");
+            }
+        }
+    }
+
+    Target PublishElectronApp => _ => _
+        .DependsOn(BuildElectronApp)
+        .Requires(() => DocuBaseUrl)
+        .Requires(() => DocuApiKey)
+        .Executes(() =>
+        {
+            // Upload to DanglDocu
+            // We're relying on earlier build steps having created the version already on DanglDocu
+            AssetFileUpload(s => s
+                .SetDocuBaseUrl(DocuBaseUrl)
+                .SetDocuApiKey(DocuApiKey)
+                .SetVersion(GitVersion.NuGetVersion)
+                .SetAssetFilePaths(GlobFiles(OutputDirectory / "electron", "*").ToArray()));
+        });
+
+    private void SetVersionInElectronManifest()
+    {
+        var manifestPath = SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "electron.manifest.json";
+        var manifestJson = JObject.Parse(ReadAllText(manifestPath));
+        manifestJson["build"]["buildVersion"] = GitVersion.SemVer;
+        WriteAllText(manifestPath, manifestJson.ToString(Formatting.Indented));
+    }
+
+    Target SignExecutables => _ => _
+        .Requires(() => ExecutablesToSignFolder)
+        .Executes(() =>
+        {
+            SignExecutablesInFolder(ExecutablesToSignFolder);
+        });
 }

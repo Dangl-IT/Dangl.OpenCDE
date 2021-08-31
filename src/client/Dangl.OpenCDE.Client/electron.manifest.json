@@ -13,6 +13,7 @@
     "copyright": "Copyright © 2021 Dangl IT GmbH",
     "buildVersion": "0.1.1-beta.77",
     "compression": "maximum",
+    "afterSign": "../../../electronAfterSignHook.js",
     "icon": "../../../icon_512.png",
     "directories": {
       "output": "../../../bin/Desktop"

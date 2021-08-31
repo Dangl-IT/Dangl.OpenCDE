@@ -6,6 +6,21 @@
     "build": {
       "type": "object",
       "properties": {
+        "BuildElectronUnixTargets": {
+          "type": "boolean"
+        },
+        "BuildElectronWindowsTargets": {
+          "type": "boolean"
+        },
+        "CodeSigningCertificateKeyVaultBaseUrl": {
+          "type": "string"
+        },
+        "CodeSigningCertificateName": {
+          "type": "string"
+        },
+        "CodeSigningKeyVaultTenantId": {
+          "type": "string"
+        },
         "Configuration": {
           "type": "string",
           "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
@@ -40,6 +55,9 @@
           "type": "string"
         },
         "DocuBaseUrl": {
+          "type": "string"
+        },
+        "ExecutablesToSignFolder": {
           "type": "string"
         },
         "GitHubAuthenticationToken": {
@@ -107,9 +125,11 @@
           "items": {
             "type": "string",
             "enum": [
+              "BuildClientFrontend",
               "BuildDocFxMetadata",
               "BuildDocker",
               "BuildDocumentation",
+              "BuildElectronApp",
               "BuildFrontend",
               "BuildFrontendSwaggerClient",
               "Clean",
@@ -118,9 +138,11 @@
               "FrontEndRestore",
               "GenerateVersion",
               "Publish",
+              "PublishElectronApp",
               "PublishGitHubRelease",
               "PushDocker",
               "Restore",
+              "SignExecutables",
               "UploadDocumentation"
             ]
           }
@@ -135,9 +157,11 @@
           "items": {
             "type": "string",
             "enum": [
+              "BuildClientFrontend",
               "BuildDocFxMetadata",
               "BuildDocker",
               "BuildDocumentation",
+              "BuildElectronApp",
               "BuildFrontend",
               "BuildFrontendSwaggerClient",
               "Clean",
@@ -146,9 +170,11 @@
               "FrontEndRestore",
               "GenerateVersion",
               "Publish",
+              "PublishElectronApp",
               "PublishGitHubRelease",
               "PushDocker",
               "Restore",
+              "SignExecutables",
               "UploadDocumentation"
             ]
           }
