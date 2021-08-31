@@ -1,0 +1,25 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false, 
+    "anonymousAuthentication": true
+  },
+  "profiles": {
+    "Electron.NET App": {
+      "commandName": "Executable",
+      "executablePath": "electronize",
+      "commandLineArgs": "start",
+      "workingDirectory": ".",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Dangl.OpenCDE.Client": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

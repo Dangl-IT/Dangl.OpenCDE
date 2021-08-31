@@ -26,13 +26,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.Data", "src\server\Dangl.OpenCDE.Data\Dangl.OpenCDE.Data.csproj", "{EF78FF04-9C25-4777-9513-975321D947C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dangl.OpenCDE.Data", "src\server\Dangl.OpenCDE.Data\Dangl.OpenCDE.Data.csproj", "{EF78FF04-9C25-4777-9513-975321D947C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.Core", "src\server\Dangl.OpenCDE.Core\Dangl.OpenCDE.Core.csproj", "{6C537AC0-4A10-4890-A8FD-E86722FD871C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dangl.OpenCDE.Core", "src\server\Dangl.OpenCDE.Core\Dangl.OpenCDE.Core.csproj", "{6C537AC0-4A10-4890-A8FD-E86722FD871C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.Shared", "src\server\Dangl.OpenCDE.Shared\Dangl.OpenCDE.Shared.csproj", "{D5FBED4F-8C8B-4534-A39B-B5F0A2502CD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dangl.OpenCDE.Shared", "src\server\Dangl.OpenCDE.Shared\Dangl.OpenCDE.Shared.csproj", "{D5FBED4F-8C8B-4534-A39B-B5F0A2502CD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.Core.Tests", "tests\Dangl.OpenCDE.Core.Tests\Dangl.OpenCDE.Core.Tests.csproj", "{FDDB486F-98DA-408C-B7DB-EBE578019B07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dangl.OpenCDE.Core.Tests", "tests\Dangl.OpenCDE.Core.Tests\Dangl.OpenCDE.Core.Tests.csproj", "{FDDB486F-98DA-408C-B7DB-EBE578019B07}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{81899D76-0A55-4749-AC2D-8E0E12D6A781}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dangl.OpenCDE.Client", "src\client\Dangl.OpenCDE.Client\Dangl.OpenCDE.Client.csproj", "{F4C5F407-1928-4E9D-83E2-D803C9103ACB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +74,10 @@ Global
 		{FDDB486F-98DA-408C-B7DB-EBE578019B07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDDB486F-98DA-408C-B7DB-EBE578019B07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDDB486F-98DA-408C-B7DB-EBE578019B07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4C5F407-1928-4E9D-83E2-D803C9103ACB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4C5F407-1928-4E9D-83E2-D803C9103ACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4C5F407-1928-4E9D-83E2-D803C9103ACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4C5F407-1928-4E9D-83E2-D803C9103ACB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +91,8 @@ Global
 		{6C537AC0-4A10-4890-A8FD-E86722FD871C} = {6333DD57-A41F-40D7-B9E1-E631DA4449A2}
 		{D5FBED4F-8C8B-4534-A39B-B5F0A2502CD2} = {6333DD57-A41F-40D7-B9E1-E631DA4449A2}
 		{FDDB486F-98DA-408C-B7DB-EBE578019B07} = {7C5FD3B2-CBFE-40E7-96B6-DB120FF061D6}
+		{81899D76-0A55-4749-AC2D-8E0E12D6A781} = {3EF93093-22B7-47DE-BFD2-A0936AC03E13}
+		{F4C5F407-1928-4E9D-83E2-D803C9103ACB} = {81899D76-0A55-4749-AC2D-8E0E12D6A781}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {329C7D44-A1D5-4259-9763-EDF13C1842B5}

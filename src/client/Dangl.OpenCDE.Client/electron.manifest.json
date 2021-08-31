@@ -1,0 +1,35 @@
+{
+  "executable": "Dangl.OpenCDE.Client",
+  "splashscreen": {
+    "imageFile": ""
+  },
+  "name": "Dangl.OpenCDE.Client",
+  "author": "",
+  "singleInstance": false,
+  "environment": "Production",
+  "build": {
+    "appId": "com.Dangl.OpenCDE.Client.app",
+    "productName": "Dangl.OpenCDE.Client",
+    "copyright": "Copyright © 2021 Dangl IT GmbH",
+    "buildVersion": "1.0.0",
+    "compression": "maximum",
+    "directories": {
+      "output": "../../../bin/Desktop"
+    },
+    "extraResources": [
+      {
+        "from": "./bin",
+        "to": "bin",
+        "filter": [ "**/*" ]
+      }
+    ],
+    "files": [
+      {
+        "from": "./ElectronHostHook/node_modules",
+        "to": "ElectronHostHook/node_modules",
+        "filter": [ "**/*" ]
+      },
+      "**/*"
+    ]
+  }
+}
