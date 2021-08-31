@@ -356,3 +356,5 @@ output/
 src/server/Dangl.OpenCDE/wwwroot/dist/
 
 src/server/Dangl.OpenCDE/wwwroot/assets/
+
+src/client/Dangl.OpenCDE.Client/wwwroot/dist/
