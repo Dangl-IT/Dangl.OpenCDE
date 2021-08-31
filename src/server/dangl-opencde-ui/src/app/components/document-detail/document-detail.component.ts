@@ -1,17 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { DocumentGet, DocumentsClient } from '../../generated/backend-client';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  DocumentGet,
+  DocumentsClient,
+  OpenCdeIntegrationClient,
+} from '../../generated/backend-client';
+import { first, takeUntil } from 'rxjs/operators';
 
 import { ActivatedRoute } from '@angular/router';
+import { CdeSessionService } from '../../services/cde-session.service';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { ProgressSettings } from '../../models/progress-settings';
-import { first } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'opencde-document-detail',
   templateUrl: './document-detail.component.html',
   styleUrls: ['./document-detail.component.scss'],
 })
-export class DocumentDetailComponent implements OnInit {
+export class DocumentDetailComponent implements OnInit, OnDestroy {
   projectId: string | null = null;
   documentId: string | null = null;
   document: DocumentGet | null = null;
@@ -22,14 +28,22 @@ export class DocumentDetailComponent implements OnInit {
     color: 'primary',
     isLoading: true,
   };
+  cdeSession: string | null = null;
+  private unsubscribe: Subject<void> = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private documentsClient: DocumentsClient,
-    private jwtTokenService: JwtTokenService
+    private jwtTokenService: JwtTokenService,
+    private cdeSessionService: CdeSessionService,
+    private openCdeIntegrationClient: OpenCdeIntegrationClient
   ) {}
 
   ngOnInit(): void {
+    this.cdeSessionService.sessionId
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((sessionId) => (this.cdeSession = sessionId));
+
     this.accessToken = this.jwtTokenService.getTokenFromStorage().accessToken;
 
     this.route.params.pipe(first()).subscribe((p) => {
@@ -39,6 +53,11 @@ export class DocumentDetailComponent implements OnInit {
         this.loadDocumentData();
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   private loadDocumentData(): void {
@@ -51,6 +70,20 @@ export class DocumentDetailComponent implements OnInit {
       .subscribe((d) => {
         this.document = d;
         this.settingsProgress.isLoading = false;
+      });
+  }
+
+  sendDocumentToClient(): void {
+    if (!this.cdeSession || !this.documentId) {
+      return;
+    }
+
+    this.openCdeIntegrationClient
+      .setDocumentSelection(this.cdeSession, {
+        documentId: this.documentId,
+      })
+      .subscribe((r) => {
+        window.location.href = r.callbackUrl;
       });
   }
 }

@@ -7,7 +7,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { DanglIdentityModule } from '@dangl/angular-dangl-identity-client';
+import { DocumentDetailComponent } from './components/document-detail/document-detail.component';
+import { DocumentSelectionStartComponent } from './components/document-selection-start/document-selection-start.component';
 import { DocumentsComponent } from './components/documents/documents.component';
+import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { FileSizePipe } from './pipes/file-size.pipe';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { LoginComponent } from './components/login/login.component';
@@ -20,6 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
@@ -35,8 +39,6 @@ import { SiteHeaderComponent } from './components/site-header/site-header.compon
 import { UploadProgressComponent } from './components/upload-progress/upload-progress.component';
 import { UserInfoComponent } from './components/user-info/user-info.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
-import { DocumentDetailComponent } from './components/document-detail/document-detail.component';
-import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 
 @NgModule({
   declarations: [
@@ -57,6 +59,7 @@ import { DragAndDropDirective } from './directives/drag-and-drop.directive';
     UploadProgressComponent,
     DocumentDetailComponent,
     DragAndDropDirective,
+    DocumentSelectionStartComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,6 +83,7 @@ import { DragAndDropDirective } from './directives/drag-and-drop.directive';
     MatFormFieldModule,
     ReactiveFormsModule,
     MatProgressBarModule,
+    MatProgressSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

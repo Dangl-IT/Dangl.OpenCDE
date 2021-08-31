@@ -2,6 +2,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { ApiSpecComponent } from './components/api-spec/api-spec.component';
 import { DocumentDetailComponent } from './components/document-detail/document-detail.component';
+import { DocumentSelectionStartComponent } from './components/document-selection-start/document-selection-start.component';
 import { DocumentsComponent } from './components/documents/documents.component';
 import { LoginComponent } from './components/login/login.component';
 import { NewDocumentComponent } from './components/new-document/new-document.component';
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'api-spec',
     component: ApiSpecComponent,
+  },
+  {
+    path: 'opencde-select-documents',
+    component: DocumentSelectionStartComponent,
   },
   {
     path: 'projects',

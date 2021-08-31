@@ -10,7 +10,7 @@
     This document does not yet have content available
   </p>
   <a
-    *ngIf="document.contentAvailable"
+    *ngIf="document.contentAvailable && !cdeSession"
     mat-raised-button
     color="primary"
     href="/api/projects/{{ document.projectId }}/documents/{{
@@ -19,4 +19,12 @@
   >
     Download
   </a>
+  <button
+    *ngIf="document.contentAvailable && cdeSession"
+    mat-raised-button
+    color="primary"
+    (click)="sendDocumentToClient()"
+  >
+    Send to Client
+  </button>
 </div>
