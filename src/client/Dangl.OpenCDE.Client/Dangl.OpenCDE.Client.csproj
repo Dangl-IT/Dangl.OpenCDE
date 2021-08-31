@@ -2,24 +2,22 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="nswag-opencde.nswag" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="nswag-opencde.nswag" />
-  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="13.5.1" />
     <PackageReference Include="IdentityModel" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.9" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.13.2" />
   </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\server\Dangl.OpenCDE.Shared\Dangl.OpenCDE.Shared.csproj" />
   </ItemGroup>
+  
   <ItemGroup>
     <Content Update="electron.manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  
 </Project>
