@@ -29,7 +29,7 @@ export class OpenCdeDiscoveryService {
         const authUrl = `${baseUrl}/1.0/auth`;
         this.http.get<AuthGet>(authUrl).subscribe((authenticationResponse) => {
           if (!authenticationResponse.oauth2_auth_url) {
-            alert("Midding 'oauth2_auth_url' in response");
+            alert("Missing 'oauth2_auth_url' in response");
           } else {
             this.foundationsAuthenticationInfoSource.next(
               authenticationResponse
@@ -50,6 +50,7 @@ export class OpenCdeDiscoveryService {
         const foundationInfo = response.find(
           (version) => version.api_id === 'foundation'
         );
+
         if (foundationInfo) {
           this.foundationsBaseUrlSource.next(foundationInfo.api_base_url);
         }
