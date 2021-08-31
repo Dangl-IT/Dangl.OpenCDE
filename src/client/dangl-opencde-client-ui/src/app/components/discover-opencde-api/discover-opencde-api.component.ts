@@ -12,6 +12,8 @@ export class DiscoverOpencdeApiComponent implements OnInit {
   isLoading = true;
   foundFoundationsInfo = false;
   foundationBaseUrl: string | null = null;
+  foundOpenCdeInfo = false;
+  openCdeBaseUrl: string | null = null;
   @Output() onFinishedDiscovery = new EventEmitter<void>();
 
   constructor(private openCdeDiscoveryService: OpenCdeDiscoveryService) {}
@@ -30,6 +32,12 @@ export class DiscoverOpencdeApiComponent implements OnInit {
         if (foundationInfo && foundationInfo.api_base_url) {
           this.foundFoundationsInfo = true;
           this.foundationBaseUrl = foundationInfo.api_base_url;
+        }
+
+        const openCdeInfo = r.find((rr) => rr.api_id === 'opencde');
+        if (openCdeInfo && openCdeInfo.api_base_url) {
+          this.foundOpenCdeInfo = true;
+          this.openCdeBaseUrl = openCdeInfo.api_base_url;
         }
       });
   }

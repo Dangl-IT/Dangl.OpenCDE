@@ -8,8 +8,21 @@ import { settings as defaultSettings } from '../settings/settings';
 })
 export class SettingsService {
   private readonly STORAGE_KEY = 'OpenCdeClientSettings';
+  private readonly LAST_USED_CDE_SERVER_STORAGE_KEY = 'LastUsedCdeServer';
 
   constructor() {}
+
+  getLastUsedCdeServerAddress(): string | null {
+    return localStorage.getItem(this.LAST_USED_CDE_SERVER_STORAGE_KEY);
+  }
+
+  setLastUsedCdeServerAddress(cdeServer: string | null): void {
+    if (cdeServer) {
+      localStorage.setItem(this.LAST_USED_CDE_SERVER_STORAGE_KEY, cdeServer);
+    } else {
+      localStorage.removeItem(this.LAST_USED_CDE_SERVER_STORAGE_KEY);
+    }
+  }
 
   getSettings(): SettingsType {
     var storage = localStorage.getItem(this.STORAGE_KEY);

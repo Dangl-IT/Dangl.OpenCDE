@@ -21,9 +21,14 @@ export class SetOpencdeServerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const settings = this.settingsService.getSettings();
-    if (settings.openCdeServers?.length > 0) {
-      this.serverBaseAddress = settings.openCdeServers[0];
+    const lastUsedServer = this.settingsService.getLastUsedCdeServerAddress();
+    if (lastUsedServer) {
+      this.serverBaseAddress = lastUsedServer;
+    } else {
+      const settings = this.settingsService.getSettings();
+      if (settings.openCdeServers?.length > 0) {
+        this.serverBaseAddress = settings.openCdeServers[0];
+      }
     }
   }
 
@@ -35,6 +40,7 @@ export class SetOpencdeServerComponent implements OnInit {
     this.openCdeDiscoveryService.setOpenCdeServerBaseUrl(
       this.serverBaseAddress
     );
+    this.settingsService.setLastUsedCdeServerAddress(this.serverBaseAddress);
     this.onHasSelectedServerBaseAddress.next();
   }
 

@@ -18,6 +18,9 @@ export class OpenCdeDiscoveryService {
   private foundationsBaseUrlSource = new ReplaySubject<string>(1);
   foundationsBaseUrl = this.foundationsBaseUrlSource.asObservable();
 
+  private openCdeBaseUrlSource = new ReplaySubject<string>(1);
+  openCdeBaseUrl = this.openCdeBaseUrlSource.asObservable();
+
   private foundationsAuthenticationInfoSource = new ReplaySubject<AuthGet>(1);
   foundationsAuthentication =
     this.foundationsAuthenticationInfoSource.asObservable();
@@ -47,12 +50,21 @@ export class OpenCdeDiscoveryService {
     versionsClient.getApiVersions().subscribe(
       (response) => {
         this.foundationsVersionsSource.next(response);
+
         const foundationInfo = response.find(
           (version) => version.api_id === 'foundation'
         );
-
         if (foundationInfo) {
           this.foundationsBaseUrlSource.next(foundationInfo.api_base_url);
+        }
+
+        const openCdeInfo = response.find(
+          (version) => version.api_id === 'opencde'
+        );
+        if (openCdeInfo) {
+          this.openCdeBaseUrlSource.next(openCdeInfo.api_base_url);
+        } else {
+          alert("Failed to find 'opencde' version on server");
         }
       },
       () => {

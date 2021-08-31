@@ -5,6 +5,12 @@
     >.
   </p>
 </div>
+<div *ngIf="!isLoading && foundOpenCdeInfo">
+  <p>
+    Found OpenCDE API at <code>{{ openCdeBaseUrl }}</code
+    >.
+  </p>
+</div>
 
 <button
   mat-raised-button
