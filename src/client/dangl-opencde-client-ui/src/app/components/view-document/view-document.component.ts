@@ -75,7 +75,6 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
           downloadResponse,
           this.documentReferenceData!.file_description.name ?? 'Document'
         );
-        console.log(downloadResponse);
       });
   }
 }

@@ -28,8 +28,6 @@ export class PrepareDocumentSelectionComponent implements OnInit {
     this.documentsSelectionHandlerClient
       .getDocumentSelectionCallbackUrl(clientState)
       .subscribe((r) => {
-        console.log(r);
-
         const documentSelectionClient = new DocumentSelectionClient(
           this.http,
           'https://localhost:5001'
