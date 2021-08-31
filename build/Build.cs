@@ -649,7 +649,8 @@ export const version = {{
             ControlFlow.Assert(File.Exists(electronizePath), "File does not exist: " + electronizePath);
             ProcessTasks.StartProcess(electronizePath,
                 electronizeArguments,
-                workingDirectory: electronizeWorkingDirectory);
+                workingDirectory: electronizeWorkingDirectory)
+                .AssertWaitForExit();
         }
 
         var clientFiles = GlobFiles(SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin" / "Desktop", "*.exe", "*.snap", "*.AppImage", "*.zip", "*.dmg");
