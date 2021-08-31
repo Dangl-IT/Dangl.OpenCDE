@@ -631,10 +631,26 @@ export const version = {{
         // Electron Build
         SetVersionInElectronManifest();
 
-        var electronNet = ToolResolver.GetPathTool("electronize");
-        electronNet(arguments: $"build /dotnet-configuration Release {electronBuildConfig.ElectronArguments}",
-            workingDirectory: SourceDirectory / "client" / "Dangl.OpenCDE.Client"
-            );
+        var electronizeArguments = $"build /dotnet-configuration Release {electronBuildConfig.ElectronArguments}";
+        var electronizeWorkingDirectory = SourceDirectory / "client" / "Dangl.OpenCDE.Client";
+
+        if (IsWin)
+        {
+            var electronNet = ToolResolver.GetPathTool("electronize");
+            electronNet(arguments: electronizeArguments,
+                workingDirectory: electronizeWorkingDirectory
+                );
+        }
+        else
+        {
+            // NUKE somehow fails to locate 'electronize' via '/usr/bin/which', however, after installation,
+            // we can find the location of the .NET global tool
+            var electronizePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dotnet", "tools", "electronize");
+            ControlFlow.Assert(File.Exists(electronizePath), "File does not exist: " + electronizePath);
+            ProcessTasks.StartProcess(electronizePath,
+                electronizeArguments,
+                workingDirectory: electronizeWorkingDirectory);
+        }
 
         var clientFiles = GlobFiles(SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin" / "Desktop", "*.exe", "*.snap", "*.AppImage", "*.zip", "*.dmg");
 
