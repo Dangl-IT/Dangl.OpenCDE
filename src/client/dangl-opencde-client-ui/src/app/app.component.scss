@@ -1,0 +1,105 @@
+@import "~@dangl/angular-material-shared/styles/material-variables.scss";
+
+.main-content {
+  padding-left: 10px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+
+  &__header {
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+
+  &__main {
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  &__footer {
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.header {
+  background: #039be5;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 3px 5px;
+}
+
+.content {
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow-y: auto;
+  padding: 3px 5px;
+  position: relative;
+}
+
+.footer {
+  background: #eee;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 3px 15px;
+}
+
+.main-sidenav {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 200px;
+}
+
+.main-container {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  .mat-sidenav-content {
+    height: 100%;
+  }
+}
+
+.mat-list-item {
+  color: #fff !important;
+}
+
+a .active-list-item {
+  background: $color-primary !important;
+}
+
+::ng-deep {
+  ::-webkit-scrollbar {
+    height: 5px;
+    width: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #cacaca;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b4b4b4;
+  }
+}

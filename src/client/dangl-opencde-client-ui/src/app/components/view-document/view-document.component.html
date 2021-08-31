@@ -1,0 +1,29 @@
+<mat-spinner *ngIf="isLoading"></mat-spinner>
+<button
+  mat-raised-button
+  (click)="downloadDocument()"
+  *ngIf="documentReferenceData"
+>
+  Download Document
+</button>
+
+<mat-tab-group>
+  <mat-tab label="Reference">
+    <pre *ngIf="documentReferenceData"
+      >{{ documentReferenceData | json }}
+</pre
+    >
+  </mat-tab>
+  <mat-tab label="Metadata">
+    <pre *ngIf="documentMetadata"
+      >{{ documentMetadata | json }}
+</pre
+    >
+  </mat-tab>
+  <mat-tab label="Versions">
+    <pre *ngIf="documentVersions"
+      >{{ documentVersions | json }}
+</pre
+    >
+  </mat-tab>
+</mat-tab-group>

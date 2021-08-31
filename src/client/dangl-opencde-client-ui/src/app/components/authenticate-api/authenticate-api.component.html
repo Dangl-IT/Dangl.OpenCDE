@@ -1,0 +1,38 @@
+<form [formGroup]="openIdForm" (ngSubmit)="authenticate()">
+  <mat-form-field appearance="fill">
+    <mat-label>Client Id</mat-label>
+    <input matInput formControlName="clientId" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Client Secret</mat-label>
+    <input type="password" matInput formControlName="clientSecret" />
+  </mat-form-field>
+  <mat-form-field appearance="fill" *ngIf="authenticationInformation">
+    <mat-label>OAuth2 Flow</mat-label>
+    <mat-select formControlName="flow">
+      <mat-option
+        *ngFor="let flow of authenticationInformation.supported_oauth2_flows"
+        [value]="flow"
+      >
+        {{ flow }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Required Scope</mat-label>
+    <input matInput formControlName="requiredScope" />
+  </mat-form-field>
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    [disabled]="!openIdForm.valid || authenticationInProgress"
+  >
+    Authenticate
+  </button>
+</form>
+
+<mat-spinner *ngIf="authenticationInProgress"></mat-spinner>
+<p *ngIf="lastAuthenticationFailed">
+  <strong> The last authentication attempt failed. </strong>
+</p>

@@ -1,0 +1,13 @@
+<mat-form-field class="example-full-width" appearance="fill">
+  <mat-label>Server Base Address</mat-label>
+  <input matInput [(ngModel)]="serverBaseAddress" />
+</mat-form-field>
+
+<button
+  mat-raised-button
+  color="primary"
+  [disabled]="!serverBaseAddress"
+  (click)="setServerBaseAddress()"
+>
+  Next
+</button>

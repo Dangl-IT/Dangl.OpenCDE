@@ -1,0 +1,30 @@
+<mat-stepper orientation="vertical" linear #mainStepper [selectedIndex]="-1">
+  <mat-step [completed]="hasSetBaseAddress">
+    <ng-template matStepLabel>Set OpenCDE Server</ng-template>
+    <opencde-client-set-opencde-server
+      (onHasSelectedServerBaseAddress)="baseAddressSelected()"
+    ></opencde-client-set-opencde-server>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Discover API</ng-template>
+    <opencde-client-discover-opencde-api
+      (onFinishedDiscovery)="mainStepper.next()"
+    ></opencde-client-discover-opencde-api>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Authenticate</ng-template>
+    <opencde-client-authenticate-api
+      (onAuthentication)="mainStepper.next()"
+    ></opencde-client-authenticate-api>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Select Documents on CDE</ng-template>
+    <opencde-client-prepare-document-selection
+      (onDocumentSelected)="mainStepper.next()"
+    ></opencde-client-prepare-document-selection>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>View Document</ng-template>
+    <opencde-client-view-document></opencde-client-view-document>
+  </mat-step>
+</mat-stepper>

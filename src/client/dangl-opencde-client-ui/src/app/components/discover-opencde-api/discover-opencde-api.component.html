@@ -1,0 +1,16 @@
+<mat-spinner *ngIf="isLoading"></mat-spinner>
+<div *ngIf="!isLoading && foundFoundationsInfo">
+  <p>
+    Found foundations API at <code>{{ foundationBaseUrl }}</code
+    >.
+  </p>
+</div>
+
+<button
+  mat-raised-button
+  color="primary"
+  [disabled]="isLoading"
+  (click)="goToAuthentication()"
+>
+  Next
+</button>

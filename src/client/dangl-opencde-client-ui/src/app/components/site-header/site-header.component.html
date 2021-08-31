@@ -1,0 +1,15 @@
+<dangl-header
+  logoInitials="GD"
+  prefix="Dangl."
+  postfix="OpenCDE.Client"
+  [showPrerelease]="false"
+  [showMenuButton]="false"
+>
+  <div fxLayout="row" fxLayoutGap="10px">
+    <ng-container *ngIf="userInfo">
+      <opencde-client-user-info
+        [userInfo]="userInfo"
+      ></opencde-client-user-info>
+    </ng-container>
+  </div>
+</dangl-header>
