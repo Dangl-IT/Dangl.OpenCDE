@@ -6,6 +6,12 @@ https://opencde-dev.dangl.dev/
 
 Documentation and downloads are available here: https://docs.dangl-it.com/Projects/Dangl.OpenCDE
 
+## Local Development
+
+To run the backend, `Azure` must be running in Docker to provide a local environment for Azure Blob Storage. Simply run it with this command:
+
+    docker run -p 10000:10000 -p 10001:10001 -p 10002:10002 mcr.microsoft.com/azure-storage/azurite
+
 ## CI/CD
 
 The `Jenkinsfile` is only executed for the repository at [GeorgDangl/Dangl.OpenCDE](https://github.com/GeorgDangl/Dangl.OpenCDE), to have deployments controlled by a separate repository.
