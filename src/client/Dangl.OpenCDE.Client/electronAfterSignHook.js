@@ -3,8 +3,8 @@ const path = require('path');
 
 exports.default = async function (context) {
     // We're calling NUKE to sign the output files before they're being packaged
-    const nukeCommand = `powershell ./build.ps1 SignExecutables -ExecutablesToSignFolder "${context.appOutDir}"`;
-    const rootDirectory = path.join(__dirname, '../../');
+    const nukeCommand = `"./build.cmd" SignExecutables -ExecutablesToSignFolder "${context.appOutDir}"`;
+    const rootDirectory = path.join(__dirname, '../../../');
     const signTask = new Promise((resolve, reject) => {
         exec(nukeCommand, {
             cwd: rootDirectory
