@@ -18,6 +18,9 @@
     "directories": {
       "output": "../../../bin/Desktop"
     },
+    "mac": {
+      "target": "zip"
+    },
     "extraResources": [
       {
         "from": "./bin",
