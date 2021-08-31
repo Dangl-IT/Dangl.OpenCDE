@@ -545,7 +545,7 @@ export const version = {{
             var unixTargets = new []
             {
                 new ElectronBuildConfig{ReleaseIdentifier = "Linux", ElectronArguments = "/target linux"},
-                new ElectronBuildConfig{ReleaseIdentifier = "MacOS", ElectronArguments = "/target osx"},
+                new ElectronBuildConfig{ReleaseIdentifier = "MacOS", ElectronArguments = "/target osx /PublishReadyToRun false"},
             };
 
             if (BuildElectronWindowsTargets)
