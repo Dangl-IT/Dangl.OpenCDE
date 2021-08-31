@@ -6,7 +6,6 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { SidebarService } from '../../services/sidebar.service';
 import { Subject } from 'rxjs';
 import { UserInfo } from '@dangl/angular-dangl-identity-client/models/user-info';
-import { environment } from '../../../environments/environment';
 import { takeUntil } from 'rxjs/operators';
 import { version } from '../../version';
 
