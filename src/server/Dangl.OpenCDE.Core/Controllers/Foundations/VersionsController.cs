@@ -31,6 +31,12 @@ namespace Dangl.OpenCDE.Core.Controllers.Foundations
                     VersionId = "1.0",
                     DetailedVersion = "https://github.com/BuildingSMART/foundation-API/tree/release_1_0",
                     ApiBaseUrl = GetAbsolutePath("foundation")
+                },
+                new VersionsGet
+                {
+                    ApiId = "opencde",
+                    VersionId = "1.0",
+                    ApiBaseUrl = GetAbsolutePath("api/opencde")
                 }
             };
 
