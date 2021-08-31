@@ -1,10 +1,10 @@
 {
   "executable": "Dangl.OpenCDE.Client",
   "splashscreen": {
-    "imageFile": ""
+    "imageFile": "splashscreen.png"
   },
   "name": "Dangl.OpenCDE.Client",
-  "author": "",
+  "author": "Dangl IT GmbH",
   "singleInstance": false,
   "environment": "Production",
   "build": {
@@ -13,6 +13,7 @@
     "copyright": "Copyright © 2021 Dangl IT GmbH",
     "buildVersion": "1.0.0",
     "compression": "maximum",
+    "icon": "./icon_512.png",
     "directories": {
       "output": "../../../bin/Desktop"
     },

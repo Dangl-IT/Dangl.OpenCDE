@@ -1,10 +1,12 @@
 using Dangl.OpenCDE.Client.Hubs;
 using Dangl.OpenCDE.Client.Services;
 using ElectronNET.API;
+using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Dangl.OpenCDE.Client
@@ -56,7 +58,16 @@ namespace Dangl.OpenCDE.Client
                 }
             });
 
-            Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
+            Task.Run(async () =>
+            {
+                var browserWindowOptions = new BrowserWindowOptions
+                {
+                    Title = "Dangl.OpenCDE.Client",
+                    Icon = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/icon_512.png")
+                };
+
+                await Electron.WindowManager.CreateWindowAsync(browserWindowOptions);
+            });
         }
     }
 }
