@@ -147,8 +147,10 @@ class Build : NukeBuild
         // When deleting directories, we don't want child paths to be deleted separately when we already delete their parent
         foreach (var path in src.Select(s => s.ToString()))
         {
-            var isContainedByParent = src.Select(s => s.ToString()).Any(s => s.Length > path.Length && s.StartsWith(path));
-            if (!isContainedByParent)
+            var isContainedInParentFolder = src
+                .Select(s => s.ToString())
+                .Any(sourcePath => sourcePath.Length < path.Length && path.StartsWith(sourcePath));
+            if (!isContainedInParentFolder)
             {
                 yield return path;
             }
