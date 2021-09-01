@@ -44,6 +44,8 @@ using static Nuke.WebDocu.WebDocuTasks;
 using Nuke.WebDocu;
 using Newtonsoft.Json;
 using Nuke.Common.Utilities;
+using System.Collections;
+using System.Collections.Generic;
 
 [CheckBuildProjectConfigurations]
 class Build : NukeBuild
@@ -134,10 +136,23 @@ class Build : NukeBuild
         .Before(Restore)
         .Executes(() =>
         {
-            SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-            TestsDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
+            FilterChildPaths(SourceDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(DeleteDirectory);
+            FilterChildPaths(TestsDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(DeleteDirectory);
             EnsureCleanDirectory(OutputDirectory);
         });
+
+    public static IEnumerable<string> FilterChildPaths(IReadOnlyCollection<AbsolutePath> src)
+    {
+        // When deleting directories, we don't want child paths to be deleted separately when we already delete their parent
+        foreach (var path in src.Select(s => s.ToString()))
+        {
+            var isContainedByParent = src.Select(s => s.ToString()).Any(s => s.Length > path.Length && s.StartsWith(path));
+            if (!isContainedByParent)
+            {
+                yield return path;
+            }
+        }
+    }
 
     Target Restore => _ => _
         .DependsOn(Clean)
