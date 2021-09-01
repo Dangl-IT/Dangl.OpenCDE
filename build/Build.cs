@@ -136,6 +136,7 @@ class Build : NukeBuild
         .Before(Restore)
         .Executes(() =>
         {
+            EnsureCleanDirectory(SourceDirectory / "client" / "dangl-opencde-client-ui" / "node_modules");
             FilterChildPaths(SourceDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(DeleteDirectory);
             FilterChildPaths(TestsDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(DeleteDirectory);
             EnsureCleanDirectory(OutputDirectory);
