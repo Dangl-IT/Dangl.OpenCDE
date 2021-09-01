@@ -86,6 +86,11 @@ pipeline {
                         sh 'if [ -d "src/client/Dangl.OpenCDE.Client/bin" ]; then rm -Rf src/client/Dangl.OpenCDE.Client/bin; fi'
 		        		sh 'bash build.sh PublishElectronApp -BuildElectronUnixTargets'
 		        	}
+                    post {
+                        always {
+                            cleanWs()
+                        }
+                    }
 		        }
             }
         }
