@@ -6,6 +6,7 @@ import {
 } from '../../generated/opencde-client';
 
 import { DocumentSelectionService } from '../../services/document-selection.service';
+import { FileDownloadClient } from '../../generated/backend-client';
 import { FileSaverService } from '../../services/file-saver.service';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
@@ -26,7 +27,8 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
   constructor(
     private documentSelectionService: DocumentSelectionService,
     private http: HttpClient,
-    private fileSaverService: FileSaverService
+    private fileSaverService: FileSaverService,
+    private fileDownloadClient: FileDownloadClient
   ) {}
 
   ngOnInit(): void {
@@ -65,16 +67,9 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.http
-      .get(this.documentReferenceData._links.content.href, {
-        responseType: 'blob',
-      })
-      .subscribe((downloadResponse) => {
-        const fileName = this.documentMetadata;
-        this.fileSaverService.saveFile(
-          downloadResponse,
-          this.documentReferenceData!.file_description.name ?? 'Document'
-        );
-      });
+    const downloadUrl = this.documentReferenceData._links.content.href;
+    this.fileDownloadClient.downloadFile(downloadUrl).subscribe((r) => {
+      this.fileSaverService.saveFile(r.data, r.fileName ?? 'file');
+    });
   }
 }
