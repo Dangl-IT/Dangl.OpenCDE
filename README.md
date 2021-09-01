@@ -2,6 +2,10 @@
 This is an open source sample implementation of the buildingSMART OpenCDE Documents API. A live demo can be found here:  
 <https://opencde-dev.dangl.dev/>
 
+## User Documentation
+
+Documentation is available either at <https://docs.dangl-it.com/Projects/Dangl.OpenCDE> or directly here in this repository at [index.md](./docs/index.md).
+
 ## Downloads
 
 Documentation and downloads are available here: <https://docs.dangl-it.com/Projects/Dangl.OpenCDE>
