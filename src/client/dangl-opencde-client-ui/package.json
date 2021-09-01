@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",
     "@auth0/angular-jwt": "5.0.2",
-    "@dangl/angular-dangl-identity-client": "3.4.0-beta0017",
+    "@dangl/angular-dangl-identity-client": "3.4.0-beta0019",
     "@dangl/angular-material-shared": "2.2.0",
     "@microsoft/signalr": "5.0.9",
     "file-saver": "2.0.5",
