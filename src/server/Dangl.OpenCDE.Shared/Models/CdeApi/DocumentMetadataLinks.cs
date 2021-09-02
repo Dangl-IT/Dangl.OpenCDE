@@ -8,7 +8,7 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
         [Required, JsonProperty("self")]
         public LinkData Self { get; set; }
 
-        [Required, JsonProperty("documentReference")]
+        [Required, JsonProperty("document_reference")]
         public LinkData DocumentReference { get; set; }
     }
 }

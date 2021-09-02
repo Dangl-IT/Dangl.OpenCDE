@@ -1869,7 +1869,7 @@ export interface DocumentMetadata {
 
 export interface DocumentMetadataLinks {
     self: LinkData;
-    documentReference: LinkData;
+    document_reference: LinkData;
 }
 
 export interface LinkData {
@@ -1885,7 +1885,7 @@ export interface DocumentMetadataEntry {
 export interface DocumentMetadataDataType {
     type: DocumentMetdataEntryType;
     required: boolean;
-    enumValues?: string[] | undefined;
+    enum_values?: string[] | undefined;
 }
 
 export enum DocumentMetdataEntryType {

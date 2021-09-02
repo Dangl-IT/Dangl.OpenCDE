@@ -12,7 +12,7 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
         [Required, JsonProperty("required")]
         public bool IsRequired { get; set; }
 
-        [JsonProperty("enumValues")]
+        [JsonProperty("enum_values")]
         public List<string> EnumValues { get; set; }
     }
 }
