@@ -571,7 +571,7 @@ export class DocumentSelectionClient {
     }
 
     getDocumentDiscoveryData(discoveryMetadata: DocumentDiscoveryPost): Observable<DocumentDiscoverySessionInitialization> {
-        let url_ = this.baseUrl + "/api/opencde/documents/1.0";
+        let url_ = this.baseUrl + "/api/opencde/documents/1.0/select-documents";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(discoveryMetadata);

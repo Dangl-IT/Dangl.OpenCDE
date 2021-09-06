@@ -48,7 +48,7 @@ export class PrepareDocumentSelectionComponent implements OnInit {
         })
       )
       .subscribe((values) => {
-        const documentsBaseUrl = `${values.baseUrl}/documents/1.0`;
+        const documentsBaseUrl = `${values.baseUrl}/documents/1.0/select-documents`;
 
         const documentDiscoveryPost: DocumentDiscoveryPost = {
           callback: {

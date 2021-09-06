@@ -22,7 +22,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
             _openCdeSettings = openCdeSettings;
         }
 
-        [HttpPost("")]
+        [HttpPost("select-documents")]
         [ProducesResponseType(typeof(ApiError), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(DocumentDiscoverySessionInitialization), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetDocumentDiscoveryData(DocumentDiscoveryPost discoveryMetadata)
