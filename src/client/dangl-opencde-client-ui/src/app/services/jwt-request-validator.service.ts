@@ -30,8 +30,6 @@ export class JwtRequestValidatorService
    * @param httpRequest
    */
   validateRequest(httpRequest: HttpRequest<any>): boolean {
-    console.log(httpRequest.url);
-
     const requestUrl = httpRequest.url;
     if (!requestUrl || requestUrl.startsWith('/')) {
       // It's fine for local requests
