@@ -25,7 +25,11 @@ namespace Dangl.OpenCDE.Client.Controllers
             await _hubContext
                 .Clients
                 .All
-                .SendAsync("DocumentSelectionResultCallback", selectedDocumentsUrl);
+                .SendAsync("DocumentSelectionResultCallback", new
+                {
+                    selectedDocumentsUrl,
+                    state
+                });
 
             var siteContent = @"<p>Thank you! The document selection is finished, please close this browser tab and switch back to the OpenCDE Client.</p>";
 

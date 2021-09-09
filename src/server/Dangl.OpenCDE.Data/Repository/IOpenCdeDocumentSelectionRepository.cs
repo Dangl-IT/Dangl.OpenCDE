@@ -11,7 +11,6 @@ namespace Dangl.OpenCDE.Data.Repository
         Task<RepositoryResult<(Guid userId, TokenStorageDto tokenStorage)>> GetUserSessionDataForDocumentSessionAsync(Guid documentSessionId);
 
         Task<RepositoryResult<(Guid sessionId, int validForSeconds)>> PrepareOpenCdeDocumentSelectionAsync(string clientCallbackUrl,
-            string clientState,
             string userJwt,
             long userJwtExpiresAt);
 

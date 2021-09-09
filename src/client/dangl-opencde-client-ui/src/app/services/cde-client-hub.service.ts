@@ -70,8 +70,10 @@ export class CdeClientHubService {
 
     this.connection.on(
       'DocumentSelectionResultCallback',
-      (cdeServerCallbackUrl: string) => {
-        this.documentSelectionService.setSelectedDocument(cdeServerCallbackUrl);
+      (response: { selectedDocumentsUrl: string; state: string }) => {
+        this.documentSelectionService.setSelectedDocument(
+          response.selectedDocumentsUrl
+        );
       }
     );
   }

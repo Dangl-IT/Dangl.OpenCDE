@@ -9,7 +9,5 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
 
         [Required]
         public int ExpiresIn { get; set; }
-
-        public string State { get; set; }
     }
 }

@@ -74,10 +74,13 @@ namespace Dangl.OpenCDE.Core.Controllers
                 {
                     documentSelectionId = repoResult.Value.SelectionId
                 }, Request.IsHttps ? "https" : "http", Request.Host.ToString());
-            selectedDocumentsUrl = HttpUtility.UrlEncode(selectedDocumentsUrl);
-            var clientState = HttpUtility.UrlEncode(repoResult.Value.ClientState);
 
-            var callbackUrl = $"{repoResult.Value.ClientCallbackUrl}?selected_documents_url={selectedDocumentsUrl}&state={clientState}";
+            var url = new Uri(repoResult.Value.ClientCallbackUrl);
+            var query = HttpUtility.ParseQueryString(url.Query);
+            query.Add("selected_documents_url", selectedDocumentsUrl);
+            var uriBuilder = new UriBuilder(url);
+            uriBuilder.Query = query.ToString();
+            var callbackUrl = uriBuilder.ToString();
 
             return Ok(new DocumentSelectionGet
             {

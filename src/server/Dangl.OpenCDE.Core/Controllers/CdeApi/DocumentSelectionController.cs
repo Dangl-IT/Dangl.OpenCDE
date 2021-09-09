@@ -39,7 +39,6 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
 
             var sessionInitializationResult = await _openCdeDocumentSelectionService
                 .PrepareOpenCdeDocumentSelectionAsync(discoveryMetadata?.CallbackLink.Url,
-                discoveryMetadata?.ClientState,
                 userJwt,
                 userJwtExpiresAt);
             if (!sessionInitializationResult.IsSuccess)
@@ -52,8 +51,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
             var callbackResult = new DocumentDiscoverySessionInitialization
             {
                 SelectDocumentsUrl = selectDocumentsUrl,
-                ExpiresIn = sessionInitializationResult.Value.validForSeconds,
-                State = discoveryMetadata.ClientState
+                ExpiresIn = sessionInitializationResult.Value.validForSeconds
             };
             return Ok(callbackResult);
         }

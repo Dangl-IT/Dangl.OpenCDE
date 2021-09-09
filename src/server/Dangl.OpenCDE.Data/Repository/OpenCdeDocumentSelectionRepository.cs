@@ -45,18 +45,12 @@ namespace Dangl.OpenCDE.Data.Repository
         }
 
         public async Task<RepositoryResult<(Guid sessionId, int validForSeconds)>> PrepareOpenCdeDocumentSelectionAsync(string clientCallbackUrl,
-            string clientState,
             string userJwt,
             long userJwtExpiresAt)
         {
             if (string.IsNullOrWhiteSpace(clientCallbackUrl))
             {
                 return RepositoryResult<(Guid sessionId, int validForSeconds)>.Fail("The client callback url can not be empty.");
-            }
-
-            if (string.IsNullOrWhiteSpace(clientState))
-            {
-                return RepositoryResult<(Guid sessionId, int validForSeconds)>.Fail("The client state can not be empty.");
             }
 
             if (!await _userInfoService.UserIsAuthenticatedAsync())
@@ -71,7 +65,6 @@ namespace Dangl.OpenCDE.Data.Repository
             {
                 UserId = await _userInfoService.GetCurrentUserIdAsync(),
                 ValidUntilUtc = DateTimeOffset.UtcNow.AddSeconds(sessionValidityInSeconds),
-                ClientState = clientState,
                 ClientCallbackUrl = clientCallbackUrl,
                 AuthenticationInformationJson = JsonConvert.SerializeObject(new TokenStorageDto
                 {
@@ -126,7 +119,6 @@ namespace Dangl.OpenCDE.Data.Repository
             return RepositoryResult<DocumentSelectionFinalizationDto>.Success(new DocumentSelectionFinalizationDto
             {
                 ClientCallbackUrl = dbSession.ClientCallbackUrl,
-                ClientState = dbSession.ClientState,
                 SelectionId = documentSelection.Id
             });
         }

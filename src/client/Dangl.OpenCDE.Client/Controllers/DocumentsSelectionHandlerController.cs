@@ -11,7 +11,10 @@ namespace Dangl.OpenCDE.Client.Controllers
         [ProducesResponseType(typeof(DocumentSelectionCallbackParameters), (int)HttpStatusCode.OK)]
         public IActionResult GetDocumentSelectionCallbackUrl([FromQuery] string clientState)
         {
-            var callbackUrl = Url.Action("HandleCdeCallback", "CdeServerCallback", null, Request.IsHttps ? "https" : "http", Request.Host.ToString(), null);
+            var callbackUrl = Url.Action("HandleCdeCallback", "CdeServerCallback", new
+            {
+                state = clientState
+            }, Request.IsHttps ? "https" : "http", Request.Host.ToString(), null);
 
             return Ok(new DocumentSelectionCallbackParameters
             {

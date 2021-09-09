@@ -14,9 +14,6 @@ namespace Dangl.OpenCDE.Data.Models
         public DateTimeOffset ValidUntilUtc { get; set; }
 
         [Required]
-        public string ClientState { get; set; }
-
-        [Required]
         public string ClientCallbackUrl { get; set; }
 
         /// <summary>

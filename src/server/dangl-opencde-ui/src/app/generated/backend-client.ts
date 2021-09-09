@@ -1981,12 +1981,10 @@ export interface VersionsGet {
 export interface DocumentDiscoverySessionInitialization {
     selectDocumentsUrl: string;
     expiresIn: number;
-    state?: string | undefined;
 }
 
 export interface DocumentDiscoveryPost {
     callback: CallbackLink;
-    state?: string | undefined;
     project_id?: string | undefined;
 }
 

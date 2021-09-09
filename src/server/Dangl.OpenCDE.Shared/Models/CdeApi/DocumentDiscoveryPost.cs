@@ -9,9 +9,6 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
         [Required, JsonProperty("callback")]
         public CallbackLink CallbackLink { get; set; }
 
-        [JsonProperty("state")]
-        public string ClientState { get; set; }
-
         [JsonProperty("project_id")]
         public Guid? ProjectId { get; set; }
     }

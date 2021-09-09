@@ -55,7 +55,6 @@ export class PrepareDocumentSelectionComponent implements OnInit {
             expires_in: 3600,
             url: values.callbackUrl,
           },
-          state: clientState,
         };
         this.http
           .post<DocumentDiscoverySessionInitialization>(
