@@ -16,6 +16,10 @@ To run the backend, `Azure` must be running in Docker to provide a local environ
 
     docker run -p 10000:10000 -p 10001:10001 -p 10002:10002 mcr.microsoft.com/azure-storage/azurite
 
+### Client
+
+To run the client, please run `ng serve` in the client UI directory and `electronize start /watch /args ASPNETCORE_ENVIRONMENT="Development"` in the client backend directory.
+
 ## CI/CD
 
 The `Jenkinsfile` is only executed for the repository at [GeorgDangl/Dangl.OpenCDE](https://github.com/GeorgDangl/Dangl.OpenCDE), to have deployments controlled by a separate repository.
