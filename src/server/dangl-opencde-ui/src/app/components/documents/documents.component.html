@@ -34,7 +34,9 @@
   <ng-container matColumnDef="fileSizeInBytes">
     <th mat-header-cell mat-sort-header *matHeaderCellDef>Size</th>
     <td mat-cell *matCellDef="let row" matRipple>
-      {{ row.fileSizeInBytes | fileSize }}
+      <ng-container *ngIf="row.contentAvailable">
+        {{ row.fileSizeInBytes | fileSize }}
+      </ng-container>
     </td>
   </ng-container>
   <ng-container matColumnDef="createdAtUtc">
