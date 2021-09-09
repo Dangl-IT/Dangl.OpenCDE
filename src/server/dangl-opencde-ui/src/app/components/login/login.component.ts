@@ -22,7 +22,6 @@ export class LoginComponent implements OnInit {
 
         if (!loginResponse.success) {
           this.error = true;
-          console.log(loginResponse);
           this.errorMessage = loginResponse.error ?? null;
         }
       });
