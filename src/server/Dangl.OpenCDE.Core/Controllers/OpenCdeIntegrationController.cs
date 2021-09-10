@@ -60,7 +60,7 @@ namespace Dangl.OpenCDE.Core.Controllers
         [HttpPost("sessions/{documentSessionId}/document-selection")]
         [ProducesResponseType(typeof(DocumentSelectionGet), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiError), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> SetDocumentSelection(Guid documentSessionId, [FromBody] DokumentSelectionPost documentSelection)
+        public async Task<IActionResult> SetDocumentSelection(Guid documentSessionId, [FromBody] DocumentSelectionPost documentSelection)
         {
             var repoResult = await _openCdeDocumentSelectionService
                 .FinalizeOpenCdeDocumentSelectionAsync(documentSessionId, documentSelection.DocumentId);
