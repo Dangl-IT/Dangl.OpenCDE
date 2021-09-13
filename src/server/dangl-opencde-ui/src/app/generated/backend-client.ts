@@ -3175,7 +3175,7 @@ export interface DocumentDiscoverySessionInitialization {
 
 export interface DocumentDiscoveryPost {
   callback: CallbackLink;
-  project_id?: string | undefined;
+  selection_context?: string | undefined;
 }
 
 export interface CallbackLink {
