@@ -29,7 +29,7 @@ export class OpenCdeDiscoveryService {
     this.foundationsBaseUrl.subscribe((baseUrl) => {
       if (baseUrl) {
         baseUrl = baseUrl.replace(/\/$/, ''); // Removing trailing slash
-        const authUrl = `${baseUrl}/1.0/auth`;
+        const authUrl = `${baseUrl}/auth`;
         this.http.get<AuthGet>(authUrl).subscribe((authenticationResponse) => {
           if (!authenticationResponse.oauth2_auth_url) {
             alert("Missing 'oauth2_auth_url' in response");

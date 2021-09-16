@@ -1983,8 +1983,8 @@ export interface VersionGet {
 }
 
 export interface DocumentDiscoverySessionInitialization {
-    selectDocumentsUrl: string;
-    expiresIn: number;
+    select_documents_url: string;
+    expires_in: number;
 }
 
 export interface DocumentDiscoveryPost {

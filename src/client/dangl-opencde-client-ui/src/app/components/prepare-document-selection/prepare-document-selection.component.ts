@@ -10,6 +10,7 @@ import { DocumentSelectionService } from '../../services/document-selection.serv
 import { DocumentsSelectionHandlerClient } from '../../generated/backend-client';
 import { GuidGenerator } from '@dangl/angular-material-shared';
 import { HttpClient } from '@angular/common/http';
+import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
 import { combineLatest } from 'rxjs';
 
@@ -25,7 +26,8 @@ export class PrepareDocumentSelectionComponent implements OnInit {
     private http: HttpClient,
     private documentsSelectionHandlerClient: DocumentsSelectionHandlerClient,
     private documentSelectionService: DocumentSelectionService,
-    private openCdeDiscoveryService: OpenCdeDiscoveryService
+    private openCdeDiscoveryService: OpenCdeDiscoveryService,
+    private jwtTokenService: JwtTokenService
   ) {}
 
   ngOnInit(): void {}
@@ -35,40 +37,28 @@ export class PrepareDocumentSelectionComponent implements OnInit {
 
     combineLatest([
       this.openCdeDiscoveryService.openCdeBaseUrl,
-      this.documentsSelectionHandlerClient.getDocumentSelectionCallbackUrl(
-        clientState
-      ),
+      this.jwtTokenService.getToken(),
     ])
       .pipe(
+        first(),
         map((result) => {
           return {
             baseUrl: result[0],
-            callbackUrl: result[1].callbackUrl,
+            token: result[1].accessToken,
           };
         })
       )
       .subscribe((values) => {
-        const documentsBaseUrl = `${values.baseUrl}/documents/1.0/select-documents`;
-
-        const documentDiscoveryPost: DocumentDiscoveryPost = {
-          callback: {
-            expires_in: 3600,
-            url: values.callbackUrl,
-          },
-        };
-        this.http
-          .post<DocumentDiscoverySessionInitialization>(
-            documentsBaseUrl,
-            documentDiscoveryPost
-          )
-          .subscribe((response) => {
-            this.documentsSelectionHandlerClient
-              .openCdeDocumentSelectionPage(response.selectDocumentsUrl)
-              .subscribe(() => {
-                this.documentSelectionService.referenceLink
-                  .pipe(first())
-                  .subscribe(() => this.onDocumentSelected.next());
-              });
+        this.documentsSelectionHandlerClient
+          .prepareDocumentSelectionAndOpenSystemBrowser({
+            accessToken: values.token,
+            clientState: clientState,
+            openCdeBaseUrl: values.baseUrl,
+          })
+          .subscribe(() => {
+            this.documentSelectionService.referenceLink
+              .pipe(first())
+              .subscribe(() => this.onDocumentSelected.next());
           });
       });
   }

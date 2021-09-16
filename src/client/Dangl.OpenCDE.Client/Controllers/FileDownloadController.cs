@@ -49,6 +49,11 @@ namespace Dangl.OpenCDE.Client.Controllers
             }
 
             var response = await httpClient.SendAsync(request);
+            if (response.StatusCode == HttpStatusCode.Redirect
+                && response.Headers.Location != null)
+            {
+                response = await httpClient.GetAsync(response.Headers.Location.ToString());
+            }
 
             if (!response.IsSuccessStatusCode)
             {
