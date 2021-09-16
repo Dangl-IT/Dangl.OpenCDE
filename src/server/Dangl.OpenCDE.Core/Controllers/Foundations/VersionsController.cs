@@ -38,7 +38,7 @@ namespace Dangl.OpenCDE.Core.Controllers.Foundations
                     {
                         ApiId = "documents",
                         VersionId = "1.0",
-                        ApiBaseUrl = GetAbsolutePath("api/opencde")
+                        ApiBaseUrl = GetAbsolutePath("api/opencde/1.0")
                     }
                 }
             };
