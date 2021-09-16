@@ -54,6 +54,7 @@ export class AuthenticateApiComponent implements OnInit, OnDestroy {
       clientSecret: new FormControl(''),
       flow: new FormControl('', Validators.required),
       requiredScope: new FormControl(''),
+      customRedirectUrl: new FormControl(''),
     });
   }
 
@@ -139,6 +140,8 @@ export class AuthenticateApiComponent implements OnInit, OnDestroy {
       clientSecret: authenticationParameters.clientConfiguration.clientSecret,
       flow: authenticationParameters.flow,
       requiredScope: authenticationParameters.clientConfiguration.requiredScope,
+      customRedirectUrl:
+        authenticationParameters.clientConfiguration.customRedirectUrl,
     });
   }
 
@@ -225,6 +228,7 @@ export class AuthenticateApiComponent implements OnInit, OnDestroy {
         clientSecret: this.openIdForm.value.clientSecret,
         requiredScope: this.openIdForm.value.requiredScope,
         tokenEndpoint: this.authenticationInformation.oauth2_token_url,
+        customRedirectUrl: this.openIdForm.value.customRedirectUrl,
       },
     };
   }

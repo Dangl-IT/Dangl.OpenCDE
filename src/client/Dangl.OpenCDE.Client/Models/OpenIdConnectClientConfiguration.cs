@@ -15,5 +15,7 @@ namespace Dangl.OpenCDE.Client.Models
         public string TokenEndpoint { get; set; }
 
         public string RequiredScope { get; set; }
+
+        public string CustomRedirectUrl { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Dangl.OpenCDE.Client.Hubs;
 using Dangl.OpenCDE.Client.Services;
-using IdentityModel.Client;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Net;
@@ -16,14 +15,17 @@ namespace Dangl.OpenCDE.Client.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly OpenIdConnectResultPublisher _openIdConnectResultPublisher;
         private readonly OpenIdConnectCache _openIdConnectCache;
+        private readonly OpenIdAuthenticationRequestHandler _openIdAuthenticationRequestHandler;
 
         public OpenIdCallbackController(OpenIdConnectResultPublisher openIdConnectResultPublisher,
             IHttpClientFactory httpClientFactory,
-            OpenIdConnectCache openIdConnectCache)
+            OpenIdConnectCache openIdConnectCache,
+            OpenIdAuthenticationRequestHandler openIdAuthenticationRequestHandler)
         {
             _httpClientFactory = httpClientFactory;
             _openIdConnectResultPublisher = openIdConnectResultPublisher;
             _openIdConnectCache = openIdConnectCache;
+            _openIdAuthenticationRequestHandler = openIdAuthenticationRequestHandler;
         }
 
         [HttpGet("")]
@@ -44,58 +46,11 @@ namespace Dangl.OpenCDE.Client.Controllers
             if (!string.IsNullOrWhiteSpace(code))
             {
                 // This means we've got a response to an authentication code flow request
-                return await HandleOpenIdCodeResponse(code);
+                var openIdCodeResponse = await _openIdAuthenticationRequestHandler.HandleOpenIdCodeResponse(HttpContext, code);
+                return Content(openIdCodeResponse, "text/html");
             }
 
             return await HandleOpenIdImplicitResponse(serverResponse);
-        }
-
-        private async Task<IActionResult> HandleOpenIdCodeResponse(string code)
-        {
-            var state = HttpContext.Request.Query["state"].FirstOrDefault();
-
-            var siteContent = "<p>Thank you! You can now close this window.</p>";
-            if (string.IsNullOrWhiteSpace(state)
-                || !_openIdConnectCache.AuthenticationParametersByClientState.ContainsKey(state))
-            {
-                await _openIdConnectResultPublisher.InformClientsAboutAuthenticationFailureAsync(state);
-            }
-            else
-            {
-                var authenticationParameters = _openIdConnectCache.AuthenticationParametersByClientState[state];
-                if (string.IsNullOrWhiteSpace(authenticationParameters.ClientConfiguration.ClientSecret))
-                {
-                    await _openIdConnectResultPublisher.InformClientsAboutAuthenticationFailureAsync(state);
-                }
-                else
-                {
-                    var httpClient = _httpClientFactory.CreateClient();
-                    var redirectUri = _openIdConnectCache.UsedRedirectUrisByClientState[state];
-                    var codeResponse = await httpClient.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
-                    {
-                        Address = authenticationParameters.ClientConfiguration.TokenEndpoint,
-                        ClientId = authenticationParameters.ClientConfiguration.ClientId,
-                        ClientSecret = authenticationParameters.ClientConfiguration.ClientSecret,
-                        Code = code,
-                        GrantType = "authorization_code",
-                        RedirectUri = redirectUri
-                    });
-
-                    if (codeResponse.IsError)
-                    {
-                        await _openIdConnectResultPublisher.InformClientsAboutAuthenticationFailureAsync(state);
-                    }
-                    else
-                    {
-                        await _openIdConnectResultPublisher
-                            .InformClientsAboutAuthenticationSuccess(state, codeResponse.AccessToken, codeResponse.ExpiresIn);
-                    }
-                }
-            }
-
-            var content = HtmlTemplateProvider.GetHtmlContent(string.Empty, siteContent, "Open ID Connect Authentication");
-
-            return Content(content, "text/html");
         }
 
         private async Task<IActionResult> HandleOpenIdImplicitResponse(string serverResponse)

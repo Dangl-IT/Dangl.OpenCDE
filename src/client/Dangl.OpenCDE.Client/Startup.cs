@@ -23,6 +23,7 @@ namespace Dangl.OpenCDE.Client
             services.AddTransient<OpenIdConnectResultPublisher>();
             services.AddCdeClientSwaggerServices();
             services.AddSingleton<OpenIdConnectCache>();
+            services.AddSingleton<OpenIdAuthenticationRequestHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

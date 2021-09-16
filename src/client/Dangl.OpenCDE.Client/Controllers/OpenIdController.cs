@@ -3,6 +3,7 @@ using Dangl.OpenCDE.Client.Models;
 using Dangl.OpenCDE.Client.Services;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -16,14 +17,17 @@ namespace Dangl.OpenCDE.Client.Controllers
         private readonly OpenIdConnectResultPublisher _openIdConnectResultPublisher;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly OpenIdConnectCache _openIdConnectCache;
+        private readonly IServiceProvider _serviceProvider;
 
         public OpenIdController(OpenIdConnectResultPublisher openIdConnectResultPublisher,
             IHttpClientFactory httpClientFactory,
-            OpenIdConnectCache openIdConnectCache)
+            OpenIdConnectCache openIdConnectCache,
+            IServiceProvider serviceProvider)
         {
             _openIdConnectResultPublisher = openIdConnectResultPublisher;
             _httpClientFactory = httpClientFactory;
             _openIdConnectCache = openIdConnectCache;
+            _serviceProvider = serviceProvider;
         }
 
         [HttpPost("")]
@@ -64,18 +68,31 @@ namespace Dangl.OpenCDE.Client.Controllers
             }
 
             var authenticationUrl = authenticationParameters.ClientConfiguration.AuthorizeEndpoint;
-            var callbackUrl = Url
-                .Action("ProcessOpenIdConnectCallback", "OpenIdCallback", null, Request.IsHttps ? "https" : "http", Request.Host.ToString(), null);
+
+            string callbackUrl;
+            if (!string.IsNullOrWhiteSpace(authenticationParameters.ClientConfiguration.CustomRedirectUrl))
+            {
+                callbackUrl = authenticationParameters.ClientConfiguration.CustomRedirectUrl.Trim();
+                var serviceScope = _serviceProvider.CreateScope();
+                var customRedirectUrlProvider = new CustomRedirectUrlHandler(callbackUrl, serviceScope);
+                await customRedirectUrlProvider.StartListeningAsync();
+            }
+            else
+            {
+                callbackUrl = Url
+                    .Action("ProcessOpenIdConnectCallback", "OpenIdCallback", null, Request.IsHttps ? "https" : "http", Request.Host.ToString(), null);
+            }
 
             // We want to ensure to really just open an absolute uri, not any arbitrary command
             if (authenticationUrl.IsAbsoluteUri())
             {
                 using var httpClient = _httpClientFactory.CreateClient();
+                var includeScope = !string.IsNullOrWhiteSpace(authenticationParameters.ClientConfiguration.RequiredScope);
 
                 var consentUrl = new RequestUrl(authenticationUrl)
                     .CreateAuthorizeUrl(clientId: authenticationParameters.ClientConfiguration.ClientId,
                     responseType: "code",
-                    scope: $"{authenticationParameters.ClientConfiguration.RequiredScope} openid",
+                    scope: includeScope ? $"{authenticationParameters.ClientConfiguration.RequiredScope} openid" : null,
                     redirectUri: callbackUrl,
                     state: authenticationParameters.ClientState,
                     nonce: Guid.NewGuid().ToString());
