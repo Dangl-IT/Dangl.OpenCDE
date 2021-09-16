@@ -1,3 +1,7 @@
+import {
+  ClientProxyClient,
+  FileDownloadClient,
+} from '../../generated/backend-client';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   DocumentMetadata,
@@ -6,9 +10,9 @@ import {
 } from '../../generated/opencde-client';
 
 import { DocumentSelectionService } from '../../services/document-selection.service';
-import { FileDownloadClient } from '../../generated/backend-client';
 import { FileSaverService } from '../../services/file-saver.service';
 import { HttpClient } from '@angular/common/http';
+import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -28,7 +32,8 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
     private documentSelectionService: DocumentSelectionService,
     private http: HttpClient,
     private fileSaverService: FileSaverService,
-    private fileDownloadClient: FileDownloadClient
+    private fileDownloadClient: FileDownloadClient,
+    private jwtTokenService: JwtTokenService
   ) {}
 
   ngOnInit(): void {
@@ -36,21 +41,30 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((documentReferenceUrl) => {
         this.isLoading = true;
+
+        const accessToken =
+          this.jwtTokenService.getTokenFromStorage().accessToken;
+
+        const getProxyUrl = (actualUrl: string) =>
+          `/client-proxy?accessToken=${accessToken}&targetUrl=${encodeURIComponent(
+            actualUrl
+          )}`;
+
         this.http
-          .get<DocumentReference>(documentReferenceUrl)
+          .get<DocumentReference>(getProxyUrl(documentReferenceUrl))
           .subscribe((r) => {
             this.documentReferenceData = r;
             this.isLoading = false;
 
             this.http
               .get<DocumentMetadata>(
-                this.documentReferenceData._links.metadata.href
+                getProxyUrl(this.documentReferenceData._links.metadata.href)
               )
               .subscribe((metadata) => (this.documentMetadata = metadata));
 
             this.http
               .get<DocumentVersions>(
-                this.documentReferenceData._links.versions.href
+                getProxyUrl(this.documentReferenceData._links.versions.href)
               )
               .subscribe((versions) => (this.documentVersions = versions));
           });
@@ -67,7 +81,12 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const downloadUrl = this.documentReferenceData._links.content.href;
+    let downloadUrl = this.documentReferenceData?._links?.content?.href;
+    if (!downloadUrl) {
+      downloadUrl = (<any>this.documentReferenceData)['_embedded'][
+        'documentReferenceList'
+      ][0]['_links']['download']['href'];
+    }
     this.fileDownloadClient.downloadFile(downloadUrl).subscribe((r) => {
       this.fileSaverService.saveFile(r.data, r.fileName ?? 'file');
     });
