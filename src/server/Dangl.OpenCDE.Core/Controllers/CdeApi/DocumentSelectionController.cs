@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Dangl.OpenCDE.Core.Controllers.CdeApi
 {
-    [Route("api/opencde/documents/1.0")]
+    [Route("api/opencde/1.0")]
     public class DocumentSelectionController : CdeAppControllerBase
     {
         private readonly IOpenCdeDocumentSelectionRepository _openCdeDocumentSelectionService;
