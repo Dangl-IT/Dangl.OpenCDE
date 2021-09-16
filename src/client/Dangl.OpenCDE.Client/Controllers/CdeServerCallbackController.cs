@@ -20,8 +20,11 @@ namespace Dangl.OpenCDE.Client.Controllers
         [HttpGet("")]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> HandleCdeCallbackAsync([FromQuery] string state,
-            [FromQuery(Name = "selected_documents_url")] string selectedDocumentsUrl)
+            [FromQuery(Name = "selected_documents_url")] string selectedDocumentsUrl,
+            [FromQuery(Name = "selected_url")] string selectedUrl)
         {
+            selectedDocumentsUrl ??= selectedUrl;
+
             await _hubContext
                 .Clients
                 .All
