@@ -20,23 +20,26 @@ namespace Dangl.OpenCDE.Core.Controllers.Foundations
         }
 
         [HttpGet("")]
-        [ProducesResponseType(typeof(IEnumerable<VersionsGet>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VersionsGet), (int)HttpStatusCode.OK)]
         public IActionResult GetApiVersions()
         {
-            var versions = new List<VersionsGet>
+            var versions = new VersionsGet
             {
-                new VersionsGet
+                Versions = new List<VersionGet>
                 {
-                    ApiId = "foundation",
-                    VersionId = "1.0",
-                    DetailedVersion = "https://github.com/BuildingSMART/foundation-API/tree/release_1_0",
-                    ApiBaseUrl = GetAbsolutePath("foundation")
-                },
-                new VersionsGet
-                {
-                    ApiId = "opencde",
-                    VersionId = "1.0",
-                    ApiBaseUrl = GetAbsolutePath("api/opencde")
+                    new VersionGet
+                    {
+                        ApiId = "foundation",
+                        VersionId = "1.0",
+                        DetailedVersion = "https://github.com/BuildingSMART/foundation-API/tree/release_1_0",
+                        ApiBaseUrl = GetAbsolutePath("foundation")
+                    },
+                    new VersionGet
+                    {
+                        ApiId = "opencde",
+                        VersionId = "1.0",
+                        ApiBaseUrl = GetAbsolutePath("api/opencde")
+                    }
                 }
             };
 

@@ -1,16 +1,13 @@
 <mat-spinner *ngIf="isLoading"></mat-spinner>
-<div *ngIf="!isLoading && foundFoundationsInfo">
-  <p>
-    Found foundations API at <code>{{ foundationBaseUrl }}</code
-    >.
-  </p>
-</div>
-<div *ngIf="!isLoading && foundOpenCdeInfo">
-  <p>
-    Found OpenCDE API at <code>{{ openCdeBaseUrl }}</code
-    >.
-  </p>
-</div>
+<ng-container *ngIf="discoveredVersions">
+  <div *ngFor="let version of discoveredVersions">
+    <p>
+      Found <code>{{ version.api_id }} {{ version.version_id }}</code> API at
+      <code>{{ version.api_base_url ?? "NO_URL_PROVIDED" }}</code
+      >.
+    </p>
+  </div>
+</ng-container>
 
 <button
   mat-raised-button

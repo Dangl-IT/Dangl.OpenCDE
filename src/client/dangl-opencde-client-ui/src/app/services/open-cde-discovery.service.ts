@@ -1,7 +1,7 @@
 import {
   AuthGet,
+  VersionGet,
   VersionsClient,
-  VersionsGet,
 } from '../generated/opencde-client';
 
 import { HttpClient } from '@angular/common/http';
@@ -12,7 +12,7 @@ import { ReplaySubject } from 'rxjs';
   providedIn: 'root',
 })
 export class OpenCdeDiscoveryService {
-  private foundationsVersionsSource = new ReplaySubject<VersionsGet[]>(1);
+  private foundationsVersionsSource = new ReplaySubject<VersionGet[]>(1);
   foundationsVersions = this.foundationsVersionsSource.asObservable();
 
   private foundationsBaseUrlSource = new ReplaySubject<string>(1);
@@ -49,22 +49,36 @@ export class OpenCdeDiscoveryService {
 
     versionsClient.getApiVersions().subscribe(
       (response) => {
-        this.foundationsVersionsSource.next(response);
+        const versions = response.versions;
+        if (!versions) {
+          return;
+        }
 
-        const foundationInfo = response.find(
+        this.foundationsVersionsSource.next(versions);
+
+        const foundationInfo = versions.find(
           (version) => version.api_id === 'foundation'
         );
         if (foundationInfo) {
-          this.foundationsBaseUrlSource.next(foundationInfo.api_base_url);
+          if (foundationInfo.api_base_url) {
+            this.foundationsBaseUrlSource.next(foundationInfo.api_base_url);
+          } else {
+            // Some servers might not return the 'api_base_url' directly for
+            // the Foundation API, so we assume that they follow the convention
+            // of having it just relative at '/foundation' to the base url
+            const foundationsBaseUrl = `${serverBaseUrl}/foundation`;
+            this.foundationsBaseUrlSource.next(foundationsBaseUrl);
+          }
         }
 
-        const openCdeInfo = response.find(
-          (version) => version.api_id === 'opencde'
+        const openCdeInfo = versions.find(
+          (version) =>
+            version.api_id === 'opencde' || version.api_id === 'documents'
         );
         if (openCdeInfo) {
           this.openCdeBaseUrlSource.next(openCdeInfo.api_base_url);
         } else {
-          alert("Failed to find 'opencde' version on server");
+          alert("Failed to find 'opencde' or 'documents' version on server");
         }
       },
       () => {

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
+import { VersionGet } from '../../generated/opencde-client';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -10,11 +11,8 @@ import { first } from 'rxjs/operators';
 })
 export class DiscoverOpencdeApiComponent implements OnInit {
   isLoading = true;
-  foundFoundationsInfo = false;
-  foundationBaseUrl: string | null = null;
-  foundOpenCdeInfo = false;
-  openCdeBaseUrl: string | null = null;
   @Output() onFinishedDiscovery = new EventEmitter<void>();
+  discoveredVersions: VersionGet[] | null = null;
 
   constructor(private openCdeDiscoveryService: OpenCdeDiscoveryService) {}
 
@@ -28,17 +26,8 @@ export class DiscoverOpencdeApiComponent implements OnInit {
     this.openCdeDiscoveryService.foundationsVersions
       .pipe(first())
       .subscribe((r) => {
-        const foundationInfo = r.find((rr) => rr.api_id === 'foundation');
-        if (foundationInfo && foundationInfo.api_base_url) {
-          this.foundFoundationsInfo = true;
-          this.foundationBaseUrl = foundationInfo.api_base_url;
-        }
-
-        const openCdeInfo = r.find((rr) => rr.api_id === 'opencde');
-        if (openCdeInfo && openCdeInfo.api_base_url) {
-          this.foundOpenCdeInfo = true;
-          this.openCdeBaseUrl = openCdeInfo.api_base_url;
-        }
+        this.isLoading = false;
+        this.discoveredVersions = r;
       });
   }
 
