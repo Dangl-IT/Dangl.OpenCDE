@@ -39,6 +39,7 @@ namespace Dangl.OpenCDE.Client.Services
             {
                 await existingHandler.StopListeningAsync();
             }
+            _handlersByPort[port] = this;
 
             if (_webHost != null)
             {
