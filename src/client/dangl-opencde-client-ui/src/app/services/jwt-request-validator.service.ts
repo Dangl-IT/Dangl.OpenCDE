@@ -31,9 +31,19 @@ export class JwtRequestValidatorService
    */
   validateRequest(httpRequest: HttpRequest<any>): boolean {
     const requestUrl = httpRequest.url;
+    console.log(requestUrl);
     if (!requestUrl || requestUrl.startsWith('/')) {
       // It's fine for local requests
       return true;
+    }
+
+    if (
+      requestUrl.indexOf('/foundation/versions') > -1 ||
+      requestUrl.indexOf('/foundation/1.0/auth') > -1
+    ) {
+      // We don't want to include tokens when getting the versions, since that might
+      // trigger some CORS responses. Same for the auth endpoint
+      return false;
     }
 
     if (!this.openCdeBaseUrl) {
