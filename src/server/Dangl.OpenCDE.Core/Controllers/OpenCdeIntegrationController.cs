@@ -113,7 +113,7 @@ namespace Dangl.OpenCDE.Core.Controllers
                         Type = new DocumentMetadataDataType
                         {
                             IsRequired = true,
-                            Type = DocumentMetdataEntryType.String
+                            Type = DocumentMetadataEntryType.String
                         }
                     },
                     new DocumentMetadataEntry
@@ -123,7 +123,7 @@ namespace Dangl.OpenCDE.Core.Controllers
                         Type = new DocumentMetadataDataType
                         {
                             IsRequired = true,
-                            Type = DocumentMetdataEntryType.String
+                            Type = DocumentMetadataEntryType.String
                         }
                     },
                     new DocumentMetadataEntry
@@ -133,7 +133,7 @@ namespace Dangl.OpenCDE.Core.Controllers
                         Type = new DocumentMetadataDataType
                         {
                             IsRequired = true,
-                            Type = DocumentMetdataEntryType.DateTime
+                            Type = DocumentMetadataEntryType.DateTime
                         }
                     },
                     new DocumentMetadataEntry
@@ -143,7 +143,7 @@ namespace Dangl.OpenCDE.Core.Controllers
                         Type = new DocumentMetadataDataType
                         {
                             IsRequired = true,
-                            Type = DocumentMetdataEntryType.Integer
+                            Type = DocumentMetadataEntryType.Integer
                         }
                     }
                 },

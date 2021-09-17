@@ -7,7 +7,7 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
     public class DocumentMetadataDataType
     {
         [Required, JsonProperty("type")]
-        public DocumentMetdataEntryType Type { get; set; }
+        public DocumentMetadataEntryType Type { get; set; }
 
         [Required, JsonProperty("required")]
         public bool IsRequired { get; set; }

@@ -1883,12 +1883,12 @@ export interface DocumentMetadataEntry {
 }
 
 export interface DocumentMetadataDataType {
-    type: DocumentMetdataEntryType;
+    type: DocumentMetadataEntryType;
     required: boolean;
     enum_values?: string[] | undefined;
 }
 
-export enum DocumentMetdataEntryType {
+export enum DocumentMetadataEntryType {
     String = "string",
     Boolean = "boolean",
     DateTime = "date-time",

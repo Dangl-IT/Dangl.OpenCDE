@@ -2,7 +2,7 @@
 
 namespace Dangl.OpenCDE.Shared.Models.CdeApi
 {
-    public enum DocumentMetdataEntryType
+    public enum DocumentMetadataEntryType
     {
         [EnumMember(Value = "string")]
         String = 0,
