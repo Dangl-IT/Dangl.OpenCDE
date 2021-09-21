@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Nuke.Common" Version="5.3.0" />
-    <PackageDownload Include="AzureSign" Version="[0.0.20217]" />
+    <PackageDownload Include="AzureSignTool" Version="[3.0.0]" />
     <PackageDownload Include="GitVersion.Tool" Version="[5.6.7]" />
     <PackageReference Include="docfx.console" Version="2.58.2">
       <ExcludeAssets>build</ExcludeAssets>

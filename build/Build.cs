@@ -97,7 +97,7 @@ class Build : NukeBuild
     AbsolutePath ChangelogFile => RootDirectory / "CHANGELOG.md";
     AbsolutePath PublishDirectory => OutputDirectory / "publish";
 
-    [PackageExecutable("AzureSign", "tools/net5.0/any/AzureSignTool.dll")]
+    [PackageExecutable("AzureSignTool", "tools/netcoreapp3.1/any/AzureSignTool.dll")]
     readonly Tool AzureSign;
 
     public Build()
