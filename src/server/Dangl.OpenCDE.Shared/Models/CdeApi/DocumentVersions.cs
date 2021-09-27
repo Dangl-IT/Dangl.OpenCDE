@@ -5,10 +5,10 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
 {
     public class DocumentVersions
     {
-        [Required, JsonProperty("_links")]
+        [Required, JsonProperty("links")]
         public DocumentVersionLinks Links { get; set; }
 
-        [Required, JsonProperty("_embedded")]
+        [Required, JsonProperty("embedded")]
         public DocumentVersionsEmbeddedReferences DocumentReferences { get; set; }
     }
 }

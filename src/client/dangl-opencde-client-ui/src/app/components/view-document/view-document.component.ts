@@ -7,6 +7,7 @@ import {
   DocumentMetadata,
   DocumentReference,
   DocumentVersions,
+  SelectedDocuments,
 } from '../../generated/opencde-client';
 
 import { DocumentSelectionService } from '../../services/document-selection.service';
@@ -51,20 +52,23 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
           )}`;
 
         this.http
-          .get<DocumentReference>(getProxyUrl(documentReferenceUrl))
+          .get<SelectedDocuments>(getProxyUrl(documentReferenceUrl))
           .subscribe((r) => {
-            this.documentReferenceData = r;
             this.isLoading = false;
+            if (!r.document_references || r.document_references.length == 0) {
+              return;
+            }
+            this.documentReferenceData = r?.document_references[0];
 
             this.http
               .get<DocumentMetadata>(
-                getProxyUrl(this.documentReferenceData._links.metadata.href)
+                getProxyUrl(this.documentReferenceData.links.metadata.href)
               )
               .subscribe((metadata) => (this.documentMetadata = metadata));
 
             this.http
               .get<DocumentVersions>(
-                getProxyUrl(this.documentReferenceData._links.versions.href)
+                getProxyUrl(this.documentReferenceData.links.versions.href)
               )
               .subscribe((versions) => (this.documentVersions = versions));
           });
@@ -81,11 +85,11 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let downloadUrl = this.documentReferenceData?._links?.content?.href;
+    let downloadUrl = this.documentReferenceData?.links?.content?.href;
     if (!downloadUrl) {
-      downloadUrl = (<any>this.documentReferenceData)['_embedded'][
+      downloadUrl = (<any>this.documentReferenceData)['embedded'][
         'documentReferenceList'
-      ][0]['_links']['download']['href'];
+      ][0]['links']['download']['href'];
     }
     this.fileDownloadClient.downloadFile(downloadUrl).subscribe((r) => {
       this.fileSaverService.saveFile(r.data, r.fileName ?? 'file');

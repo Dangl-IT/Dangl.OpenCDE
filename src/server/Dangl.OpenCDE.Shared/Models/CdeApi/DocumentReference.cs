@@ -6,7 +6,7 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
 {
     public class DocumentReference
     {
-        [Required, JsonProperty("_links")]
+        [Required, JsonProperty("links")]
         public DocumentReferenceLinks Links { get; set; }
 
         [Required, JsonProperty("version")]

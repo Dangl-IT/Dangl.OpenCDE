@@ -6,10 +6,10 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
 {
     public class DocumentMetadata
     {
-        [Required, JsonProperty("_links")]
+        [Required, JsonProperty("links")]
         public DocumentMetadataLinks Links { get; set; }
 
-        [Required, JsonProperty("_metadata")]
+        [Required, JsonProperty("metadata")]
         public List<DocumentMetadataEntry> Entries { get; set; }
     }
 }

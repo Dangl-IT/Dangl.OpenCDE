@@ -193,7 +193,7 @@ namespace Dangl.OpenCDE.Core.Controllers
         }
 
         [HttpGet("documents/{documentId}/reference")]
-        [ProducesResponseType(typeof(DocumentReference), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(SelectedDocuments), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiError), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetDocumentReferenceAsync(Guid documentId)
         {
@@ -206,8 +206,12 @@ namespace Dangl.OpenCDE.Core.Controllers
             }
 
             var documentReference = GetDocumentReferenceForDocument(document.Value);
+            var selection = new SelectedDocuments
+            {
+                DocumentReferences = new System.Collections.Generic.List<DocumentReference> { documentReference }
+            };
 
-            return Ok(documentReference);
+            return Ok(selection);
         }
 
         [HttpGet("document-selections/{documentSelectionId}")]
@@ -222,8 +226,12 @@ namespace Dangl.OpenCDE.Core.Controllers
             }
 
             var documentReference = GetDocumentReferenceForDocument(document.Value);
+            var selection = new SelectedDocuments
+            {
+                DocumentReferences = new System.Collections.Generic.List<DocumentReference> { documentReference }
+            };
 
-            return Ok(documentReference);
+            return Ok(selection);
         }
 
         private DocumentReference GetDocumentReferenceForDocument(DocumentDto document)
