@@ -11,7 +11,7 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
         [Required, JsonProperty("value")]
         public string Value { get; set; }
 
-        [Required, JsonProperty("type")]
-        public DocumentMetadataDataType Type { get; set; }
+        [Required, JsonProperty("data_type")]
+        public DocumentMetadataDataType DataType { get; set; }
     }
 }

@@ -1,18 +1,25 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Runtime.Serialization;
 
 namespace Dangl.OpenCDE.Shared.Models.CdeApi
 {
-    public class DocumentMetadataDataType
+    public enum DocumentMetadataDataType
     {
-        [Required, JsonProperty("type")]
-        public DocumentMetadataEntryType Type { get; set; }
+        [EnumMember(Value = "string")]
+        String = 0,
 
-        [Required, JsonProperty("required")]
-        public bool IsRequired { get; set; }
+        [EnumMember(Value = "boolean")]
+        Boolean = 1,
 
-        [JsonProperty("enum_values")]
-        public List<string> EnumValues { get; set; }
+        [EnumMember(Value = "date-time")]
+        DateTime = 2,
+
+        [EnumMember(Value = "date")]
+        Date = 3,
+
+        [EnumMember(Value = "integer")]
+        Integer = 4,
+
+        [EnumMember(Value = "number")]
+        Number = 5
     }
 }

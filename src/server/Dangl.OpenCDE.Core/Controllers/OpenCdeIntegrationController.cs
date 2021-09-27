@@ -110,41 +110,25 @@ namespace Dangl.OpenCDE.Core.Controllers
                     {
                         Name = nameof(document.Value.Name),
                         Value = document.Value.Name,
-                        Type = new DocumentMetadataDataType
-                        {
-                            IsRequired = true,
-                            Type = DocumentMetadataEntryType.String
-                        }
+                        DataType = DocumentMetadataDataType.String
                     },
                     new DocumentMetadataEntry
                     {
                         Name = nameof(document.Value.FileName),
                         Value = document.Value.FileName,
-                        Type = new DocumentMetadataDataType
-                        {
-                            IsRequired = true,
-                            Type = DocumentMetadataEntryType.String
-                        }
+                        DataType = DocumentMetadataDataType.String
                     },
                     new DocumentMetadataEntry
                     {
                         Name = nameof(document.Value.CreatedAtUtc),
                         Value = document.Value.CreatedAtUtc.ToString("O"),
-                        Type = new DocumentMetadataDataType
-                        {
-                            IsRequired = true,
-                            Type = DocumentMetadataEntryType.DateTime
-                        }
+                        DataType = DocumentMetadataDataType.DateTime
                     },
                     new DocumentMetadataEntry
                     {
                         Name = nameof(document.Value.FileSizeInBytes),
                         Value = document.Value.FileSizeInBytes.ToString(),
-                        Type = new DocumentMetadataDataType
-                        {
-                            IsRequired = true,
-                            Type = DocumentMetadataEntryType.Integer
-                        }
+                        DataType = DocumentMetadataDataType.Integer
                     }
                 },
                 Links = new DocumentMetadataLinks

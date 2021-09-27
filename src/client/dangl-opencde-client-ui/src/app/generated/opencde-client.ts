@@ -995,7 +995,7 @@ export class DocumentSelectionClient {
   getDocumentDiscoveryData(
     discoveryMetadata: DocumentDiscoveryPost
   ): Observable<DocumentDiscoverySessionInitialization> {
-    let url_ = this.baseUrl + '/api/opencde/documents/1.0/select-documents';
+    let url_ = this.baseUrl + '/api/opencde/1.0/select-documents';
     url_ = url_.replace(/[?&]$/, '');
 
     const content_ = JSON.stringify(discoveryMetadata);
@@ -1134,23 +1134,16 @@ export interface LinkData {
 export interface DocumentMetadataEntry {
   name: string;
   value: string;
-  type: DocumentMetadataDataType;
+  data_type: DocumentMetadataDataType;
 }
 
-export interface DocumentMetadataDataType {
-  type: DocumentMetadataEntryType;
-  required: boolean;
-  enum_values?: string[] | undefined;
-}
-
-export enum DocumentMetadataEntryType {
+export enum DocumentMetadataDataType {
   String = 'string',
   Boolean = 'boolean',
   DateTime = 'date-time',
+  Date = 'date',
   Integer = 'integer',
   Number = 'number',
-  Enum = 'enum',
-  Array = 'array',
 }
 
 export interface DocumentVersions {
