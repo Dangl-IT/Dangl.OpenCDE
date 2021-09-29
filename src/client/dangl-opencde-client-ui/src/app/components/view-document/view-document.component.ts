@@ -85,7 +85,7 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let downloadUrl = this.documentReferenceData?.links?.content?.href;
+    let downloadUrl = this.documentReferenceData?.links?.download?.href;
     if (!downloadUrl) {
       downloadUrl = (<any>this.documentReferenceData)['embedded'][
         'documentReferenceList'

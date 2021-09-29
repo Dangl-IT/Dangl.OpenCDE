@@ -14,7 +14,7 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
         [Required, JsonProperty("versions")]
         public LinkData Versions { get; set; }
 
-        [Required, JsonProperty("content")]
-        public LinkData Content { get; set; }
+        [Required, JsonProperty("download")]
+        public LinkData Download { get; set; }
     }
 }

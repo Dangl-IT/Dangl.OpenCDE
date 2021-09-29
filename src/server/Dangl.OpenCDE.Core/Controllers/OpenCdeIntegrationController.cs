@@ -248,7 +248,7 @@ namespace Dangl.OpenCDE.Core.Controllers
                 },
                 Links = new DocumentReferenceLinks
                 {
-                    Content = new LinkData
+                    Download = new LinkData
                     {
                         Href = GetAbsoluteBaseUrl(nameof(DocumentsController), nameof(DocumentsController.DownloadDocumentAsync), new
                         {

@@ -1171,7 +1171,7 @@ export interface DocumentReferenceLinks {
   self: LinkData;
   metadata: LinkData;
   versions: LinkData;
-  content: LinkData;
+  download: LinkData;
 }
 
 export interface FileDescription {
