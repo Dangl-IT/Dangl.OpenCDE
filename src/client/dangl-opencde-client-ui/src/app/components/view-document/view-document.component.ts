@@ -1,16 +1,13 @@
-import {
-  ClientProxyClient,
-  FileDownloadClient,
-} from '../../generated/backend-client';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   DocumentMetadata,
-  DocumentReference,
+  DocumentVersion,
   DocumentVersions,
   SelectedDocuments,
 } from '../../generated/opencde-client';
 
 import { DocumentSelectionService } from '../../services/document-selection.service';
+import { FileDownloadClient } from '../../generated/backend-client';
 import { FileSaverService } from '../../services/file-saver.service';
 import { HttpClient } from '@angular/common/http';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
@@ -24,7 +21,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class ViewDocumentComponent implements OnInit, OnDestroy {
   isLoading = true;
-  documentReferenceData: DocumentReference | null = null;
+  documentVersion: DocumentVersion | null = null;
   documentMetadata: DocumentMetadata | null = null;
   documentVersions: DocumentVersions | null = null;
   private unsubscribe: Subject<void> = new Subject<void>();
@@ -55,23 +52,25 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
           .get<SelectedDocuments>(getProxyUrl(documentReferenceUrl))
           .subscribe((r) => {
             this.isLoading = false;
-            if (!r.document_references || r.document_references.length == 0) {
+            if (!r.documents || r.documents.length == 0) {
               return;
             }
-            this.documentReferenceData = r?.document_references[0];
+            this.documentVersion = r?.documents[0];
 
-            if (this.documentReferenceData.links.metadata?.url) {
+            if (this.documentVersion.links.document_version_metadata?.url) {
               this.http
                 .get<DocumentMetadata>(
-                  getProxyUrl(this.documentReferenceData.links.metadata.url)
+                  getProxyUrl(
+                    this.documentVersion.links.document_version_metadata.url
+                  )
                 )
                 .subscribe((metadata) => (this.documentMetadata = metadata));
             }
 
-            if (this.documentReferenceData.links.versions?.url) {
+            if (this.documentVersion.links.document_versions?.url) {
               this.http
                 .get<DocumentVersions>(
-                  getProxyUrl(this.documentReferenceData.links.versions.url)
+                  getProxyUrl(this.documentVersion.links.document_versions.url)
                 )
                 .subscribe((versions) => (this.documentVersions = versions));
             }
@@ -85,18 +84,18 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
   }
 
   downloadDocument(): void {
-    if (!this.documentReferenceData) {
+    if (!this.documentVersion) {
       return;
     }
 
-    let downloadUrl = this.documentReferenceData?.links?.download?.url;
-    if (!downloadUrl) {
-      downloadUrl = (<any>this.documentReferenceData)['embedded'][
-        'documentReferenceList'
-      ][0]['links']['download']['url'];
+    let downloadUrl =
+      this.documentVersion?.links?.document_version_download?.url;
+    if (downloadUrl) {
+      this.fileDownloadClient.downloadFile(downloadUrl).subscribe((r) => {
+        this.fileSaverService.saveFile(r.data, r.fileName ?? 'file');
+      });
+    } else {
+      alert('Did not find a download url for the document.');
     }
-    this.fileDownloadClient.downloadFile(downloadUrl).subscribe((r) => {
-      this.fileSaverService.saveFile(r.data, r.fileName ?? 'file');
-    });
   }
 }

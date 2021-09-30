@@ -572,7 +572,7 @@ export class OpenCdeIntegrationClient {
 
   getDocumentSelectionData(
     documentSelectionId: string
-  ): Observable<DocumentReference> {
+  ): Observable<DocumentVersion> {
     let url_ =
       this.baseUrl +
       '/api/open-cde-integration/document-selections/{documentSelectionId}';
@@ -605,10 +605,10 @@ export class OpenCdeIntegrationClient {
             try {
               return this.processGetDocumentSelectionData(<any>response_);
             } catch (e) {
-              return <Observable<DocumentReference>>(<any>_observableThrow(e));
+              return <Observable<DocumentVersion>>(<any>_observableThrow(e));
             }
           } else
-            return <Observable<DocumentReference>>(
+            return <Observable<DocumentVersion>>(
               (<any>_observableThrow(response_))
             );
         })
@@ -617,7 +617,7 @@ export class OpenCdeIntegrationClient {
 
   protected processGetDocumentSelectionData(
     response: HttpResponseBase
-  ): Observable<DocumentReference> {
+  ): Observable<DocumentVersion> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -639,7 +639,7 @@ export class OpenCdeIntegrationClient {
           result200 =
             _responseText === ''
               ? null
-              : <DocumentReference>(
+              : <DocumentVersion>(
                   JSON.parse(_responseText, this.jsonParseReviver)
                 );
           return _observableOf(result200);
@@ -674,7 +674,7 @@ export class OpenCdeIntegrationClient {
         })
       );
     }
-    return _observableOf<DocumentReference>(<any>null);
+    return _observableOf<DocumentVersion>(<any>null);
   }
 }
 
@@ -1118,17 +1118,7 @@ export interface DocumentSelectionPost {
 }
 
 export interface DocumentMetadata {
-  links: DocumentMetadataLinks;
   metadata: DocumentMetadataEntry[];
-}
-
-export interface DocumentMetadataLinks {
-  self: LinkData;
-  document_reference: LinkData;
-}
-
-export interface LinkData {
-  url: string;
 }
 
 export interface DocumentMetadataEntry {
@@ -1147,31 +1137,26 @@ export enum DocumentMetadataDataType {
 }
 
 export interface DocumentVersions {
+  documents: DocumentVersion[];
+}
+
+export interface DocumentVersion {
   links: DocumentVersionLinks;
-  embedded: DocumentVersionsEmbeddedReferences;
-}
-
-export interface DocumentVersionLinks {
-  self?: LinkData | undefined;
-}
-
-export interface DocumentVersionsEmbeddedReferences {
-  documentReferenceList: DocumentReference[];
-}
-
-export interface DocumentReference {
-  links: DocumentReferenceLinks;
-  version: string;
-  version_date: Date;
+  version_number: string;
+  date: Date;
   title: string;
   file_description: FileDescription;
 }
 
-export interface DocumentReferenceLinks {
-  self: LinkData;
-  metadata: LinkData;
-  versions: LinkData;
-  download: LinkData;
+export interface DocumentVersionLinks {
+  document_version?: LinkData | undefined;
+  document_version_metadata?: LinkData | undefined;
+  document_version_download?: LinkData | undefined;
+  document_versions?: LinkData | undefined;
+}
+
+export interface LinkData {
+  url: string;
 }
 
 export interface FileDescription {
@@ -1180,7 +1165,7 @@ export interface FileDescription {
 }
 
 export interface SelectedDocuments {
-  document_references: DocumentReference[];
+  documents: DocumentVersion[];
 }
 
 export interface AuthGet {

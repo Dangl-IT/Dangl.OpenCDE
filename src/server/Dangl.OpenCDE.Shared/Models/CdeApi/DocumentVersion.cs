@@ -4,16 +4,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Dangl.OpenCDE.Shared.Models.CdeApi
 {
-    public class DocumentReference
+    public class DocumentVersion
     {
         [Required, JsonProperty("links")]
-        public DocumentReferenceLinks Links { get; set; }
+        public DocumentVersionLinks Links { get; set; }
 
-        [Required, JsonProperty("version")]
-        public string Version { get; set; }
+        [Required, JsonProperty("version_number")]
+        public string VersionNumber { get; set; }
 
-        [Required, JsonProperty("version_date")]
-        public DateTimeOffset VersionDate { get; set; }
+        [Required, JsonProperty("date")]
+        public DateTimeOffset Date { get; set; }
 
         [Required, JsonProperty("title")]
         public string Title { get; set; }

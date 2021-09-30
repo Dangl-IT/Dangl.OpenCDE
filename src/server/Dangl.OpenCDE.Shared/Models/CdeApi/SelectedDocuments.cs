@@ -6,7 +6,7 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
 {
     public class SelectedDocuments
     {
-        [Required, JsonProperty("document_references")]
-        public List<DocumentReference> DocumentReferences { get; set; }
+        [Required, JsonProperty("documents")]
+        public List<DocumentVersion> DocumentVersions { get; set; }
     }
 }

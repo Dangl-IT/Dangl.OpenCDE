@@ -1,16 +1,12 @@
 <mat-spinner *ngIf="isLoading"></mat-spinner>
-<button
-  mat-raised-button
-  (click)="downloadDocument()"
-  *ngIf="documentReferenceData"
->
+<button mat-raised-button (click)="downloadDocument()" *ngIf="documentVersion">
   Download Document
 </button>
 
 <mat-tab-group>
   <mat-tab label="Reference">
-    <pre *ngIf="documentReferenceData"
-      >{{ documentReferenceData | json }}
+    <pre *ngIf="documentVersion"
+      >{{ documentVersion | json }}
 </pre
     >
   </mat-tab>

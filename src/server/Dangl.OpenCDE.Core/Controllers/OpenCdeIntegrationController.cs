@@ -130,23 +130,6 @@ namespace Dangl.OpenCDE.Core.Controllers
                         Value = document.Value.FileSizeInBytes.ToString(),
                         DataType = DocumentMetadataDataType.Integer
                     }
-                },
-                Links = new DocumentMetadataLinks
-                {
-                    Self = new LinkData
-                    {
-                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentMetadataAsync), new
-                        {
-                            documentId
-                        })
-                    },
-                    DocumentReference = new LinkData
-                    {
-                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentReferenceAsync), new
-                        {
-                            documentId
-                        })
-                    }
                 }
             };
 
@@ -166,26 +149,13 @@ namespace Dangl.OpenCDE.Core.Controllers
                 return BadRequest(new ApiError(document.ErrorMessage));
             }
 
-            var documentReference = GetDocumentReferenceForDocument(document.Value);
+            var documentVersion = GetDocumentVersionForDocument(document.Value);
 
             var documentVersions = new DocumentVersions
             {
-                Links = new DocumentVersionLinks
+                DocumentVersion = new System.Collections.Generic.List<DocumentVersion>
                 {
-                    Self = new LinkData
-                    {
-                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentVersionsAsync), new
-                        {
-                            documentId
-                        })
-                    }
-                },
-                DocumentReferences = new DocumentVersionsEmbeddedReferences
-                {
-                    DocumentReferences = new System.Collections.Generic.List<DocumentReference>
-                    {
-                        documentReference
-                    }
+                    documentVersion
                 }
             };
 
@@ -205,17 +175,17 @@ namespace Dangl.OpenCDE.Core.Controllers
                 return BadRequest(new ApiError(document.ErrorMessage));
             }
 
-            var documentReference = GetDocumentReferenceForDocument(document.Value);
+            var documentVersion = GetDocumentVersionForDocument(document.Value);
             var selection = new SelectedDocuments
             {
-                DocumentReferences = new System.Collections.Generic.List<DocumentReference> { documentReference }
+                DocumentVersions = new System.Collections.Generic.List<DocumentVersion> { documentVersion }
             };
 
             return Ok(selection);
         }
 
         [HttpGet("document-selections/{documentSelectionId}")]
-        [ProducesResponseType(typeof(DocumentReference), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(DocumentVersion), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiError), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetDocumentSelectionDataAsync(Guid documentSelectionId)
         {
@@ -225,30 +195,30 @@ namespace Dangl.OpenCDE.Core.Controllers
                 return BadRequest(new ApiError(document.ErrorMessage));
             }
 
-            var documentReference = GetDocumentReferenceForDocument(document.Value);
+            var documentVersion = GetDocumentVersionForDocument(document.Value);
             var selection = new SelectedDocuments
             {
-                DocumentReferences = new System.Collections.Generic.List<DocumentReference> { documentReference }
+                DocumentVersions = new System.Collections.Generic.List<DocumentVersion> { documentVersion }
             };
 
             return Ok(selection);
         }
 
-        private DocumentReference GetDocumentReferenceForDocument(DocumentDto document)
+        private DocumentVersion GetDocumentVersionForDocument(DocumentDto document)
         {
-            return new DocumentReference
+            return new DocumentVersion
             {
                 Title = document.Name,
-                Version = "1",
-                VersionDate = document.CreatedAtUtc,
+                VersionNumber = "1",
+                Date = document.CreatedAtUtc,
                 FileDescription = new FileDescription
                 {
                     Name = document.FileName,
                     FileSizeInBytes = document.FileSizeInBytes ?? 0
                 },
-                Links = new DocumentReferenceLinks
+                Links = new DocumentVersionLinks
                 {
-                    Download = new LinkData
+                    DocumentVersionDownload = new LinkData
                     {
                         Url = GetAbsoluteBaseUrl(nameof(DocumentsController), nameof(DocumentsController.DownloadDocumentAsync), new
                         {
@@ -256,21 +226,21 @@ namespace Dangl.OpenCDE.Core.Controllers
                             documentId = document.Id
                         })
                     },
-                    Metadata = new LinkData
+                    DocumentVersionMetadata = new LinkData
                     {
                         Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentMetadataAsync), new
                         {
                             documentId = document.Id
                         })
                     },
-                    Self = new LinkData
+                    DocumentVersion = new LinkData
                     {
                         Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentReferenceAsync), new
                         {
                             documentId = document.Id
                         })
                     },
-                    Versions = new LinkData
+                    DocumentVersions = new LinkData
                     {
                         Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentVersionsAsync), new
                         {
