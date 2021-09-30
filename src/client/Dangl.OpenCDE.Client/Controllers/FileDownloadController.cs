@@ -61,7 +61,9 @@ namespace Dangl.OpenCDE.Client.Controllers
             }
 
             var responseContent = await response.Content.ReadAsStreamAsync();
-            var fileName = response.Content.Headers.ContentDisposition?.FileName ?? "file";
+            var fileName = response.Content.Headers.ContentDisposition?.FileName
+                ?? response.Content.Headers.ContentDisposition?.FileNameStar
+                ?? "file";
             var contentType = response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
 
             return File(responseContent, contentType, fileName);
