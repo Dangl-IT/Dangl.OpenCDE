@@ -16,10 +16,10 @@ export class OpenCdeDiscoveryService {
   private foundationsVersionsSource = new ReplaySubject<VersionGet[]>(1);
   foundationsVersions = this.foundationsVersionsSource.asObservable();
 
-  private foundationsBaseUrlSource = new ReplaySubject<string>(1);
+  private foundationsBaseUrlSource = new ReplaySubject<string | null>(1);
   foundationsBaseUrl = this.foundationsBaseUrlSource.asObservable();
 
-  private openCdeBaseUrlSource = new ReplaySubject<string>(1);
+  private openCdeBaseUrlSource = new ReplaySubject<string | null>(1);
   openCdeBaseUrl = this.openCdeBaseUrlSource.asObservable();
 
   private foundationsAuthenticationInfoSource = new ReplaySubject<AuthGet>(1);
@@ -28,6 +28,8 @@ export class OpenCdeDiscoveryService {
 
   constructor(private http: HttpClient) {
     this.foundationsBaseUrl.subscribe((baseUrl) => {
+      this.foundationsAuthenticationInfoSource.next(undefined);
+
       if (baseUrl) {
         baseUrl = baseUrl.replace(/\/$/, ''); // Removing trailing slash
         let authUrl = `${baseUrl}/auth`;
@@ -47,9 +49,8 @@ export class OpenCdeDiscoveryService {
           },
           () => {
             authUrl = `${baseUrl}/1.0/auth`;
-            this.http
-              .get<AuthGet>(getProxyUrl(authUrl))
-              .subscribe((authenticationResponse) => {
+            this.http.get<AuthGet>(getProxyUrl(authUrl)).subscribe(
+              (authenticationResponse) => {
                 if (!authenticationResponse.oauth2_auth_url) {
                   alert("Missing 'oauth2_auth_url' in response");
                 } else {
@@ -57,7 +58,11 @@ export class OpenCdeDiscoveryService {
                     authenticationResponse
                   );
                 }
-              });
+              },
+              () => {
+                this.foundationsAuthenticationInfoSource.next(undefined);
+              }
+            );
           }
         );
       }
@@ -66,6 +71,10 @@ export class OpenCdeDiscoveryService {
 
   setOpenCdeServerBaseUrl(serverBaseUrl: string): void {
     serverBaseUrl = serverBaseUrl.replace(/\/$/, ''); // Removing trailing slash
+
+    this.foundationsBaseUrlSource.next(null);
+    this.openCdeBaseUrlSource.next(null);
+    this.foundationsVersionsSource.next([]);
 
     const handleVersionsResponse = (response: VersionsGet) => {
       const versions = response.versions;
@@ -123,7 +132,9 @@ export class OpenCdeDiscoveryService {
         ],
       };
 
-      handleVersionsResponse(trimbleResponse);
+      setTimeout(() => {
+        handleVersionsResponse(trimbleResponse);
+      }, 1);
     } else {
       const getProxyUrl = (actualUrl: string) =>
         `/client-proxy?targetUrl=${encodeURIComponent(actualUrl)}`;

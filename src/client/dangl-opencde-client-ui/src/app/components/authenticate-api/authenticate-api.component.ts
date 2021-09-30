@@ -62,6 +62,10 @@ export class AuthenticateApiComponent implements OnInit, OnDestroy {
     this.openCdeDiscoveryService.foundationsBaseUrl
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((baseUrl) => {
+        if (!baseUrl) {
+          this.cdeServerBaseUrl = null;
+          return;
+        }
         let cdeServerBaseUrl = baseUrl.replace(/\/$/, '').toLowerCase();
         if (cdeServerBaseUrl.endsWith('foundation')) {
           cdeServerBaseUrl = cdeServerBaseUrl.substring(
@@ -83,6 +87,10 @@ export class AuthenticateApiComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((authenticationInformation) => {
         this.authenticationInformation = authenticationInformation;
+
+        if (!authenticationInformation) {
+          return;
+        }
 
         if (this.authenticationInformation.oauth2_required_scopes) {
           this.openIdForm.patchValue({

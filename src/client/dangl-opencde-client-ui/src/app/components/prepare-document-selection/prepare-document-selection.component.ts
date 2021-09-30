@@ -1,9 +1,4 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import {
-  DocumentDiscoveryPost,
-  DocumentDiscoverySessionInitialization,
-  DocumentSelectionClient,
-} from '../../generated/opencde-client';
 import { first, map } from 'rxjs/operators';
 
 import { DocumentSelectionService } from '../../services/document-selection.service';
@@ -23,7 +18,6 @@ export class PrepareDocumentSelectionComponent implements OnInit {
   @Output() onDocumentSelected = new EventEmitter<void>();
 
   constructor(
-    private http: HttpClient,
     private documentsSelectionHandlerClient: DocumentsSelectionHandlerClient,
     private documentSelectionService: DocumentSelectionService,
     private openCdeDiscoveryService: OpenCdeDiscoveryService,
@@ -53,7 +47,7 @@ export class PrepareDocumentSelectionComponent implements OnInit {
           .prepareDocumentSelectionAndOpenSystemBrowser({
             accessToken: values.token,
             clientState: clientState,
-            openCdeBaseUrl: values.baseUrl,
+            openCdeBaseUrl: values?.baseUrl ?? '',
           })
           .subscribe(() => {
             this.documentSelectionService.referenceLink
