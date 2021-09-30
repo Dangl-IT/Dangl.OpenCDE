@@ -5,7 +5,7 @@ namespace Dangl.OpenCDE.Shared.Models.CdeApi
 {
     public class LinkData
     {
-        [Required, JsonProperty("href")]
-        public string Href { get; set; }
+        [Required, JsonProperty("url")]
+        public string Url { get; set; }
     }
 }

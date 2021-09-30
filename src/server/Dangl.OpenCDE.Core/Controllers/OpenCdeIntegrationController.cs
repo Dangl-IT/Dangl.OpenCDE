@@ -135,14 +135,14 @@ namespace Dangl.OpenCDE.Core.Controllers
                 {
                     Self = new LinkData
                     {
-                        Href = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentMetadataAsync), new
+                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentMetadataAsync), new
                         {
                             documentId
                         })
                     },
                     DocumentReference = new LinkData
                     {
-                        Href = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentReferenceAsync), new
+                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentReferenceAsync), new
                         {
                             documentId
                         })
@@ -174,7 +174,7 @@ namespace Dangl.OpenCDE.Core.Controllers
                 {
                     Self = new LinkData
                     {
-                        Href = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentVersionsAsync), new
+                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentVersionsAsync), new
                         {
                             documentId
                         })
@@ -250,7 +250,7 @@ namespace Dangl.OpenCDE.Core.Controllers
                 {
                     Download = new LinkData
                     {
-                        Href = GetAbsoluteBaseUrl(nameof(DocumentsController), nameof(DocumentsController.DownloadDocumentAsync), new
+                        Url = GetAbsoluteBaseUrl(nameof(DocumentsController), nameof(DocumentsController.DownloadDocumentAsync), new
                         {
                             projectId = document.ProjectId,
                             documentId = document.Id
@@ -258,21 +258,21 @@ namespace Dangl.OpenCDE.Core.Controllers
                     },
                     Metadata = new LinkData
                     {
-                        Href = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentMetadataAsync), new
+                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentMetadataAsync), new
                         {
                             documentId = document.Id
                         })
                     },
                     Self = new LinkData
                     {
-                        Href = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentReferenceAsync), new
+                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentReferenceAsync), new
                         {
                             documentId = document.Id
                         })
                     },
                     Versions = new LinkData
                     {
-                        Href = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentVersionsAsync), new
+                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentVersionsAsync), new
                         {
                             documentId = document.Id
                         })

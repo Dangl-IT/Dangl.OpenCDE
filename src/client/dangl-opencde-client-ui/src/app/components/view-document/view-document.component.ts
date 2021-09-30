@@ -60,17 +60,21 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
             }
             this.documentReferenceData = r?.document_references[0];
 
-            this.http
-              .get<DocumentMetadata>(
-                getProxyUrl(this.documentReferenceData.links.metadata.href)
-              )
-              .subscribe((metadata) => (this.documentMetadata = metadata));
+            if (this.documentReferenceData.links.metadata?.url) {
+              this.http
+                .get<DocumentMetadata>(
+                  getProxyUrl(this.documentReferenceData.links.metadata.url)
+                )
+                .subscribe((metadata) => (this.documentMetadata = metadata));
+            }
 
-            this.http
-              .get<DocumentVersions>(
-                getProxyUrl(this.documentReferenceData.links.versions.href)
-              )
-              .subscribe((versions) => (this.documentVersions = versions));
+            if (this.documentReferenceData.links.versions?.url) {
+              this.http
+                .get<DocumentVersions>(
+                  getProxyUrl(this.documentReferenceData.links.versions.url)
+                )
+                .subscribe((versions) => (this.documentVersions = versions));
+            }
           });
       });
   }
@@ -85,11 +89,11 @@ export class ViewDocumentComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let downloadUrl = this.documentReferenceData?.links?.download?.href;
+    let downloadUrl = this.documentReferenceData?.links?.download?.url;
     if (!downloadUrl) {
       downloadUrl = (<any>this.documentReferenceData)['embedded'][
         'documentReferenceList'
-      ][0]['links']['download']['href'];
+      ][0]['links']['download']['url'];
     }
     this.fileDownloadClient.downloadFile(downloadUrl).subscribe((r) => {
       this.fileSaverService.saveFile(r.data, r.fileName ?? 'file');

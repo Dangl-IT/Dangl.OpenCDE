@@ -1128,7 +1128,7 @@ export interface DocumentMetadataLinks {
 }
 
 export interface LinkData {
-  href: string;
+  url: string;
 }
 
 export interface DocumentMetadataEntry {
