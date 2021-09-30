@@ -54,7 +54,6 @@ namespace Dangl.OpenCDE.Client.Controllers
             });
             callbackParameters["callback_url"] = callbackUrl;
 
-
             var initialRequest = GetRequest(callbackParameters, documentsUrl);
             var response = await httpClient.SendAsync(initialRequest);
             if (response.IsSuccessStatusCode)
@@ -71,7 +70,7 @@ namespace Dangl.OpenCDE.Client.Controllers
             else
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                return BadRequest();
+                return BadRequest(responseContent);
             }
         }
 
