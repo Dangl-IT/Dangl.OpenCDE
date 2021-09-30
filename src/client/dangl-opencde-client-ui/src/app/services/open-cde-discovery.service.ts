@@ -2,6 +2,7 @@ import {
   AuthGet,
   VersionGet,
   VersionsClient,
+  VersionsGet,
 } from '../generated/opencde-client';
 
 import { HttpClient } from '@angular/common/http';
@@ -45,45 +46,75 @@ export class OpenCdeDiscoveryService {
 
   setOpenCdeServerBaseUrl(serverBaseUrl: string): void {
     serverBaseUrl = serverBaseUrl.replace(/\/$/, ''); // Removing trailing slash
-    const versionsClient = new VersionsClient(this.http, serverBaseUrl);
 
-    versionsClient.getApiVersions().subscribe(
-      (response) => {
-        const versions = response.versions;
-        if (!versions) {
-          return;
-        }
-
-        this.foundationsVersionsSource.next(versions);
-
-        const foundationInfo = versions.find(
-          (version) => version.api_id === 'foundation'
-        );
-        if (foundationInfo) {
-          if (foundationInfo.api_base_url) {
-            this.foundationsBaseUrlSource.next(foundationInfo.api_base_url);
-          } else {
-            // Some servers might not return the 'api_base_url' directly for
-            // the Foundation API, so we assume that they follow the convention
-            // of having it just relative at '/foundation' to the base url
-            const foundationsBaseUrl = `${serverBaseUrl}/foundation`;
-            this.foundationsBaseUrlSource.next(foundationsBaseUrl);
-          }
-        }
-
-        const openCdeInfo = versions.find(
-          (version) =>
-            version.api_id === 'opencde' || version.api_id === 'documents'
-        );
-        if (openCdeInfo) {
-          this.openCdeBaseUrlSource.next(openCdeInfo.api_base_url);
-        } else {
-          alert("Failed to find 'opencde' or 'documents' version on server");
-        }
-      },
-      () => {
-        alert('Failed to get Foundations API versions');
+    const handleVersionsResponse = (response: VersionsGet) => {
+      const versions = response.versions;
+      if (!versions) {
+        return;
       }
-    );
+
+      this.foundationsVersionsSource.next(versions);
+
+      const foundationInfo = versions.find(
+        (version) => version.api_id === 'foundation'
+      );
+      if (foundationInfo) {
+        if (foundationInfo.api_base_url) {
+          this.foundationsBaseUrlSource.next(foundationInfo.api_base_url);
+        } else {
+          // Some servers might not return the 'api_base_url' directly for
+          // the Foundation API, so we assume that they follow the convention
+          // of having it just relative at '/foundation' to the base url
+          const foundationsBaseUrl = `${serverBaseUrl}/foundation`;
+          this.foundationsBaseUrlSource.next(foundationsBaseUrl);
+        }
+      }
+
+      const openCdeInfo = versions.find(
+        (version) =>
+          version.api_id === 'opencde' || version.api_id === 'documents'
+      );
+      if (openCdeInfo) {
+        this.openCdeBaseUrlSource.next(openCdeInfo.api_base_url);
+      } else {
+        alert("Failed to find 'opencde' or 'documents' version on server");
+      }
+    };
+
+    if (serverBaseUrl.toLowerCase().indexOf('trimble') > -1) {
+      // There's a special workaround here at the moment, since the foundations versions
+      // endpoint is not available yet
+      const trimbleResponse: VersionsGet = {
+        versions: [
+          {
+            api_id: 'foundation',
+            version_id: '1.0',
+            detailed_version:
+              'https://github.com/BuildingSMART/foundation-API/tree/release_1_0',
+            api_base_url: 'https://auth.connect.trimble.com/v1/foundation/1.0',
+          },
+          {
+            api_id: 'documents',
+            version_id: '1.0',
+            detailed_version:
+              'https://github.com/BuildingSMART/foundation-API/tree/release_1_0',
+            api_base_url: 'https://auth.connect.trimble.com/v1/foundation/1.0',
+          },
+        ],
+      };
+
+      handleVersionsResponse(trimbleResponse);
+    } else {
+      const versionsClient = new VersionsClient(this.http, serverBaseUrl);
+
+      versionsClient.getApiVersions().subscribe(
+        (response) => {
+          handleVersionsResponse(response);
+        },
+        () => {
+          alert('Failed to get Foundations API versions');
+        }
+      );
+    }
   }
 }

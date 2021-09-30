@@ -44,7 +44,7 @@ namespace Dangl.OpenCDE.Client.Services
                 {
                     var httpClient = _httpClientFactory.CreateClient();
                     var redirectUri = _openIdConnectCache.UsedRedirectUrisByClientState[state];
-                    var codeResponse = await httpClient.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
+                    var authRequestOptions = new AuthorizationCodeTokenRequest
                     {
                         Address = authenticationParameters.ClientConfiguration.TokenEndpoint,
                         ClientId = authenticationParameters.ClientConfiguration.ClientId,
@@ -52,7 +52,14 @@ namespace Dangl.OpenCDE.Client.Services
                         Code = code,
                         GrantType = "authorization_code",
                         RedirectUri = redirectUri
-                    });
+                    };
+
+                    if (authenticationParameters.ClientConfiguration.TokenEndpoint.Contains("trimble", System.StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        authRequestOptions.ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader;
+                    }
+
+                    var codeResponse = await httpClient.RequestAuthorizationCodeTokenAsync(authRequestOptions);
 
                     if (codeResponse.IsError)
                     {
