@@ -58,10 +58,14 @@ export class CdeClientHubService {
         }
 
         if (response.isSuccess) {
-          this.jwtTokenService.storeCustomToken({
-            accessToken: response.jwtToken!,
-            expiresAt: response.expiresAt!,
-          });
+          try {
+            this.jwtTokenService.storeCustomToken({
+              accessToken: response.jwtToken!,
+              expiresAt: response.expiresAt!,
+            });
+          } catch {
+            /* Some services might not return Jwt tokens, but that's fine😀 */
+          }
         } else {
           alert('Authentication failed');
         }
