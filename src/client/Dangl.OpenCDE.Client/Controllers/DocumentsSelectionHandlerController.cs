@@ -52,7 +52,6 @@ namespace Dangl.OpenCDE.Client.Controllers
                     Url = callbackUrl
                 }
             });
-            callbackParameters["callback_url"] = callbackUrl;
 
             var initialRequest = GetRequest(callbackParameters, documentsUrl);
             var response = await httpClient.SendAsync(initialRequest);
