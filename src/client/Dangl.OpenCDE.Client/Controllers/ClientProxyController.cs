@@ -18,12 +18,16 @@ namespace Dangl.OpenCDE.Client.Controllers
         public async Task<IActionResult> GetResponseViaBackend([FromQuery] string targetUrl, [FromQuery] string accessToken)
         {
             var client = _httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+            if (!string.IsNullOrWhiteSpace(accessToken))
+            {
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+            }
 
             var response = await client.GetAsync(targetUrl);
             if (!response.IsSuccessStatusCode)
             {
-                return BadRequest();
+                var errorResponseContent = await response.Content.ReadAsStringAsync();
+                return BadRequest(errorResponseContent);
             }
 
             var responseContent = await response.Content.ReadAsStringAsync();

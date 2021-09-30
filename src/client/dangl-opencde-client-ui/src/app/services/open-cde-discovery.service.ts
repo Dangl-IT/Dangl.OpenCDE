@@ -30,16 +30,36 @@ export class OpenCdeDiscoveryService {
     this.foundationsBaseUrl.subscribe((baseUrl) => {
       if (baseUrl) {
         baseUrl = baseUrl.replace(/\/$/, ''); // Removing trailing slash
-        const authUrl = `${baseUrl}/auth`;
-        this.http.get<AuthGet>(authUrl).subscribe((authenticationResponse) => {
-          if (!authenticationResponse.oauth2_auth_url) {
-            alert("Missing 'oauth2_auth_url' in response");
-          } else {
-            this.foundationsAuthenticationInfoSource.next(
-              authenticationResponse
-            );
+        let authUrl = `${baseUrl}/auth`;
+
+        const getProxyUrl = (actualUrl: string) =>
+          `/client-proxy?&targetUrl=${encodeURIComponent(actualUrl)}`;
+
+        this.http.get<AuthGet>(getProxyUrl(authUrl)).subscribe(
+          (authenticationResponse) => {
+            if (!authenticationResponse.oauth2_auth_url) {
+              alert("Missing 'oauth2_auth_url' in response");
+            } else {
+              this.foundationsAuthenticationInfoSource.next(
+                authenticationResponse
+              );
+            }
+          },
+          () => {
+            authUrl = `${baseUrl}/1.0/auth`;
+            this.http
+              .get<AuthGet>(getProxyUrl(authUrl))
+              .subscribe((authenticationResponse) => {
+                if (!authenticationResponse.oauth2_auth_url) {
+                  alert("Missing 'oauth2_auth_url' in response");
+                } else {
+                  this.foundationsAuthenticationInfoSource.next(
+                    authenticationResponse
+                  );
+                }
+              });
           }
-        });
+        );
       }
     });
   }
@@ -105,9 +125,13 @@ export class OpenCdeDiscoveryService {
 
       handleVersionsResponse(trimbleResponse);
     } else {
-      const versionsClient = new VersionsClient(this.http, serverBaseUrl);
+      const getProxyUrl = (actualUrl: string) =>
+        `/client-proxy?targetUrl=${encodeURIComponent(actualUrl)}`;
 
-      versionsClient.getApiVersions().subscribe(
+      const versionsBaseUrl = getProxyUrl(
+        `${serverBaseUrl}/foundation/versions`
+      );
+      this.http.get<VersionsGet>(versionsBaseUrl).subscribe(
         (response) => {
           handleVersionsResponse(response);
         },
