@@ -29,6 +29,8 @@ namespace Dangl.OpenCDE.Data.Models
         [Required]
         public long SizeInBytes { get; set; }
 
+        public bool FileAvailableInStorage { get; set; } = true;
+
         public static void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CdeAppFile>()

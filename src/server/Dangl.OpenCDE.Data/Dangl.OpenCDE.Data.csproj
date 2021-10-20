@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dangl.OpenCDE.Shared\Dangl.OpenCDE.Shared.csproj" />
-    <PackageReference Include="Dangl.AspNetCore.FileHandling.Azure" Version="0.7.0" />
   </ItemGroup>
 
   <ItemGroup>

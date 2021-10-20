@@ -1185,6 +1185,233 @@ export class DocumentsClient {
     }
     return _observableOf<DocumentGet>(<any>null);
   }
+
+  markDocumentContentAsUploaded(
+    projectId: string,
+    documentId: string
+  ): Observable<DocumentContentPreparationPost> {
+    let url_ =
+      this.baseUrl +
+      '/api/projects/{projectId}/documents/{documentId}/content-status';
+    if (projectId === undefined || projectId === null)
+      throw new Error("The parameter 'projectId' must be defined.");
+    url_ = url_.replace('{projectId}', encodeURIComponent('' + projectId));
+    if (documentId === undefined || documentId === null)
+      throw new Error("The parameter 'documentId' must be defined.");
+    url_ = url_.replace('{documentId}', encodeURIComponent('' + documentId));
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: 'application/json',
+      }),
+    };
+
+    return this.http
+      .request('post', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processMarkDocumentContentAsUploaded(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processMarkDocumentContentAsUploaded(<any>response_);
+            } catch (e) {
+              return <Observable<DocumentContentPreparationPost>>(
+                (<any>_observableThrow(e))
+              );
+            }
+          } else
+            return <Observable<DocumentContentPreparationPost>>(
+              (<any>_observableThrow(response_))
+            );
+        })
+      );
+  }
+
+  protected processMarkDocumentContentAsUploaded(
+    response: HttpResponseBase
+  ): Observable<DocumentContentPreparationPost> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (<any>response).error instanceof Blob
+        ? (<any>response).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          let result400: any = null;
+          result400 =
+            _responseText === ''
+              ? null
+              : <ApiError>JSON.parse(_responseText, this.jsonParseReviver);
+          return throwException(
+            'A server side error occurred.',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status === 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          let result204: any = null;
+          result204 =
+            _responseText === ''
+              ? null
+              : <DocumentContentPreparationPost>(
+                  JSON.parse(_responseText, this.jsonParseReviver)
+                );
+          return _observableOf(result204);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf<DocumentContentPreparationPost>(<any>null);
+  }
+
+  prepareDocumentUploadViaStorageProvider(
+    projectId: string,
+    documentId: string,
+    documentContentPreparation: DocumentContentPreparationPost
+  ): Observable<DocumentContentSasUploadResultGet> {
+    let url_ =
+      this.baseUrl +
+      '/api/projects/{projectId}/documents/{documentId}/content-preparation';
+    if (projectId === undefined || projectId === null)
+      throw new Error("The parameter 'projectId' must be defined.");
+    url_ = url_.replace('{projectId}', encodeURIComponent('' + projectId));
+    if (documentId === undefined || documentId === null)
+      throw new Error("The parameter 'documentId' must be defined.");
+    url_ = url_.replace('{documentId}', encodeURIComponent('' + documentId));
+    url_ = url_.replace(/[?&]$/, '');
+
+    const content_ = JSON.stringify(documentContentPreparation);
+
+    let options_: any = {
+      body: content_,
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      }),
+    };
+
+    return this.http
+      .request('post', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processPrepareDocumentUploadViaStorageProvider(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processPrepareDocumentUploadViaStorageProvider(
+                <any>response_
+              );
+            } catch (e) {
+              return <Observable<DocumentContentSasUploadResultGet>>(
+                (<any>_observableThrow(e))
+              );
+            }
+          } else
+            return <Observable<DocumentContentSasUploadResultGet>>(
+              (<any>_observableThrow(response_))
+            );
+        })
+      );
+  }
+
+  protected processPrepareDocumentUploadViaStorageProvider(
+    response: HttpResponseBase
+  ): Observable<DocumentContentSasUploadResultGet> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (<any>response).error instanceof Blob
+        ? (<any>response).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          let result400: any = null;
+          result400 =
+            _responseText === ''
+              ? null
+              : <ApiError>JSON.parse(_responseText, this.jsonParseReviver);
+          return throwException(
+            'A server side error occurred.',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          let result200: any = null;
+          result200 =
+            _responseText === ''
+              ? null
+              : <DocumentContentSasUploadResultGet>(
+                  JSON.parse(_responseText, this.jsonParseReviver)
+                );
+          return _observableOf(result200);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf<DocumentContentSasUploadResultGet>(<any>null);
+  }
 }
 
 @Injectable({
@@ -3026,6 +3253,30 @@ other members of a problem type. */
 export interface DocumentPost {
   name: string;
   description?: string | undefined;
+}
+
+export interface DocumentContentPreparationPost {
+  fileName: string;
+  contentType: string;
+  sizeInBytes: number;
+}
+
+export interface DocumentContentSasUploadResultGet {
+  sasUploadLink: SasUploadLink;
+  customHeaders: DocumentContentSasUploadResultHeaderGet[];
+}
+
+/** This class represents an Azure Blob SAS url, which can be used to directly allow a client to upload a file directly to Azure without having to proxy it through the actual service */
+export interface SasUploadLink {
+  /** The Azure Blob upload link */
+  uploadLink?: string | undefined;
+  /** When the link expires */
+  validUntil?: Date;
+}
+
+export interface DocumentContentSasUploadResultHeaderGet {
+  name: string;
+  value: string;
 }
 
 export interface FrontendConfigGet {

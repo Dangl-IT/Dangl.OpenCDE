@@ -16,6 +16,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { LoginComponent } from './components/login/login.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -84,6 +85,7 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
     ReactiveFormsModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
+    MatCheckboxModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

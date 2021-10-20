@@ -105,7 +105,7 @@ namespace Dangl.OpenCDE.Data.IO
             return Path.GetFileName(originalFilename).Trim();
         }
 
-        private async Task<CdeAppFileMimeType> GetDbMimeTypeAsync(string mimeType)
+        public async Task<CdeAppFileMimeType> GetDbMimeTypeAsync(string mimeType)
         {
             mimeType = mimeType?.ToLowerInvariant().Trim();
             if (string.IsNullOrWhiteSpace(mimeType))
@@ -161,6 +161,55 @@ namespace Dangl.OpenCDE.Data.IO
                     friendlyFileName: dbFile.FileName);
 
             return sasDownloadLinkResult;
+        }
+
+        public async Task<RepositoryResult<SasUploadLink>> TryGetSasUploadLinkAsync(Guid fileId)
+        {
+            if (!(_fileManager is AzureBlobFileManager azureBlobFileManager))
+            {
+                return RepositoryResult<SasUploadLink>.Fail("SAS links can only be generated for Azure Blob Storage");
+            }
+
+            var dbFile = await _context.Files
+                .Include(f => f.MimeType)
+                .FirstOrDefaultAsync(f => f.Id == fileId);
+
+            if (dbFile == null)
+            {
+                return RepositoryResult<SasUploadLink>.Fail("There is no file with the given id");
+            }
+
+            if (dbFile.FileAvailableInStorage)
+            {
+                return RepositoryResult<SasUploadLink>.Fail("The file has already been uploaded.");
+            }
+
+            var sasUploadLinkResult = await azureBlobFileManager
+                .GetSasUploadLinkAsync(fileId,
+                dbFile.ContainerName,
+                dbFile.FileName,
+                validForMinutes: 5);
+
+            return sasUploadLinkResult;
+        }
+
+        public async Task<bool> CheckIfFileExistsInStorageAsync(Guid fileId)
+        {
+            var dbFile = await _context
+                .Files
+                .FirstOrDefaultAsync(f => f.Id == fileId);
+            if (dbFile == null)
+            {
+                return false;
+            }
+
+            var fileExistsResult = await _fileManager.CheckIfFileExistsAsync(dbFile.Id, dbFile.ContainerName, dbFile.FileName);
+            if (!fileExistsResult.IsSuccess)
+            {
+                return false;
+            }
+
+            return fileExistsResult.Value;
         }
     }
 }

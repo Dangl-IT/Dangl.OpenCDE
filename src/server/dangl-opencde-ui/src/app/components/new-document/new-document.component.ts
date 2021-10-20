@@ -1,13 +1,18 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
+  DocumentContentSasUploadResultGet,
+  DocumentGet,
+  DocumentsClient,
+  SasUploadLink,
+} from '../../generated/backend-client';
+import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
 
-import { DocumentsClient } from '../../generated/backend-client';
 import { DocumentsService } from '../../services/documents.service';
 import { ProgressSettings } from '../../models/progress-settings';
 import { Subject } from 'rxjs';
@@ -40,6 +45,7 @@ export class NewDocumentComponent implements OnInit, OnDestroy {
       name: new FormControl('', Validators.required),
       description: new FormControl(''),
       documentFile: new FormControl(null, Validators.required),
+      useSasDocumentUpload: new FormControl(false),
     });
   }
 
@@ -73,34 +79,111 @@ export class NewDocumentComponent implements OnInit, OnDestroy {
         description: this.documentCreationForm.value.description,
       })
       .subscribe(
-        (r) => {
-          this.documentsClient
-            .uploadDocumentContent(
-              this.projectId!,
-              r.id,
-              this.documentCreationForm!.value.documentFile
-            )
-            .subscribe(
-              (r) => {
-                this.settingsProgress.isLoading = false;
-
-                // To ensure that the new document is loaded by the service in case
-                // the user navigates back to the overview, since the service internally
-                // caches the pagination result
-                this.documentsService.forceRefresh();
-                this.router.navigate(['..', 'documents', r.id], {
-                  relativeTo: this.route,
-                });
-              },
-              () => {
-                this.settingsProgress.isLoading = false;
-                alert('Some error happened');
-              }
-            );
+        (r: DocumentGet) => {
+          if (this.documentCreationForm.value.useSasDocumentUpload) {
+            this.uploadDocumentViaSasLink(r);
+          } else {
+            this.uploadDocumentDirectlyToServer(r);
+          }
         },
         () => {
           this.settingsProgress.isLoading = false;
           alert('Some error happend');
+        }
+      );
+  }
+
+  private uploadDocumentViaSasLink(document: DocumentGet): void {
+    const documentFile: { fileName: string; data: File } =
+      this.documentCreationForm!.value.documentFile;
+
+    this.settingsProgress.isLoading = false;
+
+    const contentType = documentFile.data.type
+      ? documentFile.data.type
+      : 'application/octet-stream';
+
+    this.documentsClient
+      .prepareDocumentUploadViaStorageProvider(
+        document.projectId,
+        document.id,
+        {
+          contentType: contentType,
+          fileName: documentFile.data.name ?? documentFile.fileName,
+          sizeInBytes: documentFile.data.size,
+        }
+      )
+      .subscribe(
+        (uploadInstructions: DocumentContentSasUploadResultGet) => {
+          if (!uploadInstructions) {
+            alert('Did not receive a proper upload link.');
+            return;
+          }
+
+          // Here, we're not using Angular but just the regular fetch API from the browser, to demonstrate
+          // how direct uploads to Azure blob storage function
+          const headers: { [headerValue: string]: string } = {};
+          uploadInstructions.customHeaders.forEach(
+            (header) => (headers[header.name] = header.value)
+          );
+
+          fetch(uploadInstructions.sasUploadLink.uploadLink!, {
+            method: 'PUT',
+            body: documentFile.data,
+            headers: headers,
+          })
+            .then(() => {
+              this.documentsClient
+                .markDocumentContentAsUploaded(document.projectId, document.id)
+                .subscribe(
+                  () => {
+                    this.documentsService.forceRefresh();
+                    this.settingsProgress.isLoading = false;
+
+                    this.router.navigate(['..', 'documents', document.id], {
+                      relativeTo: this.route,
+                    });
+                  },
+                  () => {
+                    this.settingsProgress.isLoading = false;
+                    alert('Error during SAS upload');
+                  }
+                );
+            })
+            .catch(() => {
+              this.settingsProgress.isLoading = false;
+              alert('Error during SAS upload');
+            });
+        },
+        () => {
+          this.settingsProgress.isLoading = false;
+          alert('Error during SAS upload');
+        }
+      );
+  }
+
+  private uploadDocumentDirectlyToServer(document: DocumentGet): void {
+    this.documentsClient
+      .uploadDocumentContent(
+        this.projectId!,
+        document.id,
+        this.documentCreationForm!.value.documentFile
+      )
+      .subscribe(
+        (r) => {
+          this.settingsProgress.isLoading = false;
+
+          // To ensure that the new document is loaded by the service in case
+          // the user navigates back to the overview, since the service internally
+          // caches the pagination result
+          this.documentsService.forceRefresh();
+          this.router.navigate(['..', 'documents', r.id], {
+            relativeTo: this.route,
+          });
+        },
+        () => {
+          this.settingsProgress.isLoading = false;
+          alert('Some error happened');
         }
       );
   }

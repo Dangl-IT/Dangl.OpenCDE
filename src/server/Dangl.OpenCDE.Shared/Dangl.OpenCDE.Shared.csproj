@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Dangl.AspNetCore.FileHandling.Azure" Version="0.7.0" />
   </ItemGroup>
 
 </Project>

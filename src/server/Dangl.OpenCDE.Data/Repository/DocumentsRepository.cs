@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Dangl.AspNetCore.FileHandling.Azure;
 using Dangl.Data.Shared;
 using Dangl.Data.Shared.QueryUtilities;
+using Dangl.Identity.Client.Mvc.Services;
 using Dangl.OpenCDE.Data.Dto.Documents;
 using Dangl.OpenCDE.Data.IO;
 using Dangl.OpenCDE.Data.Models;
+using Dangl.OpenCDE.Shared.Models.Controllers.Documents;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,14 +21,26 @@ namespace Dangl.OpenCDE.Data.Repository
         private readonly CdeDbContext _context;
         private readonly IMapper _mapper;
         private readonly ICdeAppFileHandler _cdeAppFileHandler;
+        private readonly IUserInfoService _userInfoService;
 
         public DocumentsRepository(CdeDbContext context,
             IMapper mapper,
-            ICdeAppFileHandler cdeAppFileHandler)
+            ICdeAppFileHandler cdeAppFileHandler,
+            IUserInfoService userInfoService)
         {
             _context = context;
             _mapper = mapper;
             _cdeAppFileHandler = cdeAppFileHandler;
+            _userInfoService = userInfoService;
+        }
+
+        public Task<bool> CheckIfDocumentWithoutContentExistsForProject(Guid projectId, Guid documentId)
+        {
+            return _context
+                .Documents
+                .AnyAsync(d => d.ProjectId == projectId
+                    && d.Id == documentId
+                    && (d.FileId == null || !d.File.FileAvailableInStorage));
         }
 
         public IQueryable<DocumentDto> GetAllDocumentsForProject(Guid projectId, string filter)
@@ -90,6 +105,107 @@ namespace Dangl.OpenCDE.Data.Repository
             {
                 FileResultContainer = fileResult.Value
             });
+        }
+
+        public async Task<RepositoryResult> MarkDocumentAsUploadedAsync(Guid documentId)
+        {
+            var document = await _context
+                .Documents
+                .Include(d => d.File)
+                .FirstOrDefaultAsync(d => d.Id == documentId);
+            if (document?.File == null)
+            {
+                return RepositoryResult.Fail("There is either no document with the given id, or it has no file reference.");
+            }
+
+            if (document.File.FileAvailableInStorage)
+            {
+                return RepositoryResult.Fail("The file is already marked as available.");
+            }
+
+            if (!await _cdeAppFileHandler.CheckIfFileExistsInStorageAsync(document.FileId.Value))
+            {
+                return RepositoryResult.Fail("The file does not seem to exist in the storage.");
+            }
+
+            document.File.FileAvailableInStorage = true;
+            await _context.SaveChangesAsync();
+
+            return RepositoryResult.Success();
+        }
+
+        public async Task<RepositoryResult<DocumentContentSasUploadResultGet>> PrepareSasDocumentUploadAsync(Guid documentId,
+            string fileName,
+            string mimeType,
+            long sizeInBytes)
+        {
+            var document = await _context
+                .Documents
+                .Include(d => d.File)
+                .FirstOrDefaultAsync(d => d.Id == documentId);
+
+            if (document == null)
+            {
+                return RepositoryResult<DocumentContentSasUploadResultGet>.Fail("There is no document with the given id present in the project.");
+            }
+
+            if (document.FileId != null)
+            {
+                return RepositoryResult<DocumentContentSasUploadResultGet>.Fail("This document already has content, it can not be changed.");
+            }
+
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                return RepositoryResult<DocumentContentSasUploadResultGet>.Fail("The file name is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(mimeType))
+            {
+                return RepositoryResult<DocumentContentSasUploadResultGet>.Fail("The content type is required.");
+            }
+
+            var userId = await _userInfoService.GetCurrentUserIdAsync();
+            var dbMimeType = await _cdeAppFileHandler.GetDbMimeTypeAsync(mimeType);
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
+            var dbFile = new CdeAppFile
+            {
+                ContainerName = FileContainerNames.PROJECT_DOCUMENTS,
+                FileName = fileName,
+                MimeType = dbMimeType,
+                FileAvailableInStorage = false,
+                CreatedByUserId = userId,
+                CreatedAtUtc = DateTimeOffset.UtcNow,
+                SizeInBytes = sizeInBytes
+            };
+
+            document.File = dbFile;
+
+            await _context.SaveChangesAsync();
+
+            var sasUploadLinkResult = await _cdeAppFileHandler.TryGetSasUploadLinkAsync(dbFile.Id);
+            if (!sasUploadLinkResult.IsSuccess)
+            {
+                return RepositoryResult<DocumentContentSasUploadResultGet>.Fail(sasUploadLinkResult.ErrorMessage);
+            }
+
+            await transaction.CommitAsync();
+
+            var uploadLinkData = new DocumentContentSasUploadResultGet
+            {
+                SasUploadLink = sasUploadLinkResult.Value,
+                CustomHeaders = new System.Collections.Generic.List<DocumentContentSasUploadResultHeaderGet>
+                {
+                    new DocumentContentSasUploadResultHeaderGet
+                    {
+                        Name = "x-ms-blob-type",
+                        Value = "BlockBlob"
+                    }
+                }
+            };
+
+            return RepositoryResult<DocumentContentSasUploadResultGet>.Success(uploadLinkData);
         }
 
         public async Task<RepositoryResult<DocumentDto>> SaveDocumentContentAsync(Guid projectId, Guid documentId, IFormFile document)

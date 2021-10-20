@@ -1,5 +1,6 @@
 ﻿using Dangl.Data.Shared;
 using Dangl.OpenCDE.Data.Dto.Documents;
+using Dangl.OpenCDE.Shared.Models.Controllers.Documents;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
@@ -18,5 +19,11 @@ namespace Dangl.OpenCDE.Data.Repository
         Task<RepositoryResult<DocumentDto>> SaveDocumentContentAsync(Guid projectId, Guid documentId, IFormFile document);
 
         Task<RepositoryResult<DocumentFileResultDto>> GetDocumentDataAsync(Guid documentId);
+
+        Task<bool> CheckIfDocumentWithoutContentExistsForProject(Guid projectId, Guid documentId);
+
+        Task<RepositoryResult<DocumentContentSasUploadResultGet>> PrepareSasDocumentUploadAsync(Guid documentId, string fileName, string mimeType, long sizeInBytes);
+
+        Task<RepositoryResult> MarkDocumentAsUploadedAsync(Guid documentId);
     }
 }

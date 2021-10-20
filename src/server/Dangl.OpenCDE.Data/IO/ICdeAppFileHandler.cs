@@ -1,5 +1,6 @@
 ﻿using Dangl.AspNetCore.FileHandling.Azure;
 using Dangl.Data.Shared;
+using Dangl.OpenCDE.Data.Models;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -23,6 +24,12 @@ namespace Dangl.OpenCDE.Data.IO
 
         Task<RepositoryResult<SasDownloadLink>> TryGetFileSasDownloadLinkAsync(Guid fileId);
 
+        Task<RepositoryResult<SasUploadLink>> TryGetSasUploadLinkAsync(Guid fileId);
+
         Task<RepositoryResult> DeleteFileAsync(Guid fileId);
+
+        Task<bool> CheckIfFileExistsInStorageAsync(Guid fileId);
+
+        Task<CdeAppFileMimeType> GetDbMimeTypeAsync(string mimeType);
     }
 }

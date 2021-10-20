@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Dangl.AspNetCore.FileHandling.Azure;
 using Dangl.Data.Shared;
 using Dangl.OpenCDE.Data.Dto.Documents;
 using Dangl.OpenCDE.Data.Repository;
@@ -134,6 +135,48 @@ namespace Dangl.OpenCDE.Core.Controllers
             var uploadResult = await _documentsRepository.SaveDocumentMetadataForProjectAsync(projectId, creationDto);
 
             return FromRepositoryResult<DocumentDto, DocumentGet>(uploadResult, _mapper);
+        }
+
+        [HttpPost("{documentId}/content-status")]
+        [ProducesResponseType(typeof(ApiError), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(DocumentContentPreparationPost), (int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> MarkDocumentContentAsUploadedAsync(Guid projectId, Guid documentId)
+        {
+            if (!await _documentsRepository.CheckIfDocumentWithoutContentExistsForProject(projectId, documentId))
+            {
+                return BadRequest(new ApiError("This combination of project and document does not exist."));
+            }
+
+            var databaseUpdateResult = await _documentsRepository.MarkDocumentAsUploadedAsync(documentId);
+            if (!databaseUpdateResult.IsSuccess)
+            {
+                return BadRequest(new ApiError(databaseUpdateResult.ErrorMessage));
+            }
+
+            return NoContent();
+        }
+
+        [HttpPost("{documentId}/content-preparation")]
+        [ProducesResponseType(typeof(ApiError), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(DocumentContentSasUploadResultGet), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> PrepareDocumentUploadViaStorageProviderAsync(Guid projectId, Guid documentId,
+            [FromBody] DocumentContentPreparationPost documentContentPreparation)
+        {
+            if (!await _documentsRepository.CheckIfDocumentWithoutContentExistsForProject(projectId, documentId))
+            {
+                return BadRequest(new ApiError("This combination of project and document does not exist."));
+            }
+
+            var preparationResult = await _documentsRepository.PrepareSasDocumentUploadAsync(documentId,
+                documentContentPreparation?.FileName,
+                documentContentPreparation?.ContentType,
+                documentContentPreparation?.SizeInBytes ?? default);
+            if (!preparationResult.IsSuccess)
+            {
+                return BadRequest(new ApiError(preparationResult.ErrorMessage));
+            }
+
+            return Ok(preparationResult.Value);
         }
 
         [HttpPost("{documentId}/content")]
