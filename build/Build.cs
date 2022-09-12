@@ -47,7 +47,6 @@ using Nuke.Common.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 
-[CheckBuildProjectConfigurations]
 class Build : NukeBuild
 {
     public static int Main () => Execute<Build>(x => x.Compile);
@@ -103,7 +102,7 @@ class Build : NukeBuild
     public Build()
     {
         // Otherwise, Angular compiler output is logged to stderr instead of stdout.
-        NpmTasks.NpmLogger = (outputType, message) => Logger.Normal(message);
+        NpmTasks.NpmLogger = (outputType, message) => Serilog.Log.Debug(message);
     }
 
     protected override void OnTargetFailed(string target)
@@ -258,7 +257,7 @@ export const version = {{
         .Requires(() => Configuration == "Debug")
         .Executes(() =>
         {
-            Logger.Normal("Ensuring that latest SQL Docker image is present");
+            Serilog.Log.Debug("Ensuring that latest SQL Docker image is present");
             DockerPull(c => c.SetName("dangl/mssql-tmpfs:latest"));
 
             var testProjects = GlobFiles(TestsDirectory, "**/*.csproj")
@@ -459,8 +458,8 @@ export const version = {{
             }
         }
 
-        ControlFlow.Assert(statusIsAtLatestVersion, $"Status at {appStatusUrl} does not indicate latest version.");
-        Logger.Normal($"App at {appStatusUrl} is at latest version {GitVersion.NuGetVersionV2}");
+        Assert.True(statusIsAtLatestVersion, $"Status at {appStatusUrl} does not indicate latest version.");
+        Serilog.Log.Debug($"App at {appStatusUrl} is at latest version {GitVersion.NuGetVersionV2}");
     }
 
     private async Task PushDockerWithTag(string tag)
@@ -575,7 +574,7 @@ export const version = {{
             }
             else
             {
-                Logger.Normal("Not building Electron Windows targets, since it was not specified.");
+                Serilog.Log.Debug("Not building Electron Windows targets, since it was not specified.");
             }
 
             if (BuildElectronUnixTargets)
@@ -587,7 +586,7 @@ export const version = {{
             }
             else
             {
-                Logger.Normal("Not building Electron Unix targets, since it was not specified.");
+                Serilog.Log.Debug("Not building Electron Unix targets, since it was not specified.");
             }
 
             SignExecutablesInFolder(OutputDirectory / "electron");
@@ -597,26 +596,26 @@ export const version = {{
     {
         if (!IsWin)
         {
-            Logger.Normal("Not signing any executables, since not running on Windows");
+            Serilog.Log.Debug("Not signing any executables, since not running on Windows");
             return;
         }
 
-        ControlFlow.Assert(!string.IsNullOrWhiteSpace(CodeSigningCertificateKeyVaultBaseUrl), "!string.IsNullOrWhitespace(CodeSigningCertificateKeyVaultBaseUrl)");
-        ControlFlow.Assert(!string.IsNullOrWhiteSpace(KeyVaultClientId), "!string.IsNullOrWhitespace(KeyVaultClientId)");
-        ControlFlow.Assert(!string.IsNullOrWhiteSpace(KeyVaultClientSecret), "!string.IsNullOrWhitespace(KeyVaultClientSecret)");
-        ControlFlow.Assert(!string.IsNullOrWhiteSpace(CodeSigningKeyVaultTenantId), "!string.IsNullOrWhitespace(CodeSigningKeyVaultTenantId)");
-        ControlFlow.Assert(!string.IsNullOrWhiteSpace(CodeSigningCertificateName), "!string.IsNullOrWhitespace(CodeSigningCertificateName)");
+        Assert.True(!string.IsNullOrWhiteSpace(CodeSigningCertificateKeyVaultBaseUrl), "!string.IsNullOrWhitespace(CodeSigningCertificateKeyVaultBaseUrl)");
+        Assert.True(!string.IsNullOrWhiteSpace(KeyVaultClientId), "!string.IsNullOrWhitespace(KeyVaultClientId)");
+        Assert.True(!string.IsNullOrWhiteSpace(KeyVaultClientSecret), "!string.IsNullOrWhitespace(KeyVaultClientSecret)");
+        Assert.True(!string.IsNullOrWhiteSpace(CodeSigningKeyVaultTenantId), "!string.IsNullOrWhitespace(CodeSigningKeyVaultTenantId)");
+        Assert.True(!string.IsNullOrWhiteSpace(CodeSigningCertificateName), "!string.IsNullOrWhitespace(CodeSigningCertificateName)");
 
-        Logger.Normal("Searching for files to sign in " + folderPath);
+        Serilog.Log.Debug("Searching for files to sign in " + folderPath);
         var inputFiles = GlobFiles(folderPath, "*.exe");
 
         if (!inputFiles.Any())
         {
-            Logger.Normal("No files to sign found");
+            Serilog.Log.Debug("No files to sign found");
             return;
         }
 
-        Logger.Normal("Signing " + inputFiles.Join(", "));
+        Serilog.Log.Debug("Signing " + inputFiles.Join(", "));
 
         var filesListPath = OutputDirectory / $"{Guid.NewGuid()}.txt";
         WriteAllText(filesListPath, inputFiles.Join(Environment.NewLine) + Environment.NewLine);
@@ -664,7 +663,7 @@ export const version = {{
             // NUKE somehow fails to locate 'electronize' via '/usr/bin/which', however, after installation,
             // we can find the location of the .NET global tool
             var electronizePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dotnet", "tools", "electronize");
-            ControlFlow.Assert(File.Exists(electronizePath), "File does not exist: " + electronizePath);
+            Assert.True(File.Exists(electronizePath), "File does not exist: " + electronizePath);
             ProcessTasks.StartProcess(electronizePath,
                 electronizeArguments,
                 workingDirectory: electronizeWorkingDirectory)
