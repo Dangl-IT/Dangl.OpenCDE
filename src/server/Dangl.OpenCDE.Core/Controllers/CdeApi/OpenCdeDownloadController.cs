@@ -2,6 +2,7 @@
 using Dangl.OpenCDE.Core.Configuration;
 using Dangl.OpenCDE.Data.Repository;
 using Dangl.OpenCDE.Shared.Models.CdeApi;
+using Dangl.OpenCDE.Shared.OpenCdeSwaggerGenerated.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Net;
@@ -10,12 +11,12 @@ using System.Threading.Tasks;
 namespace Dangl.OpenCDE.Core.Controllers.CdeApi
 {
     [Route("api/opencde/1.0")]
-    public class DocumentSelectionController : CdeAppControllerBase
+    public class OpenCdeDownloadController : CdeAppControllerBase
     {
         private readonly IOpenCdeDocumentSelectionRepository _openCdeDocumentSelectionService;
         private readonly OpenCdeSettings _openCdeSettings;
 
-        public DocumentSelectionController(IOpenCdeDocumentSelectionRepository openCdeDocumentSelectionService,
+        public OpenCdeDownloadController(IOpenCdeDocumentSelectionRepository openCdeDocumentSelectionService,
             OpenCdeSettings openCdeSettings)
         {
             _openCdeDocumentSelectionService = openCdeDocumentSelectionService;
@@ -25,7 +26,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
         [HttpPost("select-documents")]
         [ProducesResponseType(typeof(ApiError), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(DocumentDiscoverySessionInitialization), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetDocumentDiscoveryData(DocumentDiscoveryPost discoveryMetadata)
+        public async Task<IActionResult> GetDocumentDiscoveryData(SelectDocuments documentSelectionData)
         {
             var userJwtExpiresAtClaim = User
                 .Claims
@@ -38,7 +39,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
                 .Substring("Bearer ".Length);
 
             var sessionInitializationResult = await _openCdeDocumentSelectionService
-                .PrepareOpenCdeDocumentSelectionAsync(discoveryMetadata?.CallbackLink.Url,
+                .PrepareOpenCdeDocumentSelectionAsync(documentSelectionData.Callback?.Url,
                 userJwt,
                 userJwtExpiresAt);
             if (!sessionInitializationResult.IsSuccess)
