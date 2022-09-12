@@ -46,10 +46,13 @@ using Newtonsoft.Json;
 using Nuke.Common.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Security.Policy;
+using System.Text;
 
 class Build : NukeBuild
 {
-    public static int Main () => Execute<Build>(x => x.Compile);
+    public static int Main() => Execute<Build>(x => x.Compile);
 
     [KeyVaultSettings(
         BaseUrlParameterName = nameof(KeyVaultBaseUrl),
@@ -273,7 +276,7 @@ export const version = {{
                     .AddProcessEnvironmentVariable("DANGL_OPENCDE_IGNORE_SQLSERVER_PARALLEL_LIMIT", "true")
                     .SetProcessArgumentConfigurator(a => a
                         .Add($"/p:Include=[Dangl.OpenCDE.*]*")
-                        .Add($"/p:ExcludeByFile=\"{SourceDirectory / "Dangl.OpenCDE" / "Migrations" }*.cs\"")
+                        .Add($"/p:ExcludeByFile=\"{SourceDirectory / "Dangl.OpenCDE" / "Migrations"}*.cs\"")
                         .Add($"/p:Exclude=[Dangl.OpenCDE.TestUtilities]*"))
                     .CombineWith(cc => testProjects
                         .Select(testProject =>
@@ -368,9 +371,9 @@ export const version = {{
         .Executes(() =>
         {
             EnsureCleanDirectory(SourceDirectory / "server" / "Dangl.OpenCDE" / "wwwroot" / "dist");
-                NpmRun(x => x
-                    .SetProcessWorkingDirectory(SourceDirectory / "server" / "dangl-opencde-ui")
-                    .SetCommand("build:production"));
+            NpmRun(x => x
+                .SetProcessWorkingDirectory(SourceDirectory / "server" / "dangl-opencde-ui")
+                .SetCommand("build:production"));
 
             var assetsSrc = SourceDirectory / "server" / "dangl-opencde-ui" / "src" / "assets";
             var assetsDest = SourceDirectory / "server" / "Dangl.OpenCDE" / "wwwroot" / "assets";
@@ -559,7 +562,7 @@ export const version = {{
                 new ElectronBuildConfig{ReleaseIdentifier = "Windows_X64", ElectronArguments = "/target win"}
             };
 
-            var unixTargets = new []
+            var unixTargets = new[]
             {
                 new ElectronBuildConfig{ReleaseIdentifier = "Linux", ElectronArguments = "/target linux"},
                 new ElectronBuildConfig{ReleaseIdentifier = "MacOS", ElectronArguments = "/target osx /PublishReadyToRun false"},
@@ -743,4 +746,124 @@ export const version = {{
                 .SetVersion(GitVersion.NuGetVersion)
                 .SetAssetFilePaths(GlobFiles(OutputDirectory, "*.zip").ToArray()));
         });
+
+    Target GenerateModelsFromSwagger => _ => _
+        .Executes(async () =>
+        {
+            await GenerateCSharpBackendServerSideModelsAsync();
+            await GenerateTypeScriptFrontendModelsAsync();
+        });
+
+    private async Task GenerateCSharpBackendServerSideModelsAsync()
+    {
+        using var httpClient = new HttpClient();
+
+        var codeGenerationUrl = "http://api.openapi-generator.tech/api/gen/servers/aspnetcore";
+
+        var packageName = "Dangl.OpenCDE.Shared";
+
+        var csharpGeneratorOptions = new
+        {
+            packageName = packageName,
+            packageVersion = GitVersion.NuGetVersion,
+            useDateTimeOffset = true,
+            aspnetCoreVersion = "6.0"
+        };
+
+        var generatorOptions = new
+        {
+            options = csharpGeneratorOptions,
+            openAPIUrl = "https://raw.githubusercontent.com/buildingSMART/documents-API/main/swagger.yaml"
+        };
+
+        var generatorOptionsJson = JsonConvert.SerializeObject(generatorOptions);
+
+        var codeGenerationRequest = new HttpRequestMessage(HttpMethod.Post, codeGenerationUrl)
+        {
+            Content = new StringContent(generatorOptionsJson, Encoding.UTF8, "application/json")
+        };
+
+        var codeGenerationResponse = await httpClient.SendAsync(codeGenerationRequest);
+        var jsonResponse = await codeGenerationResponse.Content.ReadAsStringAsync();
+        var downloadLink = (string)JObject.Parse(jsonResponse)["link"];
+        var generatedClientResponse = await httpClient.GetAsync(downloadLink);
+        var generatedClientStream = await generatedClientResponse.Content.ReadAsStreamAsync();
+
+        using var zipArchive = new ZipArchive(generatedClientStream);
+
+        var targetDirectory = SourceDirectory / "server" / "Dangl.OpenCDE.Shared" / "OpenCdeSwaggerGenerated";
+        EnsureCleanDirectory(targetDirectory);
+        var foldersToCopy = new[] { "Converters", "Models" };
+        foreach (var folderToCopy in foldersToCopy)
+        {
+            var entries = zipArchive.Entries.Where(e => e.FullName.StartsWith($"aspnetcore-server/src/{packageName}/{folderToCopy}")).ToList();
+            Assert.NotEmpty(entries);
+            foreach (var entry in entries)
+            {
+                using var entryStream = entry.Open();
+                using var streamReader = new StreamReader(entryStream);
+                var fileContent = await streamReader.ReadToEndAsync();
+                foreach (var folder in foldersToCopy)
+                {
+                    fileContent = fileContent
+                        .Replace($"Dangl.OpenCDE.Shared.{folder}", $"Dangl.OpenCDE.Shared.OpenCdeSwaggerGenerated.{folder}");
+                }
+                WriteAllText(targetDirectory / folderToCopy / entry.Name, fileContent);
+            }
+        }
+    }
+
+    private async Task GenerateTypeScriptFrontendModelsAsync()
+    {
+        using var httpClient = new HttpClient();
+
+        var codeGenerationUrl = "http://api.openapi-generator.tech/api/gen/clients/typescript-angular";
+
+        var packageName = "Dangl.OpenCDE.Shared";
+
+        var typescriptGeneratorOptions = new
+        {
+            withInterfaces = true,
+            npmName = packageName,
+            npmVersion = GitVersion.NuGetVersion,
+            stringEnums = true
+        };
+
+        var generatorOptions = new
+        {
+            options = typescriptGeneratorOptions,
+            openAPIUrl = "https://raw.githubusercontent.com/buildingSMART/documents-API/main/swagger.yaml"
+        };
+
+        var generatorOptionsJson = JsonConvert.SerializeObject(generatorOptions);
+
+        var codeGenerationRequest = new HttpRequestMessage(HttpMethod.Post, codeGenerationUrl)
+        {
+            Content = new StringContent(generatorOptionsJson, Encoding.UTF8, "application/json")
+        };
+
+        var codeGenerationResponse = await httpClient.SendAsync(codeGenerationRequest);
+        var jsonResponse = await codeGenerationResponse.Content.ReadAsStringAsync();
+        var downloadLink = (string)JObject.Parse(jsonResponse)["link"];
+        var generatedClientResponse = await httpClient.GetAsync(downloadLink);
+        var generatedClientStream = await generatedClientResponse.Content.ReadAsStreamAsync();
+
+        using var zipArchive = new ZipArchive(generatedClientStream);
+
+        var targetDirectory = SourceDirectory / "client" / "dangl-opencde-client-ui" / "src" / "app" / "generated" / "open-cde-swagger";
+        EnsureCleanDirectory(targetDirectory);
+        var foldersToCopy = new[] { "model" };
+        foreach (var folderToCopy in foldersToCopy)
+        {
+            var entries = zipArchive.Entries.Where(e => e.FullName.StartsWith($"typescript-angular-client/{folderToCopy}")).ToList();
+            Assert.NotEmpty(entries);
+            foreach (var entry in entries)
+            {
+                using var entryStream = entry.Open();
+                using var streamReader = new StreamReader(entryStream);
+                var fileContent = await streamReader.ReadToEndAsync();
+                WriteAllText(targetDirectory / folderToCopy / entry.Name, fileContent);
+            }
+        }
+    }
 }
