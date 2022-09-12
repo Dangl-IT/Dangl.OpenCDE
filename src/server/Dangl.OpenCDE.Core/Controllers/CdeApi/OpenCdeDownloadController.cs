@@ -1,7 +1,6 @@
 ﻿using Dangl.Data.Shared;
 using Dangl.OpenCDE.Core.Configuration;
 using Dangl.OpenCDE.Data.Repository;
-using Dangl.OpenCDE.Shared.Models.CdeApi;
 using Dangl.OpenCDE.Shared.OpenCdeSwaggerGenerated.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
