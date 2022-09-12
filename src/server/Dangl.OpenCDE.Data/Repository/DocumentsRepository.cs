@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Dangl.AspNetCore.FileHandling.Azure;
 using Dangl.Data.Shared;
@@ -11,6 +11,7 @@ using Dangl.OpenCDE.Shared.Models.Controllers.Documents;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -52,6 +53,14 @@ namespace Dangl.OpenCDE.Data.Repository
                     || EF.Functions.Like(document.Description, $"%{text}%"),
                     transformFilterToLowercase: true)
                 .ProjectTo<DocumentDto>(_mapper.ConfigurationProvider);
+        }
+
+        public IQueryable<DocumentDto> GetAllDocumentsById(List<Guid> documentIds)
+        {
+            return _context
+                    .Documents
+                    .Where(d => documentIds.Contains(d.Id))
+                    .ProjectTo<DocumentDto>(_mapper.ConfigurationProvider);
         }
 
         public async Task<RepositoryResult<DocumentDto>> GetDocumentByIdAsync(Guid documentId)

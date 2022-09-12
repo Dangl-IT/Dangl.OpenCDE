@@ -1,8 +1,10 @@
 ﻿using Dangl.Data.Shared;
 using Dangl.OpenCDE.Data.Dto.Documents;
 using Dangl.OpenCDE.Shared.Models.Controllers.Documents;
+using Dangl.OpenCDE.Shared.OpenCdeSwaggerGenerated.Models;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,6 +14,8 @@ namespace Dangl.OpenCDE.Data.Repository
     {
         IQueryable<DocumentDto> GetAllDocumentsForProject(Guid projectId, string filter);
 
+        IQueryable<DocumentDto> GetAllDocumentsById(List<Guid> documentIds);
+        
         Task<RepositoryResult<DocumentDto>> GetDocumentByIdAsync(Guid documentId);
 
         Task<RepositoryResult<DocumentDto>> SaveDocumentMetadataForProjectAsync(Guid projectId, CreateDocumentDto metadata);

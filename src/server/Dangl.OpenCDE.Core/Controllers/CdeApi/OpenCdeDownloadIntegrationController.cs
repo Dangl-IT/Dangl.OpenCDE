@@ -1,7 +1,9 @@
 ﻿using Dangl.Data.Shared;
 using Dangl.Identity.Client.Mvc.Services;
+using Dangl.OpenCDE.Core.Extensions;
 using Dangl.OpenCDE.Core.Utilities;
 using Dangl.OpenCDE.Data.Dto.Documents;
+using Dangl.OpenCDE.Data.Extensions;
 using Dangl.OpenCDE.Data.Models;
 using Dangl.OpenCDE.Data.Repository;
 using Dangl.OpenCDE.Shared.Models.Controllers.OpenCdeIntegration;
@@ -151,7 +153,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
                 return BadRequest(new ApiError(document.ErrorMessage));
             }
 
-            var documentVersion = GetDocumentVersionForDocument(document.Value);
+            var documentVersion = document.Value.ToDocumentVersionForDocument(Url, Request.IsHttps);
 
             var documentVersions = new DocumentVersions
             {
@@ -174,7 +176,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
                 return BadRequest(new ApiError(document.ErrorMessage));
             }
 
-            var documentVersion = GetDocumentVersionForDocument(document.Value);
+            var documentVersion = document.Value.ToDocumentVersionForDocument(Url, Request.IsHttps);
             var selection = new SelectedDocuments
             {
                 Documents = new List<DocumentVersion> { documentVersion }
@@ -194,70 +196,13 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
                 return BadRequest(new ApiError(document.ErrorMessage));
             }
 
-            var documentVersion = GetDocumentVersionForDocument(document.Value);
+            var documentVersion = document.Value.ToDocumentVersionForDocument(Url, Request.IsHttps);
             var selection = new SelectedDocuments
             {
                 Documents = new List<DocumentVersion> { documentVersion }
             };
 
             return Ok(selection);
-        }
-
-        private DocumentVersion GetDocumentVersionForDocument(DocumentDto document)
-        {
-            return new DocumentVersion
-            {
-                Title = document.Name,
-                VersionNumber = "1",
-                CreationDate = document.CreatedAtUtc,
-                FileDescription = new FileDescription
-                {
-                    Name = document.FileName,
-                    SizeInBytes = document.FileSizeInBytes ?? 0
-                },
-                Links = new DocumentVersionLinks
-                {
-                    DocumentVersionDownload = new LinkData
-                    {
-                        Url = GetAbsoluteBaseUrl(nameof(DocumentsController), nameof(DocumentsController.DownloadDocumentAsync), new
-                        {
-                            projectId = document.ProjectId,
-                            documentId = document.Id
-                        })
-                    },
-                    DocumentVersionMetadata = new LinkData
-                    {
-                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeDownloadIntegrationController), nameof(GetDocumentMetadataAsync), new
-                        {
-                            documentId = document.Id
-                        })
-                    },
-                    DocumentVersion = new LinkData
-                    {
-                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeDownloadIntegrationController), nameof(GetDocumentReferenceAsync), new
-                        {
-                            documentId = document.Id
-                        })
-                    },
-                    DocumentVersions = new LinkData
-                    {
-                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeDownloadIntegrationController), nameof(GetDocumentVersionsAsync), new
-                        {
-                            documentId = document.Id
-                        })
-                    }
-                }
-            };
-        }
-
-        private string GetAbsoluteBaseUrl(string controllerName, string actionName, object routeParameters)
-        {
-            controllerName = controllerName.WithoutControllerSuffix();
-            actionName = actionName.WithoutAsyncSuffix();
-            var protocol = Request.IsHttps ? "https" : "http";
-
-            var url = Url.Action(actionName, controllerName, routeParameters, protocol, Request.Host.ToString(), null);
-            return url;
         }
     }
 }
