@@ -38,7 +38,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
                 .Substring("Bearer ".Length);
 
             var sessionInitializationResult = await _openCdeDocumentSelectionService
-                .PrepareOpenCdeDocumentSelectionAsync(documentSelectionData.Callback?.Url,
+                .PrepareOpenCdeDocumentDownloadSelectionAsync(documentSelectionData.Callback?.Url,
                 userJwt,
                 userJwtExpiresAt);
             if (!sessionInitializationResult.IsSuccess)

@@ -44,7 +44,7 @@ namespace Dangl.OpenCDE.Data.Repository
             return RepositoryResult<(Guid userId, TokenStorageDto tokenStorage)>.Success((session.UserId, tokenStorage));
         }
 
-        public async Task<RepositoryResult<(Guid sessionId, int validForSeconds)>> PrepareOpenCdeDocumentSelectionAsync(string clientCallbackUrl,
+        public async Task<RepositoryResult<(Guid sessionId, int validForSeconds)>> PrepareOpenCdeDocumentDownloadSelectionAsync(string clientCallbackUrl,
             string userJwt,
             long userJwtExpiresAt)
         {
