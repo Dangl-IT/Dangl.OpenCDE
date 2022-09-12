@@ -4,20 +4,21 @@ using Dangl.OpenCDE.Core.Utilities;
 using Dangl.OpenCDE.Data.Dto.Documents;
 using Dangl.OpenCDE.Data.Models;
 using Dangl.OpenCDE.Data.Repository;
-using Dangl.OpenCDE.Shared.Models.CdeApi;
 using Dangl.OpenCDE.Shared.Models.Controllers.OpenCdeIntegration;
+using Dangl.OpenCDE.Shared.OpenCdeSwaggerGenerated.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Dangl.OpenCDE.Core.Controllers
+namespace Dangl.OpenCDE.Core.Controllers.CdeApi
 {
     [Route("api/open-cde-integration")]
-    public class OpenCdeIntegrationController : CdeAppControllerBase
+    public class OpenCdeDownloadIntegrationController : CdeAppControllerBase
     {
         private readonly SignInManager<CdeUser> _signInManager;
         private readonly UserManager<CdeUser> _userManager;
@@ -25,7 +26,7 @@ namespace Dangl.OpenCDE.Core.Controllers
         private readonly IDocumentsRepository _documentsRepository;
         private readonly IUserInfoService _userInfoService;
 
-        public OpenCdeIntegrationController(SignInManager<CdeUser> signInManager,
+        public OpenCdeDownloadIntegrationController(SignInManager<CdeUser> signInManager,
             UserManager<CdeUser> userManager,
             IOpenCdeDocumentSelectionRepository openCdeDocumentSelectionService,
             IDocumentsRepository documentsRepository,
@@ -44,6 +45,7 @@ namespace Dangl.OpenCDE.Core.Controllers
         [ProducesResponseType(typeof(SimpleAuthToken), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetSessionSimpleAuthDataAsync(Guid documentSessionId)
         {
+            // TODO CHECK IF THIS ACTION IS STILL REQUIRED
             var userId = await _openCdeDocumentSelectionService.GetUserSessionDataForDocumentSessionAsync(documentSessionId);
             if (!userId.IsSuccess)
             {
@@ -70,7 +72,7 @@ namespace Dangl.OpenCDE.Core.Controllers
             }
 
             var selectedDocumentsUrl = Url.Action(nameof(GetDocumentSelectionDataAsync).WithoutAsyncSuffix(),
-                nameof(OpenCdeIntegrationController).WithoutControllerSuffix(), new
+                nameof(OpenCdeDownloadIntegrationController).WithoutControllerSuffix(), new
                 {
                     documentSelectionId = repoResult.Value.SelectionId
                 }, Request.IsHttps ? "https" : "http", Request.Host.ToString());
@@ -104,31 +106,31 @@ namespace Dangl.OpenCDE.Core.Controllers
 
             var metadata = new DocumentMetadata
             {
-                Entries = new System.Collections.Generic.List<DocumentMetadataEntry>
+                Metadata = new List<DocumentMetadataEntry>
                 {
                     new DocumentMetadataEntry
                     {
                         Name = nameof(document.Value.Name),
-                        Value = document.Value.Name,
-                        DataType = DocumentMetadataDataType.String
+                        Value = new List<string> { document.Value.Name },
+                        DataType = DocumentMetadataEntry.DataTypeEnum.StringEnum
                     },
                     new DocumentMetadataEntry
                     {
                         Name = nameof(document.Value.FileName),
-                        Value = document.Value.FileName,
-                        DataType = DocumentMetadataDataType.String
+                        Value = new List<string> { document.Value.FileName },
+                        DataType = DocumentMetadataEntry.DataTypeEnum.StringEnum
                     },
                     new DocumentMetadataEntry
                     {
                         Name = nameof(document.Value.CreatedAtUtc),
-                        Value = document.Value.CreatedAtUtc.ToString("O"),
-                        DataType = DocumentMetadataDataType.DateTime
+                        Value = new List<string> { document.Value.CreatedAtUtc.ToString("O") },
+                        DataType = DocumentMetadataEntry.DataTypeEnum.DateTimeEnum
                     },
                     new DocumentMetadataEntry
                     {
                         Name = nameof(document.Value.FileSizeInBytes),
-                        Value = document.Value.FileSizeInBytes.ToString(),
-                        DataType = DocumentMetadataDataType.Integer
+                        Value = new List<string> { document.Value.FileSizeInBytes.ToString() },
+                        DataType = DocumentMetadataEntry.DataTypeEnum.Integer64Enum
                     }
                 }
             };
@@ -153,10 +155,7 @@ namespace Dangl.OpenCDE.Core.Controllers
 
             var documentVersions = new DocumentVersions
             {
-                DocumentVersion = new System.Collections.Generic.List<DocumentVersion>
-                {
-                    documentVersion
-                }
+                Documents = new List<DocumentVersion> { documentVersion }
             };
 
             return Ok(documentVersions);
@@ -178,7 +177,7 @@ namespace Dangl.OpenCDE.Core.Controllers
             var documentVersion = GetDocumentVersionForDocument(document.Value);
             var selection = new SelectedDocuments
             {
-                DocumentVersions = new System.Collections.Generic.List<DocumentVersion> { documentVersion }
+                Documents = new List<DocumentVersion> { documentVersion }
             };
 
             return Ok(selection);
@@ -198,7 +197,7 @@ namespace Dangl.OpenCDE.Core.Controllers
             var documentVersion = GetDocumentVersionForDocument(document.Value);
             var selection = new SelectedDocuments
             {
-                DocumentVersions = new System.Collections.Generic.List<DocumentVersion> { documentVersion }
+                Documents = new List<DocumentVersion> { documentVersion }
             };
 
             return Ok(selection);
@@ -210,11 +209,11 @@ namespace Dangl.OpenCDE.Core.Controllers
             {
                 Title = document.Name,
                 VersionNumber = "1",
-                Date = document.CreatedAtUtc,
+                CreationDate = document.CreatedAtUtc,
                 FileDescription = new FileDescription
                 {
                     Name = document.FileName,
-                    FileSizeInBytes = document.FileSizeInBytes ?? 0
+                    SizeInBytes = document.FileSizeInBytes ?? 0
                 },
                 Links = new DocumentVersionLinks
                 {
@@ -228,21 +227,21 @@ namespace Dangl.OpenCDE.Core.Controllers
                     },
                     DocumentVersionMetadata = new LinkData
                     {
-                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentMetadataAsync), new
+                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeDownloadIntegrationController), nameof(GetDocumentMetadataAsync), new
                         {
                             documentId = document.Id
                         })
                     },
                     DocumentVersion = new LinkData
                     {
-                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentReferenceAsync), new
+                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeDownloadIntegrationController), nameof(GetDocumentReferenceAsync), new
                         {
                             documentId = document.Id
                         })
                     },
                     DocumentVersions = new LinkData
                     {
-                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeIntegrationController), nameof(GetDocumentVersionsAsync), new
+                        Url = GetAbsoluteBaseUrl(nameof(OpenCdeDownloadIntegrationController), nameof(GetDocumentVersionsAsync), new
                         {
                             documentId = document.Id
                         })
