@@ -3,7 +3,6 @@ using Dangl.Identity.Client.Mvc.Services;
 using Dangl.OpenCDE.Core.Extensions;
 using Dangl.OpenCDE.Core.Utilities;
 using Dangl.OpenCDE.Data.Dto.Documents;
-using Dangl.OpenCDE.Data.Extensions;
 using Dangl.OpenCDE.Data.Models;
 using Dangl.OpenCDE.Data.Repository;
 using Dangl.OpenCDE.Shared.Models.Controllers.OpenCdeIntegration;
@@ -153,7 +152,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
                 return BadRequest(new ApiError(document.ErrorMessage));
             }
 
-            var documentVersion = document.Value.ToDocumentVersionForDocument(Url, Request.IsHttps);
+            var documentVersion = document.Value.ToDocumentVersionForDocument(Url, Request.IsHttps, Request.Host.ToString());
 
             var documentVersions = new DocumentVersions
             {
@@ -176,7 +175,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
                 return BadRequest(new ApiError(document.ErrorMessage));
             }
 
-            var documentVersion = document.Value.ToDocumentVersionForDocument(Url, Request.IsHttps);
+            var documentVersion = document.Value.ToDocumentVersionForDocument(Url, Request.IsHttps, Request.Host.ToString());
             var selection = new SelectedDocuments
             {
                 Documents = new List<DocumentVersion> { documentVersion }
@@ -196,7 +195,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
                 return BadRequest(new ApiError(document.ErrorMessage));
             }
 
-            var documentVersion = document.Value.ToDocumentVersionForDocument(Url, Request.IsHttps);
+            var documentVersion = document.Value.ToDocumentVersionForDocument(Url, Request.IsHttps, Request.Host.ToString());
             var selection = new SelectedDocuments
             {
                 Documents = new List<DocumentVersion> { documentVersion }

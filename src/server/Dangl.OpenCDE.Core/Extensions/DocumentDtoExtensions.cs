@@ -18,7 +18,8 @@ namespace Dangl.OpenCDE.Core.Extensions
     {
         public static DocumentVersion ToDocumentVersionForDocument(this DocumentDto document,
             IUrlHelper urlHelper,
-            bool isHttps)
+            bool isHttps,
+            string host)
         {
             return new DocumentVersion
             {
@@ -41,7 +42,8 @@ namespace Dangl.OpenCDE.Core.Extensions
                             documentId = document.Id
                         },
                         urlHelper,
-                        isHttps)
+                        isHttps,
+                        host)
                     },
                     DocumentVersionMetadata = new LinkData
                     {
@@ -51,7 +53,8 @@ namespace Dangl.OpenCDE.Core.Extensions
                             documentId = document.Id
                         },
                         urlHelper,
-                        isHttps)
+                        isHttps,
+                        host)
                     },
                     DocumentVersion = new LinkData
                     {
@@ -61,7 +64,8 @@ namespace Dangl.OpenCDE.Core.Extensions
                             documentId = document.Id
                         },
                         urlHelper,
-                        isHttps)
+                        isHttps,
+                        host)
                     },
                     DocumentVersions = new LinkData
                     {
@@ -71,7 +75,8 @@ namespace Dangl.OpenCDE.Core.Extensions
                             documentId = document.Id
                         },
                         urlHelper,
-                        isHttps)
+                        isHttps,
+                        host)
                     }
                 }
             };
@@ -81,13 +86,14 @@ namespace Dangl.OpenCDE.Core.Extensions
             string actionName,
             object routeParameters,
             IUrlHelper urlHelper,
-            bool isHttps)
+            bool isHttps,
+            string host)
         {
             controllerName = controllerName.WithoutControllerSuffix();
             actionName = actionName.WithoutAsyncSuffix();
             var protocol = isHttps ? "https" : "http";
 
-            var url = urlHelper.Action(actionName, controllerName, routeParameters, protocol, Request.Host.ToString(), null);
+            var url = urlHelper.Action(actionName, controllerName, routeParameters, protocol, host, null);
             return url;
         }
     }

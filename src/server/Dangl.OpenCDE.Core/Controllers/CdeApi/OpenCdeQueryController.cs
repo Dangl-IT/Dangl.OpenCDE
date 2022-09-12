@@ -48,7 +48,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
             }
 
             var dbList = await _documentsRepository.GetAllDocumentsById(documentIds).ToListAsync();
-            var documents = dbList.Select(document => document.ToDocumentVersionForDocument(Url, Request.IsHttps)).ToList();
+            var documents = dbList.Select(document => document.ToDocumentVersionForDocument(Url, Request.IsHttps, Request.Host.ToString())).ToList();
 
             return Ok(documents);
         }
