@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Dangl.OpenCDE.Data.Models
 {
-    public class OpenCdeDocumentSelectionSession
+    public class OpenCdeDocumentDownloadSession
     {
         public Guid Id { get; set; }
 

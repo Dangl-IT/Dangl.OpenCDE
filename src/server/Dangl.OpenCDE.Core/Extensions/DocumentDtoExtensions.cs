@@ -1,9 +1,9 @@
 ﻿using Azure.Core;
 using Dangl.OpenCDE.Core.Controllers;
 using Dangl.OpenCDE.Core.Controllers.CdeApi;
-using Dangl.OpenCDE.Core.Utilities;
 using Dangl.OpenCDE.Data.Dto.Documents;
 using Dangl.OpenCDE.Shared.OpenCdeSwaggerGenerated.Models;
+using Dangl.OpenCDE.Shared.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -36,47 +36,51 @@ namespace Dangl.OpenCDE.Core.Extensions
                     DocumentVersionDownload = new LinkData
                     {
                         Url = GetAbsoluteBaseUrl(nameof(DocumentsController),
-                        nameof(DocumentsController.DownloadDocumentAsync), new
-                        {
-                            projectId = document.ProjectId,
-                            documentId = document.Id
-                        },
-                        urlHelper,
-                        isHttps,
-                        host)
+                            nameof(DocumentsController.DownloadDocumentAsync), new
+                            {
+                                projectId = document.ProjectId,
+                                documentId = document.Id
+                            },
+                            urlHelper,
+                            isHttps,
+                            host)
                     },
                     DocumentVersionMetadata = new LinkData
                     {
                         Url = GetAbsoluteBaseUrl(nameof(OpenCdeDownloadIntegrationController),
-                        nameof(OpenCdeDownloadIntegrationController.GetDocumentMetadataAsync), new
-                        {
-                            documentId = document.Id
-                        },
-                        urlHelper,
-                        isHttps,
-                        host)
+                            nameof(OpenCdeDownloadIntegrationController.GetDocumentMetadataAsync), new
+                            {
+                                documentId = document.Id
+                            },
+                            urlHelper,
+                            isHttps,
+                            host)
                     },
                     DocumentVersion = new LinkData
                     {
                         Url = GetAbsoluteBaseUrl(nameof(OpenCdeDownloadIntegrationController),
-                        nameof(OpenCdeDownloadIntegrationController.GetDocumentReferenceAsync), new
-                        {
-                            documentId = document.Id
-                        },
-                        urlHelper,
-                        isHttps,
-                        host)
+                            nameof(OpenCdeDownloadIntegrationController.GetDocumentReferenceAsync), new
+                            {
+                                documentId = document.Id
+                            },
+                            urlHelper,
+                            isHttps,
+                            host)
+                    },
+                    DocumentDetails = new LinkData
+                    {
+                        Url = $"{(isHttps ? "https" : "http")}://{host.TrimEnd('/')}/projects/{document.ProjectId}/documents/{document.Id}"
                     },
                     DocumentVersions = new LinkData
                     {
                         Url = GetAbsoluteBaseUrl(nameof(OpenCdeDownloadIntegrationController),
-                        nameof(OpenCdeDownloadIntegrationController.GetDocumentVersionsAsync), new
-                        {
-                            documentId = document.Id
-                        },
-                        urlHelper,
-                        isHttps,
-                        host)
+                            nameof(OpenCdeDownloadIntegrationController.GetDocumentVersionsAsync), new
+                            {
+                                documentId = document.Id
+                            },
+                            urlHelper,
+                            isHttps,
+                            host)
                     }
                 }
             };

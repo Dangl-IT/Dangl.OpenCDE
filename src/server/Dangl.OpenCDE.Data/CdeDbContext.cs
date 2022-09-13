@@ -16,7 +16,9 @@ namespace Dangl.OpenCDE.Data
         public DbSet<CdeAppFile> Files { get; set; }
         public DbSet<CdeAppFileMimeType> FileMimeTypes { get; set; }
         public DbSet<OpenCdeDocumentSelection> OpenCdeDocumentSelections { get; set; }
-        public DbSet<OpenCdeDocumentSelectionSession> OpenCdeDocumentSelectionSessions { get; set; }
+        public DbSet<OpenCdeDocumentUploadSession> OpenCdeDocumentUploadSessions { get; set; }
+        public DbSet<OpenCdeDocumentDownloadSession> OpenCdeDocumentDownloadSessions { get; set; }
+        public DbSet<PendingOpenCdeUploadFile> PendingOpenCdeUploadFiles { get; set; }
         public DbSet<Project> Projects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

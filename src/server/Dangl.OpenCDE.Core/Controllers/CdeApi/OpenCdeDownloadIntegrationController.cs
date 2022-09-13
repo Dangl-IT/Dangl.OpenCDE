@@ -1,12 +1,11 @@
 ﻿using Dangl.Data.Shared;
 using Dangl.Identity.Client.Mvc.Services;
 using Dangl.OpenCDE.Core.Extensions;
-using Dangl.OpenCDE.Core.Utilities;
-using Dangl.OpenCDE.Data.Dto.Documents;
 using Dangl.OpenCDE.Data.Models;
 using Dangl.OpenCDE.Data.Repository;
 using Dangl.OpenCDE.Shared.Models.Controllers.OpenCdeIntegration;
 using Dangl.OpenCDE.Shared.OpenCdeSwaggerGenerated.Models;
+using Dangl.OpenCDE.Shared.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +17,7 @@ using System.Web;
 
 namespace Dangl.OpenCDE.Core.Controllers.CdeApi
 {
-    [Route("api/open-cde-integration")]
+    [Route("api/open-cde-integration/download")]
     public class OpenCdeDownloadIntegrationController : CdeAppControllerBase
     {
         private readonly SignInManager<CdeUser> _signInManager;
@@ -46,8 +45,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
         [ProducesResponseType(typeof(SimpleAuthToken), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetSessionSimpleAuthDataAsync(Guid documentSessionId)
         {
-            // TODO CHECK IF THIS ACTION IS STILL REQUIRED
-            var userId = await _openCdeDocumentSelectionService.GetUserSessionDataForDocumentSessionAsync(documentSessionId);
+            var userId = await _openCdeDocumentSelectionService.GetUserSessionDataForDocumentDownloadAsync(documentSessionId);
             if (!userId.IsSuccess)
             {
                 return BadRequest(new ApiError(userId.ErrorMessage));
@@ -66,7 +64,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
         public async Task<IActionResult> SetDocumentSelection(Guid documentSessionId, [FromBody] DocumentSelectionPost documentSelection)
         {
             var repoResult = await _openCdeDocumentSelectionService
-                .FinalizeOpenCdeDocumentSelectionAsync(documentSessionId, documentSelection.DocumentId);
+                .FinalizeOpenCdeDocumentDownloadAsync(documentSessionId, documentSelection.DocumentId);
             if (!repoResult.IsSuccess)
             {
                 return BadRequest(new ApiError(repoResult.ErrorMessage));

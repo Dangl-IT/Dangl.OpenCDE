@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dangl.OpenCDE.Core.Utilities
+namespace Dangl.OpenCDE.Shared.Utilities
 {
     public static class RouteNameExtensions
     {
