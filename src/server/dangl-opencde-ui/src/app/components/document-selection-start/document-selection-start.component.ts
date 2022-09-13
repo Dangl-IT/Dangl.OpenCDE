@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { CdeSessionService } from '../../services/cde-session.service';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
-import { OpenCdeIntegrationClient } from '../../generated/backend-client';
+import { OpenCdeDownloadIntegrationClient } from '../../generated/backend-client';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -15,7 +15,7 @@ export class DocumentSelectionStartComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private openCdeIntegrationClient: OpenCdeIntegrationClient,
+    private openCdeDownloadIntegrationClient: OpenCdeDownloadIntegrationClient,
     private jwtTokenService: JwtTokenService,
     private cdeSessionService: CdeSessionService
   ) {}
@@ -26,7 +26,7 @@ export class DocumentSelectionStartComponent implements OnInit {
         const documentSessionId: string = p.documentSessionId;
         this.cdeSessionService.setCurrentSessionId(documentSessionId);
 
-        this.openCdeIntegrationClient
+        this.openCdeDownloadIntegrationClient
           .getSessionSimpleAuthData(documentSessionId)
           .subscribe((simpleAuthToken) => {
             this.jwtTokenService.storeCustomToken({
