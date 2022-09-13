@@ -1,0 +1,11 @@
+<button mat-raised-button color="primary" (click)="fileInput.click()">
+  Select Files
+</button>
+
+<input
+  type="file"
+  multiple="false"
+  hidden
+  #fileInput
+  (change)="onFilesSelected(fileInput.files)"
+/>

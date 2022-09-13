@@ -1,10 +1,12 @@
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { ReplaySubject, Subject } from 'rxjs';
 
 import { DocumentSelectionService } from './document-selection.service';
+import { DocumentVersion } from '../generated/open-cde-swagger/model/documentVersion';
 import { Injectable } from '@angular/core';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
+import { NotificationService } from './notification.service';
 import { OpenIdConnectAuthenticationResult } from '../generated/backend-client';
-import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -20,9 +22,15 @@ export class CdeClientHubService {
   authenticationResultReceived =
     this.authenticationResultReceivedSource.asObservable();
 
+  private documentVersionUploadResultReceivedSource =
+    new ReplaySubject<DocumentVersion>();
+  documentVersionUploadResultReceived =
+    this.documentVersionUploadResultReceivedSource.asObservable();
+
   constructor(
     private jwtTokenService: JwtTokenService,
-    private documentSelectionService: DocumentSelectionService
+    private documentSelectionService: DocumentSelectionService,
+    private notificationService: NotificationService
   ) {
     this.buildConnection();
     this.setUpMessageListeners();
@@ -78,6 +86,24 @@ export class CdeClientHubService {
         this.documentSelectionService.setSelectedDocument(
           response.selectedDocumentsUrl
         );
+      }
+    );
+
+    this.connection.on(
+      'DocumentVersionUploaded',
+      (documentVersion: DocumentVersion) => {
+        this.documentVersionUploadResultReceivedSource.next(documentVersion);
+      }
+    );
+
+    this.connection.on(
+      'NotificationMessage',
+      (messageData: { isError: boolean; message: string }) => {
+        if (messageData.isError) {
+          this.notificationService.showErrorMessage(messageData.message);
+        } else {
+          this.notificationService.showInfoMessage(messageData.message);
+        }
       }
     );
   }

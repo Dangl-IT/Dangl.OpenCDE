@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Dangl.AspNetCore.FileHandling.Azure;
 using Dangl.Data.Shared;
@@ -204,7 +204,7 @@ namespace Dangl.OpenCDE.Data.Repository
             var uploadLinkData = new DocumentContentSasUploadResultGet
             {
                 SasUploadLink = sasUploadLinkResult.Value,
-                CustomHeaders = new System.Collections.Generic.List<DocumentContentSasUploadResultHeaderGet>
+                CustomHeaders = new List<DocumentContentSasUploadResultHeaderGet>
                 {
                     new DocumentContentSasUploadResultHeaderGet
                     {
@@ -213,6 +213,8 @@ namespace Dangl.OpenCDE.Data.Repository
                     }
                 }
             };
+
+            uploadLinkData.SasUploadLink.UploadLink += "&x-ms-blob-type=BlockBlob";
 
             return RepositoryResult<DocumentContentSasUploadResultGet>.Success(uploadLinkData);
         }

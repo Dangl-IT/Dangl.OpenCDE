@@ -1,12 +1,12 @@
 import { RouterModule, Routes } from '@angular/router';
 
-import { MainStepperComponent } from './components/main-stepper/main-stepper.component';
+import { MainComponent } from './components/main/main.component';
 import { NgModule } from '@angular/core';
 
 const routes: Routes = [
   {
     path: '',
-    component: MainStepperComponent,
+    component: MainComponent,
   },
 ];
 

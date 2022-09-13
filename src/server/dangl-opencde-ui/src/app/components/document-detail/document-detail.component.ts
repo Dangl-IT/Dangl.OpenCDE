@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   DocumentGet,
   DocumentsClient,
-  OpenCdeIntegrationClient,
+  OpenCdeDownloadIntegrationClient,
 } from '../../generated/backend-client';
 import { first, takeUntil } from 'rxjs/operators';
 
@@ -36,7 +36,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private documentsClient: DocumentsClient,
     private jwtTokenService: JwtTokenService,
     private cdeSessionService: CdeSessionService,
-    private openCdeIntegrationClient: OpenCdeIntegrationClient
+    private openCdeDownloadIntegrationClient: OpenCdeDownloadIntegrationClient
   ) {}
 
   ngOnInit(): void {
@@ -78,7 +78,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.openCdeIntegrationClient
+    this.openCdeDownloadIntegrationClient
       .setDocumentSelection(this.cdeSession, {
         documentId: this.documentId,
       })

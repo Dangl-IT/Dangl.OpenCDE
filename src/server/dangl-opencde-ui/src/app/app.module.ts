@@ -40,6 +40,7 @@ import { SiteHeaderComponent } from './components/site-header/site-header.compon
 import { UploadProgressComponent } from './components/upload-progress/upload-progress.component';
 import { UserInfoComponent } from './components/user-info/user-info.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
+import { CdeFileUploadComponent } from './components/cde-file-upload/cde-file-upload.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
     DocumentDetailComponent,
     DragAndDropDirective,
     DocumentSelectionStartComponent,
+    CdeFileUploadComponent,
   ],
   imports: [
     BrowserModule,

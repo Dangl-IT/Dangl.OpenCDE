@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Dangl.Data.Shared;
-using Dangl.OpenCDE.Core.Utilities;
+using Dangl.OpenCDE.Shared.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

@@ -17,7 +17,7 @@
     <PackageReference Include="Dangl.Data.Shared.AspNetCore" Version="2.1.1" />
     <PackageReference Include="LightQuery.EntityFrameworkCore" Version="2.1.0" />
     <PackageReference Include="LightQuery.NSwag" Version="2.1.0" />
-    <PackageReference Include="NSwag.AspNetCore" Version="13.13.2" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.16.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.7" />
   </ItemGroup>

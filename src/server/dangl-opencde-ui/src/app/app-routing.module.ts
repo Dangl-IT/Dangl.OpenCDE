@@ -1,6 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 
 import { ApiSpecComponent } from './components/api-spec/api-spec.component';
+import { CdeFileUploadComponent } from './components/cde-file-upload/cde-file-upload.component';
 import { DocumentDetailComponent } from './components/document-detail/document-detail.component';
 import { DocumentSelectionStartComponent } from './components/document-selection-start/document-selection-start.component';
 import { DocumentsComponent } from './components/documents/documents.component';
@@ -28,6 +29,10 @@ const routes: Routes = [
   {
     path: 'opencde-select-documents',
     component: DocumentSelectionStartComponent,
+  },
+  {
+    path: 'opencde-upload-documents',
+    component: CdeFileUploadComponent,
   },
   {
     path: 'projects',

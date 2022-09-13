@@ -219,29 +219,7 @@ namespace Dangl.OpenCDE.Migrations
                     b.ToTable("Documents");
                 });
 
-            modelBuilder.Entity("Dangl.OpenCDE.Data.Models.OpenCdeDocumentSelection", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newsequentialid()");
-
-                    b.Property<Guid>("DocumentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocumentId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("OpenCdeDocumentSelections");
-                });
-
-            modelBuilder.Entity("Dangl.OpenCDE.Data.Models.OpenCdeDocumentSelectionSession", b =>
+            modelBuilder.Entity("Dangl.OpenCDE.Data.Models.OpenCdeDocumentDownloadSession", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -265,7 +243,94 @@ namespace Dangl.OpenCDE.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("OpenCdeDocumentSelectionSessions");
+                    b.ToTable("OpenCdeDocumentDownloadSessions");
+                });
+
+            modelBuilder.Entity("Dangl.OpenCDE.Data.Models.OpenCdeDocumentSelection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newsequentialid()");
+
+                    b.Property<Guid>("DocumentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DocumentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OpenCdeDocumentSelections");
+                });
+
+            modelBuilder.Entity("Dangl.OpenCDE.Data.Models.OpenCdeDocumentUploadSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newsequentialid()");
+
+                    b.Property<string>("AuthenticationInformationJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClientCallbackUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("SelectedProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("ValidUntilUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SelectedProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OpenCdeDocumentUploadSessions");
+                });
+
+            modelBuilder.Entity("Dangl.OpenCDE.Data.Models.PendingOpenCdeUploadFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newsequentialid()");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("LinkedCdeDocumentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SessionFileId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UploadSessionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LinkedCdeDocumentId");
+
+                    b.HasIndex("UploadSessionId");
+
+                    b.ToTable("PendingOpenCdeUploadFiles");
                 });
 
             modelBuilder.Entity("Dangl.OpenCDE.Data.Models.Project", b =>
@@ -424,6 +489,15 @@ namespace Dangl.OpenCDE.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Dangl.OpenCDE.Data.Models.OpenCdeDocumentDownloadSession", b =>
+                {
+                    b.HasOne("Dangl.OpenCDE.Data.Models.CdeUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Dangl.OpenCDE.Data.Models.OpenCdeDocumentSelection", b =>
                 {
                     b.HasOne("Dangl.OpenCDE.Data.Models.Document", "Document")
@@ -439,11 +513,28 @@ namespace Dangl.OpenCDE.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Dangl.OpenCDE.Data.Models.OpenCdeDocumentSelectionSession", b =>
+            modelBuilder.Entity("Dangl.OpenCDE.Data.Models.OpenCdeDocumentUploadSession", b =>
                 {
+                    b.HasOne("Dangl.OpenCDE.Data.Models.Project", "SelectedProject")
+                        .WithMany()
+                        .HasForeignKey("SelectedProjectId");
+
                     b.HasOne("Dangl.OpenCDE.Data.Models.CdeUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Dangl.OpenCDE.Data.Models.PendingOpenCdeUploadFile", b =>
+                {
+                    b.HasOne("Dangl.OpenCDE.Data.Models.Document", "LinkedCdeDocument")
+                        .WithMany()
+                        .HasForeignKey("LinkedCdeDocumentId");
+
+                    b.HasOne("Dangl.OpenCDE.Data.Models.OpenCdeDocumentUploadSession", "UploadSession")
+                        .WithMany("PendingFiles")
+                        .HasForeignKey("UploadSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
