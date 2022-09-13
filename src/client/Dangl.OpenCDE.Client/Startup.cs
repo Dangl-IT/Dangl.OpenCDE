@@ -17,13 +17,18 @@ namespace Dangl.OpenCDE.Client
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddSignalR();
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddSignalR().AddNewtonsoftJsonProtocol();
             services.AddHttpClient();
             services.AddTransient<OpenIdConnectResultPublisher>();
             services.AddCdeClientSwaggerServices();
             services.AddSingleton<OpenIdConnectCache>();
             services.AddSingleton<OpenIdAuthenticationRequestHandler>();
+            services.AddSingleton<OpenCdeUploadOperationsCache>();
+            services.AddTransient<OpenCdeUploadService>();
+            services.AddTransient<ClientNotificationsService>();
+            services.AddHostedService<OpenCdeFileUploadBackgroundService>();
+            services.AddHttpClient<OpenCdeUploadService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,12 +1,12 @@
 ﻿using Dangl.OpenCDE.Client.Models;
 using Dangl.OpenCDE.Client.Services;
-using Dangl.OpenCDE.Shared.Models.CdeApi;
+using Dangl.OpenCDE.Shared.OpenCdeSwaggerGenerated.Models;
+using Dangl.OpenCDE.Shared.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Dangl.OpenCDE.Client.Controllers
@@ -32,10 +32,11 @@ namespace Dangl.OpenCDE.Client.Controllers
                 return BadRequest();
             }
 
-            var callbackUrl = Url.Action("HandleCdeCallback", "CdeServerCallback", new
-            {
-                state = parameters.ClientState
-            }, Request.IsHttps ? "https" : "http", Request.Host.ToString(), null);
+            var callbackUrl = Url.Action(nameof(CdeServerCallbackController.HandleCdeDownloadCallbackAsync).WithoutAsyncSuffix(),
+                nameof(CdeServerCallbackController).WithoutControllerSuffix(), new
+                {
+                    state = parameters.ClientState
+                }, Request.IsHttps ? "https" : "http", Request.Host.ToString(), null);
 
             var documentsUrl = parameters.OpenCdeBaseUrl
                 .TrimEnd('/')
@@ -44,16 +45,16 @@ namespace Dangl.OpenCDE.Client.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", parameters.AccessToken);
 
-            var callbackParameters = JObject.FromObject(new DocumentDiscoveryPost
+            var callbackParameters = JObject.FromObject(new SelectDocuments
             {
-                CallbackLink = new CallbackLink
+                Callback = new CallbackLink
                 {
                     ExpiresIn = 3600,
                     Url = callbackUrl
                 }
             });
 
-            var initialRequest = GetRequest(callbackParameters, documentsUrl);
+            var initialRequest = HttpRequestHelper.GetJsonPostRequest(callbackParameters, documentsUrl);
             var response = await httpClient.SendAsync(initialRequest);
             if (response.IsSuccessStatusCode)
             {
@@ -92,17 +93,6 @@ namespace Dangl.OpenCDE.Client.Controllers
         {
             SystemBrowserService.OpenSystemBrowser(page.Url);
             return NoContent();
-        }
-
-        private HttpRequestMessage GetRequest<T>(T payload, string url)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
-
-            var jsonPayload = JsonConvert.SerializeObject(payload);
-            var jsonContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-            request.Content = jsonContent;
-
-            return request;
         }
     }
 }
