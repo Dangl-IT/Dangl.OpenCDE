@@ -4,11 +4,11 @@ import { DocumentSelectionService } from '../../services/document-selection.serv
 import { MatStepper } from '@angular/material/stepper';
 
 @Component({
-  selector: 'opencde-client-main-stepper',
-  templateUrl: './main-stepper.component.html',
-  styleUrls: ['./main-stepper.component.scss'],
+  selector: 'opencde-client-main',
+  templateUrl: './main.component.html',
+  styleUrls: ['./main.component.scss'],
 })
-export class MainStepperComponent implements OnInit {
+export class MainComponent implements OnInit {
   hasSetBaseAddress = false;
 
   @ViewChild('mainStepper') stepper: MatStepper | null = null;
