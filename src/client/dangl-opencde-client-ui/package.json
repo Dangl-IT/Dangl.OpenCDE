@@ -11,6 +11,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-devkit/schematics": "^14.2.2",
     "@angular/animations": "~12.2.0",
     "@angular/cdk": "^12.2.3",
     "@angular/common": "~12.2.0",
@@ -27,11 +28,11 @@
     "@microsoft/signalr": "5.0.9",
     "file-saver": "2.0.5",
     "ng-dangl-icons": "^1.0.6",
+    "ngx-toastr": "14.3.0",
     "oidc-client-ts": "2.0.0-alpha1",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4",
-    "ngx-toastr": "14.3.0"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.2",
