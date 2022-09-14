@@ -195,5 +195,21 @@ namespace Dangl.OpenCDE.Core.Controllers
 
             return FromRepositoryResult<DocumentDto, DocumentGet>(contentSaveResult, _mapper);
         }
+
+        [HttpDelete("{documentId}")]
+        [ProducesResponseType(typeof(ApiError), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> DeleteDocumentAsync(Guid projectId,
+            Guid documentId)
+        {
+            if (!await _projectsRepository.CheckIfProjectExistsAsync(projectId))
+            {
+                return NotFound();
+            }
+
+            var deletionResult = await _documentsRepository.DeleteDocumentAsync(projectId, documentId);
+
+            return FromRepositoryResult(deletionResult);
+        }
     }
 }

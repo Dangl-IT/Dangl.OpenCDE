@@ -29,5 +29,7 @@ namespace Dangl.OpenCDE.Data.Repository
         Task<RepositoryResult<DocumentContentSasUploadResultGet>> PrepareSasDocumentUploadAsync(Guid documentId, string fileName, string mimeType, long sizeInBytes);
 
         Task<RepositoryResult> MarkDocumentAsUploadedAsync(Guid documentId);
+
+        Task<RepositoryResult> DeleteDocumentAsync(Guid projectId, Guid documentId);
     }
 }

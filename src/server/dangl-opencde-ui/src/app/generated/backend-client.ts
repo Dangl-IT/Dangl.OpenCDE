@@ -971,6 +971,98 @@ export class DocumentsClient {
     return _observableOf<DocumentGet>(null as any);
   }
 
+  deleteDocument(projectId: string, documentId: string): Observable<void> {
+    let url_ =
+      this.baseUrl + '/api/projects/{projectId}/documents/{documentId}';
+    if (projectId === undefined || projectId === null)
+      throw new Error("The parameter 'projectId' must be defined.");
+    url_ = url_.replace('{projectId}', encodeURIComponent('' + projectId));
+    if (documentId === undefined || documentId === null)
+      throw new Error("The parameter 'documentId' must be defined.");
+    url_ = url_.replace('{documentId}', encodeURIComponent('' + documentId));
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({}),
+    };
+
+    return this.http
+      .request('delete', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processDeleteDocument(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processDeleteDocument(response_ as any);
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<void>;
+            }
+          } else return _observableThrow(response_) as any as Observable<void>;
+        })
+      );
+  }
+
+  protected processDeleteDocument(
+    response: HttpResponseBase
+  ): Observable<void> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          let result400: any = null;
+          result400 =
+            _responseText === ''
+              ? null
+              : (JSON.parse(_responseText, this.jsonParseReviver) as ApiError);
+          return throwException(
+            'A server side error occurred.',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status === 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          return _observableOf<void>(null as any);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf<void>(null as any);
+  }
+
   downloadDocument(
     projectId: string,
     documentId: string
@@ -3528,20 +3620,17 @@ export class OpenCdeUploadIntegrationClient {
 
   getUploadFileDetails(
     documentSessionId: string,
-    sessionFileId: string | null | undefined,
     uploadFileDetails: UploadFileDetails
   ): Observable<DocumentsToUpload> {
     let url_ =
       this.baseUrl +
-      '/api/open-cde-integration/upload/sessions/{documentSessionId}/upload-instructions?';
+      '/api/open-cde-integration/upload/sessions/{documentSessionId}/upload-instructions';
     if (documentSessionId === undefined || documentSessionId === null)
       throw new Error("The parameter 'documentSessionId' must be defined.");
     url_ = url_.replace(
       '{documentSessionId}',
       encodeURIComponent('' + documentSessionId)
     );
-    if (sessionFileId !== undefined && sessionFileId !== null)
-      url_ += 'sessionFileId=' + encodeURIComponent('' + sessionFileId) + '&';
     url_ = url_.replace(/[?&]$/, '');
 
     const content_ = JSON.stringify(uploadFileDetails);
@@ -3644,328 +3733,24 @@ export class OpenCdeUploadIntegrationClient {
     return _observableOf<DocumentsToUpload>(null as any);
   }
 
-  getDocumentMetadata(documentId: string): Observable<DocumentMetadata> {
-    let url_ =
-      this.baseUrl +
-      '/api/open-cde-integration/upload/documents/{documentId}/metadata';
-    if (documentId === undefined || documentId === null)
-      throw new Error("The parameter 'documentId' must be defined.");
-    url_ = url_.replace('{documentId}', encodeURIComponent('' + documentId));
-    url_ = url_.replace(/[?&]$/, '');
-
-    let options_: any = {
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: 'application/json',
-      }),
-    };
-
-    return this.http
-      .request('get', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processGetDocumentMetadata(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processGetDocumentMetadata(response_ as any);
-            } catch (e) {
-              return _observableThrow(e) as any as Observable<DocumentMetadata>;
-            }
-          } else
-            return _observableThrow(
-              response_
-            ) as any as Observable<DocumentMetadata>;
-        })
-      );
-  }
-
-  protected processGetDocumentMetadata(
-    response: HttpResponseBase
-  ): Observable<DocumentMetadata> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result200: any = null;
-          result200 =
-            _responseText === ''
-              ? null
-              : (JSON.parse(
-                  _responseText,
-                  this.jsonParseReviver
-                ) as DocumentMetadata);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status === 400) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result400: any = null;
-          result400 =
-            _responseText === ''
-              ? null
-              : (JSON.parse(_responseText, this.jsonParseReviver) as ApiError);
-          return throwException(
-            'A server side error occurred.',
-            status,
-            _responseText,
-            _headers,
-            result400
-          );
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    }
-    return _observableOf<DocumentMetadata>(null as any);
-  }
-
-  getDocumentVersions(documentId: string): Observable<DocumentVersions> {
-    let url_ =
-      this.baseUrl +
-      '/api/open-cde-integration/upload/documents/{documentId}/versions';
-    if (documentId === undefined || documentId === null)
-      throw new Error("The parameter 'documentId' must be defined.");
-    url_ = url_.replace('{documentId}', encodeURIComponent('' + documentId));
-    url_ = url_.replace(/[?&]$/, '');
-
-    let options_: any = {
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: 'application/json',
-      }),
-    };
-
-    return this.http
-      .request('get', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processGetDocumentVersions(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processGetDocumentVersions(response_ as any);
-            } catch (e) {
-              return _observableThrow(e) as any as Observable<DocumentVersions>;
-            }
-          } else
-            return _observableThrow(
-              response_
-            ) as any as Observable<DocumentVersions>;
-        })
-      );
-  }
-
-  protected processGetDocumentVersions(
-    response: HttpResponseBase
-  ): Observable<DocumentVersions> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result200: any = null;
-          result200 =
-            _responseText === ''
-              ? null
-              : (JSON.parse(
-                  _responseText,
-                  this.jsonParseReviver
-                ) as DocumentVersions);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status === 400) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result400: any = null;
-          result400 =
-            _responseText === ''
-              ? null
-              : (JSON.parse(_responseText, this.jsonParseReviver) as ApiError);
-          return throwException(
-            'A server side error occurred.',
-            status,
-            _responseText,
-            _headers,
-            result400
-          );
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    }
-    return _observableOf<DocumentVersions>(null as any);
-  }
-
-  getDocumentReference(documentId: string): Observable<SelectedDocuments> {
-    let url_ =
-      this.baseUrl +
-      '/api/open-cde-integration/upload/documents/{documentId}/reference';
-    if (documentId === undefined || documentId === null)
-      throw new Error("The parameter 'documentId' must be defined.");
-    url_ = url_.replace('{documentId}', encodeURIComponent('' + documentId));
-    url_ = url_.replace(/[?&]$/, '');
-
-    let options_: any = {
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: 'application/json',
-      }),
-    };
-
-    return this.http
-      .request('get', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processGetDocumentReference(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processGetDocumentReference(response_ as any);
-            } catch (e) {
-              return _observableThrow(
-                e
-              ) as any as Observable<SelectedDocuments>;
-            }
-          } else
-            return _observableThrow(
-              response_
-            ) as any as Observable<SelectedDocuments>;
-        })
-      );
-  }
-
-  protected processGetDocumentReference(
-    response: HttpResponseBase
-  ): Observable<SelectedDocuments> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result200: any = null;
-          result200 =
-            _responseText === ''
-              ? null
-              : (JSON.parse(
-                  _responseText,
-                  this.jsonParseReviver
-                ) as SelectedDocuments);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status === 400) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result400: any = null;
-          result400 =
-            _responseText === ''
-              ? null
-              : (JSON.parse(_responseText, this.jsonParseReviver) as ApiError);
-          return throwException(
-            'A server side error occurred.',
-            status,
-            _responseText,
-            _headers,
-            result400
-          );
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    }
-    return _observableOf<SelectedDocuments>(null as any);
-  }
-
-  getDocumentSelectionData(
-    documentSelectionId: string
+  markFileUploadAsCompleted(
+    documentSessionId: string,
+    sessionFileId: string | null
   ): Observable<DocumentVersion> {
     let url_ =
       this.baseUrl +
-      '/api/open-cde-integration/upload/document-selections/{documentSelectionId}';
-    if (documentSelectionId === undefined || documentSelectionId === null)
-      throw new Error("The parameter 'documentSelectionId' must be defined.");
+      '/api/open-cde-integration/upload/sessions/{documentSessionId}/upload-completion/{sessionFileId}';
+    if (documentSessionId === undefined || documentSessionId === null)
+      throw new Error("The parameter 'documentSessionId' must be defined.");
     url_ = url_.replace(
-      '{documentSelectionId}',
-      encodeURIComponent('' + documentSelectionId)
+      '{documentSessionId}',
+      encodeURIComponent('' + documentSessionId)
+    );
+    if (sessionFileId === undefined || sessionFileId === null)
+      throw new Error("The parameter 'sessionFileId' must be defined.");
+    url_ = url_.replace(
+      '{sessionFileId}',
+      encodeURIComponent('' + sessionFileId)
     );
     url_ = url_.replace(/[?&]$/, '');
 
@@ -3978,17 +3763,17 @@ export class OpenCdeUploadIntegrationClient {
     };
 
     return this.http
-      .request('get', url_, options_)
+      .request('post', url_, options_)
       .pipe(
         _observableMergeMap((response_: any) => {
-          return this.processGetDocumentSelectionData(response_);
+          return this.processMarkFileUploadAsCompleted(response_);
         })
       )
       .pipe(
         _observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
             try {
-              return this.processGetDocumentSelectionData(response_ as any);
+              return this.processMarkFileUploadAsCompleted(response_ as any);
             } catch (e) {
               return _observableThrow(e) as any as Observable<DocumentVersion>;
             }
@@ -4000,7 +3785,7 @@ export class OpenCdeUploadIntegrationClient {
       );
   }
 
-  protected processGetDocumentSelectionData(
+  protected processMarkFileUploadAsCompleted(
     response: HttpResponseBase
   ): Observable<DocumentVersion> {
     const status = response.status;
@@ -4061,6 +3846,108 @@ export class OpenCdeUploadIntegrationClient {
       );
     }
     return _observableOf<DocumentVersion>(null as any);
+  }
+
+  markFileUploadAsCancelled(
+    documentSessionId: string,
+    sessionFileId: string | null
+  ): Observable<void> {
+    let url_ =
+      this.baseUrl +
+      '/api/open-cde-integration/upload/sessions/{documentSessionId}/upload-cancellation/{sessionFileId}';
+    if (documentSessionId === undefined || documentSessionId === null)
+      throw new Error("The parameter 'documentSessionId' must be defined.");
+    url_ = url_.replace(
+      '{documentSessionId}',
+      encodeURIComponent('' + documentSessionId)
+    );
+    if (sessionFileId === undefined || sessionFileId === null)
+      throw new Error("The parameter 'sessionFileId' must be defined.");
+    url_ = url_.replace(
+      '{sessionFileId}',
+      encodeURIComponent('' + sessionFileId)
+    );
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({}),
+    };
+
+    return this.http
+      .request('post', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processMarkFileUploadAsCancelled(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processMarkFileUploadAsCancelled(response_ as any);
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<void>;
+            }
+          } else return _observableThrow(response_) as any as Observable<void>;
+        })
+      );
+  }
+
+  protected processMarkFileUploadAsCancelled(
+    response: HttpResponseBase
+  ): Observable<void> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          return _observableOf<void>(null as any);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          let result400: any = null;
+          result400 =
+            _responseText === ''
+              ? null
+              : (JSON.parse(_responseText, this.jsonParseReviver) as ApiError);
+          return throwException(
+            'A server side error occurred.',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf<void>(null as any);
   }
 }
 

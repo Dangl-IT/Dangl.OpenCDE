@@ -1,3 +1,4 @@
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   DocumentGet,
@@ -6,7 +7,6 @@ import {
 } from '../../generated/backend-client';
 import { first, takeUntil } from 'rxjs/operators';
 
-import { ActivatedRoute } from '@angular/router';
 import { CdeSessionService } from '../../services/cde-session.service';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { ProgressSettings } from '../../models/progress-settings';
@@ -36,7 +36,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private documentsClient: DocumentsClient,
     private jwtTokenService: JwtTokenService,
     private cdeSessionService: CdeSessionService,
-    private openCdeDownloadIntegrationClient: OpenCdeDownloadIntegrationClient
+    private openCdeDownloadIntegrationClient: OpenCdeDownloadIntegrationClient,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -85,5 +86,15 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       .subscribe((r) => {
         window.location.href = r.callbackUrl;
       });
+  }
+
+  deleteDocument(): void {
+    if (this.document) {
+      this.documentsClient
+        .deleteDocument(this.document?.projectId, this.document?.id)
+        .subscribe(() => {
+          this.router.navigate(['projects', this.projectId]);
+        });
+    }
   }
 }

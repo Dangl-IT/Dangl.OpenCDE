@@ -219,6 +219,31 @@ namespace Dangl.OpenCDE.Data.Repository
             return RepositoryResult<DocumentContentSasUploadResultGet>.Success(uploadLinkData);
         }
 
+        public async Task<RepositoryResult> DeleteDocumentAsync(Guid projectId, Guid documentId)
+        {
+            var dbDocument = await _context
+                .Documents
+                .FirstOrDefaultAsync(doc => doc.Id == documentId && doc.ProjectId == projectId);
+            if (dbDocument == null)
+            {
+                return RepositoryResult.Fail("There is no document with the given id present in the project.");
+            }
+
+            if (dbDocument.FileId != null)
+            {
+                var fileDeletionResult = await _cdeAppFileHandler.DeleteFileAsync(dbDocument.FileId.Value);
+                if (!fileDeletionResult.IsSuccess)
+                {
+                    return RepositoryResult.Fail(fileDeletionResult.ErrorMessage);
+                }
+            }
+
+            _context.Documents.Remove(dbDocument);
+            await _context.SaveChangesAsync();
+
+            return RepositoryResult.Success();
+        }
+        
         public async Task<RepositoryResult<DocumentDto>> SaveDocumentContentAsync(Guid projectId, Guid documentId, IFormFile document)
         {
             var dbDocument = await _context

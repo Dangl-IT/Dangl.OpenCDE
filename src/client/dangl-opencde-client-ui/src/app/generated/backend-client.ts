@@ -45,11 +45,25 @@ export class CdeServerCallbackClient {
   }
 
   handleCdeUploadCallback(
-    state: string | null | undefined
+    state: string | null | undefined,
+    uploadDocumentsUrl: string | null | undefined,
+    cancelledByUser: boolean | undefined
   ): Observable<string> {
     let url_ = this.baseUrl + '/cde-server-callback/upload?';
     if (state !== undefined && state !== null)
       url_ += 'state=' + encodeURIComponent('' + state) + '&';
+    if (uploadDocumentsUrl !== undefined && uploadDocumentsUrl !== null)
+      url_ +=
+        'upload_documents_url=' +
+        encodeURIComponent('' + uploadDocumentsUrl) +
+        '&';
+    if (cancelledByUser === null)
+      throw new Error("The parameter 'cancelledByUser' cannot be null.");
+    else if (cancelledByUser !== undefined)
+      url_ +=
+        'user_cancelled_selection=' +
+        encodeURIComponent('' + cancelledByUser) +
+        '&';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
@@ -320,114 +334,6 @@ export class ClientProxyClient {
       );
     }
     return _observableOf<FileResponse>(null as any);
-  }
-}
-
-@Injectable({
-  providedIn: 'root',
-})
-export class DocumentsUploadHandlerClient {
-  private http: HttpClient;
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
-    undefined;
-
-  constructor(
-    @Inject(HttpClient) http: HttpClient,
-    @Optional() @Inject(API_BASE_URL) baseUrl?: string
-  ) {
-    this.http = http;
-    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
-  }
-
-  prepareDocumentUploadAndOpenSystemBrowser(
-    parameters: DocumentUploadInitializationParameters
-  ): Observable<void> {
-    let url_ = this.baseUrl + '/documents-upload-handler/start-upload';
-    url_ = url_.replace(/[?&]$/, '');
-
-    const content_ = JSON.stringify(parameters);
-
-    let options_: any = {
-      body: content_,
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    };
-
-    return this.http
-      .request('post', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processPrepareDocumentUploadAndOpenSystemBrowser(
-            response_
-          );
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processPrepareDocumentUploadAndOpenSystemBrowser(
-                response_ as any
-              );
-            } catch (e) {
-              return _observableThrow(e) as any as Observable<void>;
-            }
-          } else return _observableThrow(response_) as any as Observable<void>;
-        })
-      );
-  }
-
-  protected processPrepareDocumentUploadAndOpenSystemBrowser(
-    response: HttpResponseBase
-  ): Observable<void> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 400) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          return throwException(
-            'A server side error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    } else if (status === 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          return _observableOf<void>(null as any);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    }
-    return _observableOf<void>(null as any);
   }
 }
 
@@ -713,6 +619,114 @@ export class DocumentsSelectionHandlerClient {
       );
     }
     return _observableOf<FileResponse>(null as any);
+  }
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DocumentsUploadHandlerClient {
+  private http: HttpClient;
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+    undefined;
+
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+  ) {
+    this.http = http;
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
+  }
+
+  prepareDocumentUploadAndOpenSystemBrowser(
+    parameters: DocumentUploadInitializationParameters
+  ): Observable<void> {
+    let url_ = this.baseUrl + '/documents-upload-handler/start-upload';
+    url_ = url_.replace(/[?&]$/, '');
+
+    const content_ = JSON.stringify(parameters);
+
+    let options_: any = {
+      body: content_,
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
+
+    return this.http
+      .request('post', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processPrepareDocumentUploadAndOpenSystemBrowser(
+            response_
+          );
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processPrepareDocumentUploadAndOpenSystemBrowser(
+                response_ as any
+              );
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<void>;
+            }
+          } else return _observableThrow(response_) as any as Observable<void>;
+        })
+      );
+  }
+
+  protected processPrepareDocumentUploadAndOpenSystemBrowser(
+    response: HttpResponseBase
+  ): Observable<void> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          return throwException(
+            'A server side error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    } else if (status === 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          return _observableOf<void>(null as any);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf<void>(null as any);
   }
 }
 
@@ -1033,6 +1047,16 @@ export class OpenIdClient {
   }
 }
 
+export interface DocumentSelectionInitializationParameters {
+  accessToken: string;
+  clientState: string;
+  openCdeBaseUrl: string;
+}
+
+export interface DocumentSelectionCallbackParameters {
+  callbackUrl: string;
+}
+
 export interface DocumentUploadInitializationParameters {
   accessToken: string;
   clientState: string;
@@ -1045,16 +1069,6 @@ export interface DocumentUploadInitializationFile {
   fileName: string;
   fileSizeInBytes: number;
   filePath: string;
-}
-
-export interface DocumentSelectionInitializationParameters {
-  accessToken: string;
-  clientState: string;
-  openCdeBaseUrl: string;
-}
-
-export interface DocumentSelectionCallbackParameters {
-  callbackUrl: string;
 }
 
 /** Data transfer class to convey api errors */
@@ -1081,6 +1095,70 @@ export interface OpenIdConnectClientConfiguration {
   tokenEndpoint?: string | undefined;
   requiredScope?: string | undefined;
   customRedirectUrl?: string | undefined;
+}
+
+export interface DocumentsToUpload {
+  server_context?: string | undefined;
+  documents_to_upload: DocumentToUpload[];
+}
+
+export interface DocumentToUpload {
+  session_file_id: string;
+  upload_file_parts: UploadFilePartInstruction[];
+  upload_completion: LinkData;
+  upload_cancellation: LinkData;
+}
+
+export interface UploadFilePartInstruction {
+  url: string;
+  http_method: HttpMethodEnum;
+  additional_headers?: Headers | undefined;
+  include_authorization?: boolean;
+  multipart_form_data?: MultipartFormData | undefined;
+  content_range_start: number;
+  content_range_end: number;
+}
+
+export enum HttpMethodEnum {
+  POSTEnum = 'POST',
+  PUTEnum = 'PUT',
+}
+
+export interface Headers {
+  values: HeaderValue[];
+}
+
+export interface HeaderValue {
+  name: string;
+  value: string;
+}
+
+export interface MultipartFormData {
+  prefix: string;
+  suffix: string;
+}
+
+export interface LinkData {
+  url: string;
+}
+
+export interface DocumentUploadInitializationParameters2 {
+  accessToken: string;
+  clientState: string;
+  openCdeBaseUrl: string;
+  files: DocumentUploadInitializationFile2[];
+}
+
+export interface DocumentUploadInitializationFile2 {
+  sessionFileId: string;
+  fileName: string;
+  fileSizeInBytes: number;
+  filePath: string;
+}
+
+export interface OpenCdeUploadTask {
+  cdeUploadInstructions?: DocumentsToUpload | undefined;
+  clientFileData?: DocumentUploadInitializationParameters2 | undefined;
 }
 
 export interface OpenIdConnectAuthenticationResult {

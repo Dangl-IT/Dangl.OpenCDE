@@ -19,6 +19,14 @@
   >
     Download
   </a>
+  <a
+    *ngIf="document.contentAvailable && !cdeSession"
+    mat-raised-button
+    color="warn"
+    (click)="deleteDocument()"
+  >
+    Delete
+  </a>
   <button
     *ngIf="document.contentAvailable && cdeSession"
     mat-raised-button

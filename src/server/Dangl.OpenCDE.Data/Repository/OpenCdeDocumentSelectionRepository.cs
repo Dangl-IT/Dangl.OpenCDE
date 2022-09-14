@@ -346,6 +346,7 @@ namespace Dangl.OpenCDE.Data.Repository
         {
             var pendingFile = await _context
                 .PendingOpenCdeUploadFiles
+                .Include(pf => pf.UploadSession)
                 .FirstOrDefaultAsync(pf => pf.UploadSessionId == documentSessionId
                     && pf.SessionFileId == sessionFileId);
             if (pendingFile == null)
@@ -354,6 +355,14 @@ namespace Dangl.OpenCDE.Data.Repository
             }
 
             pendingFile.IsCancelled = true;
+            
+            if (pendingFile.LinkedCdeDocumentId != null
+                && pendingFile.UploadSession.SelectedProjectId != null)
+            {
+                await _documentsRepository.DeleteDocumentAsync(pendingFile.UploadSession.SelectedProjectId.Value,
+                    pendingFile.LinkedCdeDocumentId.Value);
+            }
+
             await _context.SaveChangesAsync();
 
             return RepositoryResult.Success();
