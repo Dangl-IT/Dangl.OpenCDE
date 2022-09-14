@@ -6,9 +6,9 @@ import {
   Output,
 } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import {
@@ -33,7 +33,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./authenticate-api.component.scss'],
 })
 export class AuthenticateApiComponent implements OnInit, OnDestroy {
-  openIdForm: FormGroup;
+  openIdForm: UntypedFormGroup;
   authenticationInformation: AuthGet | null = null;
   authenticationInProgress = false;
   lastAuthenticationFailed = false;
@@ -43,18 +43,18 @@ export class AuthenticateApiComponent implements OnInit, OnDestroy {
 
   constructor(
     private openCdeDiscoveryService: OpenCdeDiscoveryService,
-    formBuilder: FormBuilder,
+    formBuilder: UntypedFormBuilder,
     private cdeClientHubService: CdeClientHubService,
     private openIdClient: OpenIdClient,
     private settingsService: SettingsService,
     private matDialog: MatDialog
   ) {
     this.openIdForm = formBuilder.group({
-      clientId: new FormControl('', Validators.required),
-      clientSecret: new FormControl(''),
-      flow: new FormControl('', Validators.required),
-      requiredScope: new FormControl(''),
-      customRedirectUrl: new FormControl(''),
+      clientId: new UntypedFormControl('', Validators.required),
+      clientSecret: new UntypedFormControl(''),
+      flow: new UntypedFormControl('', Validators.required),
+      requiredScope: new UntypedFormControl(''),
+      customRedirectUrl: new UntypedFormControl(''),
     });
   }
 
