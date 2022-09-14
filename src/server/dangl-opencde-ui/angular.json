@@ -31,7 +31,8 @@
               "includePaths": ["./node_modules", "src/assets/styles"]
             },
             "styles": ["src/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["crypto-js"]
           },
           "configurations": {
             "production": {
