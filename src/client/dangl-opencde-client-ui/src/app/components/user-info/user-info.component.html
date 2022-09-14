@@ -6,7 +6,7 @@
     [matMenuTriggerFor]="menu"
   >
     <span id="username-nav">
-      {{ userInfo?.username ?? userInfo?.email }}
+      {{ userInfo.username || userInfo.email }}
     </span>
   </button>
 </ng-container>
