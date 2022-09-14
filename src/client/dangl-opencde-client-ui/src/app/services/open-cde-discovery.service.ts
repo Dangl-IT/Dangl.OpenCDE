@@ -22,13 +22,14 @@ export class OpenCdeDiscoveryService {
   private openCdeBaseUrlSource = new ReplaySubject<string | null>(1);
   openCdeBaseUrl = this.openCdeBaseUrlSource.asObservable();
 
-  private foundationsAuthenticationInfoSource = new ReplaySubject<AuthGet>(1);
+  private foundationsAuthenticationInfoSource =
+    new ReplaySubject<AuthGet | null>(1);
   foundationsAuthentication =
     this.foundationsAuthenticationInfoSource.asObservable();
 
   constructor(private http: HttpClient) {
     this.foundationsBaseUrl.subscribe((baseUrl) => {
-      this.foundationsAuthenticationInfoSource.next(undefined);
+      this.foundationsAuthenticationInfoSource.next(null);
 
       if (baseUrl) {
         baseUrl = baseUrl.replace(/\/$/, ''); // Removing trailing slash
@@ -60,7 +61,7 @@ export class OpenCdeDiscoveryService {
                 }
               },
               () => {
-                this.foundationsAuthenticationInfoSource.next(undefined);
+                this.foundationsAuthenticationInfoSource.next(null);
               }
             );
           }
@@ -103,7 +104,7 @@ export class OpenCdeDiscoveryService {
         (version) =>
           version.api_id === 'opencde' || version.api_id === 'documents'
       );
-      if (openCdeInfo) {
+      if (openCdeInfo && openCdeInfo.api_base_url) {
         this.openCdeBaseUrlSource.next(openCdeInfo.api_base_url);
       } else {
         alert("Failed to find 'opencde' or 'documents' version on server");

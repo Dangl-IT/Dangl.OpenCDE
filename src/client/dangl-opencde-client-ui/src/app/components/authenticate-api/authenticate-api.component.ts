@@ -92,7 +92,10 @@ export class AuthenticateApiComponent implements OnInit, OnDestroy {
           return;
         }
 
-        if (this.authenticationInformation.oauth2_required_scopes) {
+        if (
+          this.authenticationInformation &&
+          this.authenticationInformation.oauth2_required_scopes
+        ) {
           this.openIdForm.patchValue({
             requiredScope:
               this.authenticationInformation.oauth2_required_scopes,
@@ -100,6 +103,7 @@ export class AuthenticateApiComponent implements OnInit, OnDestroy {
         }
 
         if (
+          this.authenticationInformation &&
           this.authenticationInformation.supported_oauth2_flows &&
           this.authenticationInformation.supported_oauth2_flows.length > 0
         ) {
