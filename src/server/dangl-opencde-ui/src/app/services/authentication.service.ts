@@ -30,10 +30,12 @@ export class AuthenticationService {
       (r) => {
         // We're just storing the token from the implicit grant,
         // there's not going to be any refresh token functionality
-        this.jwtTokenService.storeCustomToken({
-          accessToken: r.access_token,
-          expiresAt: r.expires_at,
-        });
+        if (r.expires_at) {
+          this.jwtTokenService.storeCustomToken({
+            accessToken: r.access_token,
+            expiresAt: r.expires_at,
+          });
+        }
         this.router.navigateByUrl('/');
 
         loginResult.next({ success: true });
