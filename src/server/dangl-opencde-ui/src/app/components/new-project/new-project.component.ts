@@ -1,9 +1,9 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 
@@ -19,7 +19,7 @@ import { Subject } from 'rxjs';
 })
 export class NewProjectComponent implements OnInit, OnDestroy {
   private unsubscribe: Subject<void> = new Subject<void>();
-  newProjectForm: FormGroup;
+  newProjectForm: UntypedFormGroup;
   settingsProgress: ProgressSettings = {
     mode: 'buffer',
     value: 0,
@@ -29,14 +29,14 @@ export class NewProjectComponent implements OnInit, OnDestroy {
 
   constructor(
     private projectsClient: ProjectsClient,
-    formBuilder: FormBuilder,
+    formBuilder: UntypedFormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private projectsService: ProjectsService
   ) {
     this.newProjectForm = formBuilder.group({
-      name: new FormControl('', [Validators.required]),
-      description: new FormControl(''),
+      name: new UntypedFormControl('', [Validators.required]),
+      description: new UntypedFormControl(''),
     });
   }
 

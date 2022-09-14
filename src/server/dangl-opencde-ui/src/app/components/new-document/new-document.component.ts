@@ -7,9 +7,9 @@ import {
   SasUploadLink,
 } from '../../generated/backend-client';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 
@@ -26,7 +26,7 @@ import { first } from 'rxjs/operators';
 export class NewDocumentComponent implements OnInit, OnDestroy {
   private unsubscribe: Subject<void> = new Subject<void>();
   projectId: string | null = null;
-  documentCreationForm: FormGroup;
+  documentCreationForm: UntypedFormGroup;
   settingsProgress: ProgressSettings = {
     mode: 'buffer',
     value: 0,
@@ -35,17 +35,17 @@ export class NewDocumentComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private route: ActivatedRoute,
     private documentsService: DocumentsService,
     private documentsClient: DocumentsClient,
     private router: Router
   ) {
     this.documentCreationForm = this.formBuilder.group({
-      name: new FormControl('', Validators.required),
-      description: new FormControl(''),
-      documentFile: new FormControl(null, Validators.required),
-      useSasDocumentUpload: new FormControl(false),
+      name: new UntypedFormControl('', Validators.required),
+      description: new UntypedFormControl(''),
+      documentFile: new UntypedFormControl(null, Validators.required),
+      useSasDocumentUpload: new UntypedFormControl(false),
     });
   }
 
