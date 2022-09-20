@@ -41,6 +41,25 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
             _userInfoService = userInfoService;
         }
 
+        [AllowAnonymous]
+        [HttpGet("sessions/{documentSessionId}/simple-auth")]
+        [ProducesResponseType(typeof(ApiError), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(SimpleAuthToken), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetUploadSessionSimpleAuthDataAsync(Guid documentSessionId)
+        {
+            var userId = await _openCdeDocumentSelectionService.GetUserSessionDataForDocumentUploadAsync(documentSessionId);
+            if (!userId.IsSuccess)
+            {
+                return BadRequest(new ApiError(userId.ErrorMessage));
+            }
+
+            return Ok(new SimpleAuthToken
+            {
+                Jwt = userId.Value.tokenStorage.JsonWebToken,
+                ExpiresAt = userId.Value.tokenStorage.ExpiresAt
+            });
+        }
+
         [HttpPost("sessions/{documentSessionId}/project")]
         [ProducesResponseType(typeof(UploadSessionProjectAssignmentResultGet), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiError), (int)HttpStatusCode.BadRequest)]

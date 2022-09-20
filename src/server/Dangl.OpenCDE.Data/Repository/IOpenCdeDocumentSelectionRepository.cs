@@ -11,6 +11,8 @@ namespace Dangl.OpenCDE.Data.Repository
     public interface IOpenCdeDocumentSelectionRepository
     {
         Task<RepositoryResult<(Guid userId, TokenStorageDto tokenStorage)>> GetUserSessionDataForDocumentDownloadAsync(Guid documentSessionId);
+        
+        Task<RepositoryResult<(Guid userId, TokenStorageDto tokenStorage)>> GetUserSessionDataForDocumentUploadAsync(Guid documentSessionId);
 
         Task<RepositoryResult<DocumentsToUpload>> GetUploadInstructionsAsync(Guid documentSessionId, UploadFileDetails uploadFileDetails);
 

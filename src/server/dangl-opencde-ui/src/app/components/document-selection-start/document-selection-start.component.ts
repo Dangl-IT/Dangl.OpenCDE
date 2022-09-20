@@ -27,7 +27,7 @@ export class DocumentSelectionStartComponent implements OnInit {
         this.cdeSessionService.setCurrentSessionId(documentSessionId);
 
         this.openCdeDownloadIntegrationClient
-          .getSessionSimpleAuthData(documentSessionId)
+          .getDownloadSessionSimpleAuthData(documentSessionId)
           .subscribe((simpleAuthToken) => {
             this.jwtTokenService.storeCustomToken({
               accessToken: simpleAuthToken.jwt,

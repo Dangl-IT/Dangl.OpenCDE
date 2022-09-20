@@ -43,7 +43,7 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
         [HttpGet("sessions/{documentSessionId}/simple-auth")]
         [ProducesResponseType(typeof(ApiError), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(SimpleAuthToken), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetSessionSimpleAuthDataAsync(Guid documentSessionId)
+        public async Task<IActionResult> GetDownloadSessionSimpleAuthDataAsync(Guid documentSessionId)
         {
             var userId = await _openCdeDocumentSelectionService.GetUserSessionDataForDocumentDownloadAsync(documentSessionId);
             if (!userId.IsSuccess)

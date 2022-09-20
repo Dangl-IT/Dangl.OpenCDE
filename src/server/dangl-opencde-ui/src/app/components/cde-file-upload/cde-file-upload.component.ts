@@ -39,7 +39,6 @@ export class CdeFileUploadComponent implements OnInit, OnDestroy {
   projectsPaginated: PaginationResult<ProjectGet> | null = null;
   pageSizeOptions = [1, 5, 10, 25, 100];
   displayedColumns = ['identiconId', 'name', 'description'];
-  private accessTokenFromQuery: string | null = null;
   private unsubscribe: Subject<void> = new Subject<void>();
   private filterSource: Subject<string | null> = new Subject<string | null>();
 
@@ -55,25 +54,21 @@ export class CdeFileUploadComponent implements OnInit, OnDestroy {
     this.route.queryParams
       .pipe(first(), takeUntil(this.unsubscribe))
       .subscribe((p) => {
+        let documentSessionId: string | null = null;
         if (p.documentSessionId) {
-          const documentSessionId: string = p.documentSessionId;
-          this.cdeSessionService.setCurrentSessionId(documentSessionId);
+          documentSessionId = p.documentSessionId;
+          this.cdeSessionService.setCurrentSessionId(documentSessionId!);
         }
 
         if (p.access_token) {
-          setTimeout(() => {
-            this.accessTokenFromQuery = p.access_token;
-            const decodedToken = new JwtHelperService().decodeToken(
-              this.accessTokenFromQuery!
-            );
-
-            this.jwtTokenService.storeCustomToken({
-              accessToken: this.accessTokenFromQuery!,
-              expiresAt: decodedToken.exp,
+          const accessTokenFromQuery = p.access_token;
+          this.setAccessTokenAndReloadProjects(accessTokenFromQuery);
+        } else if (documentSessionId) {
+          this.openCdeUploadIntegrationClient
+            .getUploadSessionSimpleAuthData(documentSessionId)
+            .subscribe((simpleAuth) => {
+              this.setAccessTokenAndReloadProjects(simpleAuth.jwt);
             });
-
-            this.projectsService.forceRefresh();
-          }, 0);
         }
       });
 
@@ -83,6 +78,18 @@ export class CdeFileUploadComponent implements OnInit, OnDestroy {
         this.projectsPaginated = r;
       });
     this.setFilterSettings();
+  }
+
+  private setAccessTokenAndReloadProjects(accessToken: string) {
+    setTimeout(() => {
+      const decodedToken = new JwtHelperService().decodeToken(accessToken);
+      this.jwtTokenService.storeCustomToken({
+        accessToken: accessToken,
+        expiresAt: decodedToken.exp,
+      });
+
+      this.projectsService.forceRefresh();
+    }, 0);
   }
 
   private setFilterSettings(): void {

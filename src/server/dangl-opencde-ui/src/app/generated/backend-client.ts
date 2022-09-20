@@ -2595,7 +2595,7 @@ export class OpenCdeDownloadIntegrationClient {
     this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
   }
 
-  getSessionSimpleAuthData(
+  getDownloadSessionSimpleAuthData(
     documentSessionId: string
   ): Observable<SimpleAuthToken> {
     let url_ =
@@ -2621,14 +2621,16 @@ export class OpenCdeDownloadIntegrationClient {
       .request('get', url_, options_)
       .pipe(
         _observableMergeMap((response_: any) => {
-          return this.processGetSessionSimpleAuthData(response_);
+          return this.processGetDownloadSessionSimpleAuthData(response_);
         })
       )
       .pipe(
         _observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
             try {
-              return this.processGetSessionSimpleAuthData(response_ as any);
+              return this.processGetDownloadSessionSimpleAuthData(
+                response_ as any
+              );
             } catch (e) {
               return _observableThrow(e) as any as Observable<SimpleAuthToken>;
             }
@@ -2640,7 +2642,7 @@ export class OpenCdeDownloadIntegrationClient {
       );
   }
 
-  protected processGetSessionSimpleAuthData(
+  protected processGetDownloadSessionSimpleAuthData(
     response: HttpResponseBase
   ): Observable<SimpleAuthToken> {
     const status = response.status;
@@ -3501,6 +3503,116 @@ export class OpenCdeUploadIntegrationClient {
   ) {
     this.http = http;
     this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
+  }
+
+  getUploadSessionSimpleAuthData(
+    documentSessionId: string
+  ): Observable<SimpleAuthToken> {
+    let url_ =
+      this.baseUrl +
+      '/api/open-cde-integration/upload/sessions/{documentSessionId}/simple-auth';
+    if (documentSessionId === undefined || documentSessionId === null)
+      throw new Error("The parameter 'documentSessionId' must be defined.");
+    url_ = url_.replace(
+      '{documentSessionId}',
+      encodeURIComponent('' + documentSessionId)
+    );
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: 'application/json',
+      }),
+    };
+
+    return this.http
+      .request('get', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processGetUploadSessionSimpleAuthData(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processGetUploadSessionSimpleAuthData(
+                response_ as any
+              );
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<SimpleAuthToken>;
+            }
+          } else
+            return _observableThrow(
+              response_
+            ) as any as Observable<SimpleAuthToken>;
+        })
+      );
+  }
+
+  protected processGetUploadSessionSimpleAuthData(
+    response: HttpResponseBase
+  ): Observable<SimpleAuthToken> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          let result400: any = null;
+          result400 =
+            _responseText === ''
+              ? null
+              : (JSON.parse(_responseText, this.jsonParseReviver) as ApiError);
+          return throwException(
+            'A server side error occurred.',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          let result200: any = null;
+          result200 =
+            _responseText === ''
+              ? null
+              : (JSON.parse(
+                  _responseText,
+                  this.jsonParseReviver
+                ) as SimpleAuthToken);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf<SimpleAuthToken>(null as any);
   }
 
   setProjectForUploadSession(

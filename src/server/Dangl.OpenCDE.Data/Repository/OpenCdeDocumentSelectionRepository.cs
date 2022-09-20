@@ -55,6 +55,22 @@ namespace Dangl.OpenCDE.Data.Repository
             return RepositoryResult<(Guid userId, TokenStorageDto tokenStorage)>.Success((session.UserId, tokenStorage));
         }
 
+        public async Task<RepositoryResult<(Guid userId, TokenStorageDto tokenStorage)>> GetUserSessionDataForDocumentUploadAsync(Guid documentSessionId)
+        {
+            var session = await _context
+                .OpenCdeDocumentUploadSessions
+                .FirstOrDefaultAsync(s => s.Id == documentSessionId
+                    && s.ValidUntilUtc >= DateTimeOffset.UtcNow);
+            if (session == null)
+            {
+                return RepositoryResult<(Guid userId, TokenStorageDto tokenStorage)>.Fail("No valid session found for the given id.");
+            }
+
+            var tokenStorage = JsonConvert.DeserializeObject<TokenStorageDto>(session.AuthenticationInformationJson);
+
+            return RepositoryResult<(Guid userId, TokenStorageDto tokenStorage)>.Success((session.UserId, tokenStorage));
+        }
+
         public async Task<RepositoryResult<(Guid sessionId, int validForSeconds)>> PrepareOpenCdeDocumentDownloadSelectionAsync(string clientCallbackUrl,
             string userJwt,
             long userJwtExpiresAt)
