@@ -78,8 +78,8 @@ namespace Dangl.OpenCDE.Core.Controllers.CdeApi
 
             var url = new Uri(repoResult.Value.ClientCallbackUrl);
             var query = HttpUtility.ParseQueryString(url.Query);
-            query.Add("selected_documents_url", selectedDocumentsUrl);
             query.Add("selection_context", repoResult.Value.SelectionId.ToString());
+            query.Add("selected_documents_url", selectedDocumentsUrl);
             var uriBuilder = new UriBuilder(url);
             uriBuilder.Query = query.ToString();
             var callbackUrl = uriBuilder.ToString();
