@@ -43,7 +43,6 @@ namespace Dangl.OpenCDE.Core.Configuration
                 .SetMvcBuilderConfig(mvcBuilder =>
                 {
                     mvcBuilder
-                      .SetCompatibilityVersion(CompatibilityVersion.Latest)
                       // To ensure it's using it's own assembly in addition to the startup one
                       .AddApplicationPart(typeof(ServiceConfigurationExtensions).Assembly)
                       .AddNewtonsoftJson(jsonOptions =>
