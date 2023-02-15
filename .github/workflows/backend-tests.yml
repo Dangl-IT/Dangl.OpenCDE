@@ -13,5 +13,9 @@ jobs:
     if: ${{ github.event.repository.owner.login  == 'Dangl-IT' }}
     steps:
       - uses: actions/checkout@v1
+      - name: Run './build.cmd CreateNuGetConfigForInternalPackages'
+        run: ./build.cmd CreateNuGetConfigForInternalPackages
+        env:
+          DanglInternalNuGetFeedReaderKey: ${{ secrets.DANGLINTERNALNUGETFEEDREADERKEY }}
       - name: Run './build.cmd Coverage -Configuration Debug'
         run: ./build.cmd Coverage -Configuration Debug

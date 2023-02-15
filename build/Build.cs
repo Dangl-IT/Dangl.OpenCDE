@@ -71,6 +71,8 @@ class Build : NukeBuild
     [Parameter] readonly bool BuildElectronWindowsTargets;
     [Parameter] readonly bool BuildElectronUnixTargets;
 
+    [Parameter] readonly string DanglInternalNuGetFeedReaderKey;
+
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
@@ -133,6 +135,22 @@ class Build : NukeBuild
             catch { /* Ignoring failures here */}
         }
     }
+
+    Target CreateNuGetConfigForInternalPackages => _ => _
+        .Requires(() => DanglInternalNuGetFeedReaderKey)
+        .Executes(() =>
+        {
+            var nuGetConfig = $@"<?xml version=""1.0"" encoding=""utf-8""?>
+<configuration>
+  <packageSources>
+    <add key=""DanglMyGet"" value=""https://www.myget.org/F/dangl/api/v3/index.json"" protocolVersion=""3"" />
+	<add key=""DanglInternalMyGet"" value=""https://www.myget.org/F/dangl-internal/auth/{DanglInternalNuGetFeedReaderKey}/api/v3/index.json"" protocolVersion=""3"" />
+  </packageSources>
+</configuration>
+";
+
+            WriteAllText(RootDirectory / "NuGet.Config", nuGetConfig);
+        });
 
     Target Clean => _ => _
         .Before(Restore)
