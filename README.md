@@ -26,3 +26,7 @@ To run the client, please run `ng serve` in the client UI directory and `electro
 The `Jenkinsfile` is only executed for the repository at [GeorgDangl/Dangl.OpenCDE](https://github.com/GeorgDangl/Dangl.OpenCDE), to have deployments controlled by a separate repository.
 
 The pipeline in GitHub Actions does currently not correctly execute, since this repository is referencing some internal packages that are not yet made available publicly.
+
+## Tests
+
+To run the integration tests, you need access to some internal Dangl**IT** packages. However, both the server and the client can be compiled and run with public packages.
