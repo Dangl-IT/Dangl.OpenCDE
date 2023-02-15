@@ -5,6 +5,7 @@ on:
     paths:
       - "src/**"
       - "tests/**"
+      - ".github/workflows/backend-tests.yml"
 
 jobs:
   backend-tests:
