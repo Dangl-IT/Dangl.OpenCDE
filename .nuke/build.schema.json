@@ -36,6 +36,9 @@
         "DanglCiCdTeamsWebhookUrl": {
           "type": "string"
         },
+        "DanglInternalNuGetFeedReaderKey": {
+          "type": "string"
+        },
         "DockerImageName": {
           "type": "string"
         },
@@ -134,6 +137,7 @@
               "Clean",
               "Compile",
               "Coverage",
+              "CreateNuGetConfigForInternalPackages",
               "FrontEndRestore",
               "GenerateModelsFromSwagger",
               "GenerateVersion",
@@ -169,6 +173,7 @@
               "Clean",
               "Compile",
               "Coverage",
+              "CreateNuGetConfigForInternalPackages",
               "FrontEndRestore",
               "GenerateModelsFromSwagger",
               "GenerateVersion",

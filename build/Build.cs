@@ -316,7 +316,7 @@ export const version = {{
                 // Merge coverage reports, otherwise they might not be completely
                 // picked up by Jenkins
                 ReportGenerator(c => c
-                    .SetFramework("net5.0")
+                    .SetFramework("net7.0")
                     .SetReports(OutputDirectory / "*_coverage.xml")
                     .SetTargetDirectory(OutputDirectory)
                     .SetReportTypes(ReportTypes.Cobertura));
@@ -354,7 +354,7 @@ export const version = {{
         NSwagExecuteDocument(x => x
                 .SetProcessWorkingDirectory(SourceDirectory / "server" / "Dangl.OpenCDE")
                 .SetProcessEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development")
-                .SetNSwagRuntime("NetCore31")
+                .SetNSwagRuntime("Net70")
                 .SetInput(nSwagConfigPath));
 
         nSwagConfigPath = SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "nswag.json";
@@ -362,7 +362,7 @@ export const version = {{
         NSwagExecuteDocument(x => x
                 .SetProcessWorkingDirectory(SourceDirectory / "client" / "Dangl.OpenCDE.Client")
                 .SetProcessEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development")
-                .SetNSwagRuntime("NetCore31")
+                .SetNSwagRuntime("Net70")
                 .SetInput(nSwagConfigPath));
 
         nSwagConfigPath = SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "nswag-opencde.nswag";
@@ -370,7 +370,7 @@ export const version = {{
         NSwagExecuteDocument(x => x
                 .SetProcessWorkingDirectory(SourceDirectory / "client" / "Dangl.OpenCDE.Client")
                 .SetProcessEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development")
-                .SetNSwagRuntime("NetCore31")
+                .SetNSwagRuntime("Net70")
                 .SetInput(nSwagConfigPath));
     });
 
