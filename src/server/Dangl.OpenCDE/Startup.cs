@@ -38,7 +38,7 @@ namespace Dangl.OpenCDE
 
             if (!string.IsNullOrWhiteSpace(openCdeSettings.ApplicationInsightsInstrumentationKey))
             {
-                services.AddApplicationInsightsTelemetry(openCdeSettings.ApplicationInsightsInstrumentationKey);
+                services.AddApplicationInsightsTelemetry();
             }
 
             services.AddDbContext<CdeDbContext>(sqlBuilder =>
