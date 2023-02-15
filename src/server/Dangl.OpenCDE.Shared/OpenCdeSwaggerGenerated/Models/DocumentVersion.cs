@@ -152,7 +152,7 @@ namespace Dangl.OpenCDE.Shared.OpenCdeSwaggerGenerated.Models
                 ) && 
                 (
                     CreationDate == other.CreationDate ||
-                    CreationDate != null &&
+                    CreationDate != default &&
                     CreationDate.Equals(other.CreationDate)
                 ) && 
                 (
@@ -188,7 +188,7 @@ namespace Dangl.OpenCDE.Shared.OpenCdeSwaggerGenerated.Models
                     hashCode = hashCode * 59 + VersionNumber.GetHashCode();
                     
                     hashCode = hashCode * 59 + VersionIndex.GetHashCode();
-                    if (CreationDate != null)
+                    if (CreationDate != default)
                     hashCode = hashCode * 59 + CreationDate.GetHashCode();
                     if (Title != null)
                     hashCode = hashCode * 59 + Title.GetHashCode();
