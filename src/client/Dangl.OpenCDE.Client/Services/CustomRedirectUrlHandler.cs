@@ -62,7 +62,7 @@ namespace Dangl.OpenCDE.Client.Services
                 .UseUrls($"http://+:{port}")
                 .Configure(app =>
                 {
-                    app.Use(async (context, next) =>
+                    app.Use(async (HttpContext context, RequestDelegate _) =>
                     {
                         context.Response.StatusCode = 200;
                         context.Response.Headers.TryAdd("Content-Type", "text/html");

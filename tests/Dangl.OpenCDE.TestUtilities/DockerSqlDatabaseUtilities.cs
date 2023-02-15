@@ -42,6 +42,7 @@ namespace Dangl.OpenCDE.TestUtilities
                     },
                 HostConfig = new HostConfig
                 {
+                    AutoRemove = true,
                     Tmpfs = new Dictionary<string, string>
                         {
                             {"/var/opt/mssql/data", "" },
@@ -168,13 +169,11 @@ namespace Dangl.OpenCDE.TestUtilities
             }
         }
 
-        public static async Task EnsureDockerStoppedAndRemovedAsync(string dockerContainerId)
+        public static async Task EnsureDockerStoppedAsync(string dockerContainerId)
         {
             var dockerClient = GetDockerClient();
             await dockerClient.Containers
                 .StopContainerAsync(dockerContainerId, new ContainerStopParameters());
-            await dockerClient.Containers
-                .RemoveContainerAsync(dockerContainerId, new ContainerRemoveParameters());
         }
 
         private static DockerClient GetDockerClient()
@@ -182,11 +181,9 @@ namespace Dangl.OpenCDE.TestUtilities
             var dockerUri = IsRunningOnWindows()
                 ? "npipe://./pipe/docker_engine"
                 : "unix:///var/run/docker.sock";
-            return new DockerClientConfiguration(new Uri(dockerUri))
-            {
+            return new DockerClientConfiguration(new Uri(dockerUri),
                 // The default is 100ms, which can be a bit too little for highly parallelized tests
-                NamedPipeConnectTimeout = TimeSpan.FromSeconds(5)
-            }
+                namedPipeConnectTimeout: TimeSpan.FromSeconds(5))
                 .CreateClient();
         }
 
@@ -207,7 +204,7 @@ namespace Dangl.OpenCDE.TestUtilities
                 {
                     try
                     {
-                        await EnsureDockerStoppedAndRemovedAsync(runningContainer.ID);
+                        await EnsureDockerStoppedAsync(runningContainer.ID);
                     }
                     catch
                     {
@@ -226,7 +223,7 @@ namespace Dangl.OpenCDE.TestUtilities
             {
                 try
                 {
-                    var sqlConnectionString = $"Data Source=localhost,{databasePort};Integrated Security=False;User ID=SA;Password={SQLSERVER_SA_PASSWORD}";
+                    var sqlConnectionString = $"Data Source=localhost,{databasePort};Integrated Security=False;User ID=SA;Password={SQLSERVER_SA_PASSWORD};TrustServerCertificate=True";
                     await using var sqlConnection = new SqlConnection(sqlConnectionString);
                     await sqlConnection.OpenAsync();
                     connectionEstablised = true;

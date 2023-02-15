@@ -1,8 +1,12 @@
-﻿using Dapper;
+﻿using Dangl.Identity.TestHost;
+using Dangl.OpenCDE.TestUtilities.TestData;
+using Dapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -14,8 +18,10 @@ namespace Dangl.OpenCDE.TestUtilities
         public const string INITIAL_SEED_DATABASE_NAME = "TestSeed";
         private string _dockerContainerId;
         private string _dockerSqlPort;
+        private DanglIdentityTestServerManager _danglIdentityTestServerManager;
 
         public string DockerContainerId => _dockerContainerId;
+        public DanglIdentityTestServerManager DanglIdentityTestServerManager => _danglIdentityTestServerManager;
 
         public string GetSqlConnectionString()
         {
@@ -23,7 +29,8 @@ namespace Dangl.OpenCDE.TestUtilities
                 $"Initial Catalog={DATABASE_NAME_PLACEHOLDER};" +
                 "Integrated Security=False;" +
                 "User ID=SA;" +
-                $"Password={DockerSqlDatabaseUtilities.SQLSERVER_SA_PASSWORD}";
+                $"Password={DockerSqlDatabaseUtilities.SQLSERVER_SA_PASSWORD};" +
+                $"TrustServerCertificate=True";
         }
 
         public string GetMasterSqlConnectionString()
@@ -31,13 +38,25 @@ namespace Dangl.OpenCDE.TestUtilities
             return $"Data Source=localhost,{_dockerSqlPort};" +
                 "Integrated Security=False;" +
                 "User ID=SA;" +
-                $"Password={DockerSqlDatabaseUtilities.SQLSERVER_SA_PASSWORD}";
+                $"Password={DockerSqlDatabaseUtilities.SQLSERVER_SA_PASSWORD};" +
+                $"TrustServerCertificate=True";
         }
 
         public async Task InitializeAsync()
         {
             (_dockerContainerId, _dockerSqlPort, _) = await DockerSqlDatabaseUtilities.EnsureDockerStartedAndGetContainerIdAndPortAsync();
             await InitializeSeedDatabaseAsync();
+
+            var danglIdentitySqlConnectionString = await CreateEmptyDatabaseAndReturnConnectionStringAsync();
+            var danglIdentityTestServerConfiguration = new Identity.TestHost.Configuration.DanglIdentityTestServerConfiguration
+            {
+                Users = Users.Values,
+                Clients = Clients.Values,
+                ScopesWithProfileData = new List<string> { IntegrationTestConstants.REQUIRED_SCOPE },
+                SqlServerConnectionString = danglIdentitySqlConnectionString
+            };
+            _danglIdentityTestServerManager = new DanglIdentityTestServerManager(danglIdentityTestServerConfiguration);
+            await _danglIdentityTestServerManager.InitializeTestServerAsync();
         }
 
         /// <summary>
@@ -53,7 +72,7 @@ namespace Dangl.OpenCDE.TestUtilities
             var masterDatabaseConnectionString = GetMasterSqlConnectionString();
             var services = new ServiceCollection();
             var environmentMock = new Mock<IWebHostEnvironment>();
-            services.ConfigureIntegrationTestServices(databaseConnectionString);
+            services.ConfigureIntegrationTestServices(databaseConnectionString, () => null);
             var serviceProvider = services.BuildServiceProvider();
             await DatabaseInitializer.InitializeDatabase(serviceProvider,
                 masterDatabaseConnectionString,
@@ -68,7 +87,16 @@ namespace Dangl.OpenCDE.TestUtilities
 
         public Task DisposeAsync()
         {
-            return DockerSqlDatabaseUtilities.EnsureDockerStoppedAndRemovedAsync(_dockerContainerId);
+            return DockerSqlDatabaseUtilities.EnsureDockerStoppedAsync(_dockerContainerId);
+        }
+
+        public async Task<string> CreateEmptyDatabaseAndReturnConnectionStringAsync()
+        {
+            var databaseName = Guid.NewGuid().ToString();
+            await DatabaseInitializer.CreateEmptyDatabaseAsync(GetMasterSqlConnectionString(), databaseName);
+            var connectionString = GetSqlConnectionString()
+                .Replace(DATABASE_NAME_PLACEHOLDER, databaseName);
+            return connectionString;
         }
     }
 }

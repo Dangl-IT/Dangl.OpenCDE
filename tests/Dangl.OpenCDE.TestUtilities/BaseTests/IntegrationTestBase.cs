@@ -28,7 +28,8 @@ namespace Dangl.OpenCDE.TestUtilities.BaseTests
             var sqlConnectionString = _fixture.GetSqlConnectionString();
             var masterSqlConnectionString = _fixture.GetMasterSqlConnectionString();
             var sqlServerDockerContainerId = _fixture.DockerContainerId;
-            _testHelper = new TestHelper(sqlConnectionString, masterSqlConnectionString, sqlServerDockerContainerId);
+            var danglIdentityTestServerManager = _fixture.DanglIdentityTestServerManager;
+            _testHelper = new TestHelper(sqlConnectionString, masterSqlConnectionString, sqlServerDockerContainerId, danglIdentityTestServerManager);
             _testHelper.ConfigureTestServices = ConfigureTestServices;
             await _testHelper.InitializeTestServer();
         }

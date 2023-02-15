@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nuke.Common" Version="6.2.1" />
+    <PackageReference Include="Nuke.Common" Version="6.3.0" />
     <PackageDownload Include="AzureSignTool" Version="[3.0.0]" />
     <PackageDownload Include="GitVersion.Tool" Version="[5.10.3]" />
     <PackageReference Include="docfx.console" Version="2.59.4">
@@ -19,8 +19,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ReportGenerator" Version="5.1.10" />
-    <PackageReference Include="NSwag.MSBuild" Version="13.16.1">
+    <PackageReference Include="ReportGenerator" Version="5.1.17" />
+    <PackageReference Include="NSwag.MSBuild" Version="13.18.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

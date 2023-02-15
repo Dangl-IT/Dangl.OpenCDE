@@ -10,13 +10,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Net.Http;
 
 namespace Dangl.OpenCDE.TestUtilities
 {
     public static class IntegrationTestConfigurationExtensions
     {
         public static IServiceCollection ConfigureIntegrationTestServices(this IServiceCollection services,
-            string databaseConnectionString)
+            string databaseConnectionString,
+            Func<HttpMessageHandler> danglIdentityHttpMessageHandlerFactory)
         {
             services.AddDbContext<CdeDbContext>(sqlBuilder =>
                 sqlBuilder.UseSqlServer(databaseConnectionString, options => options.MigrationsAssembly(typeof(Startup).Assembly.GetName().Name)));
@@ -33,7 +36,7 @@ namespace Dangl.OpenCDE.TestUtilities
                     ClientId = Clients.OpenCdeAppClient.ClientId,
                     ClientSecret = Clients.OpenCdeAppClient.ClientSecret,
                     RequiredScope = IntegrationTestConstants.REQUIRED_SCOPE,
-                    CustomBackchannelHttpMessageHandlerFactory = () => TestHelper.DanglIdentityTestServerManager.TestServer.CreateHandler(),
+                    CustomBackchannelHttpMessageHandlerFactory = danglIdentityHttpMessageHandlerFactory,
                     UseDefaultInMemoryUserUpdaterCache = false
                 },
                 AppBaseUrl = "https://localhost",

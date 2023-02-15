@@ -10,6 +10,14 @@ namespace Dangl.OpenCDE.TestUtilities
 {
     public static class DatabaseInitializer
     {
+        public static async Task CreateEmptyDatabaseAsync(string masterDatabaseConnectionString, string databaseName)
+        {
+            await using var sqlConnection = new SqlConnection(masterDatabaseConnectionString);
+            await sqlConnection.OpenAsync();
+            await sqlConnection.ExecuteAsync($"CREATE DATABASE [{databaseName}];");
+            await sqlConnection.ExecuteAsync($"ALTER DATABASE [{databaseName}] SET RECOVERY SIMPLE;");
+        }
+        
         public static async Task InitializeDatabase(IServiceProvider serviceProvider, string masterDatabaseConnectionString, string databaseName)
         {
             var maxTries = 20;

@@ -31,7 +31,6 @@ namespace Dangl.OpenCDE.Core.Configuration
                 .SetAllowInsecureJwtIssuers(openCdeSettings.DanglIdentitySettings.AllowInsecureJwtIssuers)
                 .SetClientId(openCdeSettings.DanglIdentitySettings.ClientId)
                 .SetBaseUri(openCdeSettings.DanglIdentitySettings.BaseUri)
-                .SetFallbackBaseUri(openCdeSettings.DanglIdentitySettings.BaseUri) // Just using a single endpoint for Dangl.Identity
                 .SetRequiredScope(openCdeSettings.DanglIdentitySettings.RequiredScope)
                 .SetUseMemoryCacheUserInfoUpdater(openCdeSettings.DanglIdentitySettings.UseDefaultInMemoryUserUpdaterCache)
                 .SetMvcSetupAction(mvcOptions =>

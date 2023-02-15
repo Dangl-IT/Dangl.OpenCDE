@@ -22,31 +22,27 @@ namespace Dangl.OpenCDE.TestUtilities
 {
     public class TestHelper
     {
-        public static DanglIdentityTestServerManager DanglIdentityTestServerManager { get; }
         private TestServer _testServer;
         private readonly string _databaseConnectionString;
         private readonly string _databaseName = Guid.NewGuid().ToString();
         private readonly string _masterDatabaseConnectionString;
         private readonly string _sqlServerDockerContainerId;
+        private readonly DanglIdentityTestServerManager _danglIdentityTestServerManager;
 
         public string DatabaseName => _databaseName;
         public string DatabaseConnectionString => _databaseConnectionString;
-
-        static TestHelper()
-        {
-            DanglIdentityTestServerManager = new DanglIdentityTestServerManager(Users.Values,
-                Clients.Values,
-                new List<string> { IntegrationTestConstants.REQUIRED_SCOPE });
-        }
+        public DanglIdentityTestServerManager DanglIdentityTestServerManager => _danglIdentityTestServerManager;
 
         public TestHelper(string databaseConnectionString,
             string masterDatabaseConnectionString,
-            string sqlServerDockerContainerId)
+            string sqlServerDockerContainerId,
+            DanglIdentityTestServerManager danglIdentityTestServerManager)
         {
             _databaseConnectionString = databaseConnectionString
                 .Replace(SqlServerDockerCollectionFixture.DATABASE_NAME_PLACEHOLDER, _databaseName);
             _masterDatabaseConnectionString = masterDatabaseConnectionString;
             _sqlServerDockerContainerId = sqlServerDockerContainerId;
+            _danglIdentityTestServerManager = danglIdentityTestServerManager;
         }
 
         public Action<IServiceCollection> ConfigureTestServices { get; set; }
@@ -63,7 +59,7 @@ namespace Dangl.OpenCDE.TestUtilities
                 .ConfigureLogging(c => c.AddDebug())
                 .ConfigureServices((_, services) =>
                 {
-                    services.ConfigureIntegrationTestServices(_databaseConnectionString);
+                    services.ConfigureIntegrationTestServices(_databaseConnectionString, () => DanglIdentityTestServerManager.TestServer.CreateHandler());
 
                     ConfigureTestServices?.Invoke(services);
                 })
@@ -154,7 +150,7 @@ namespace Dangl.OpenCDE.TestUtilities
 
         public async Task<HttpClient> GetJwtAuthenticatedClientCredentialsClientAsync(ClientSetupDto client)
         {
-            var jwtToken = await DanglIdentityTestServerManager.GetJwtClientCredentialsGrantToken(client.ClientId, client.ClientSecret, IntegrationTestConstants.REQUIRED_SCOPE);
+            var jwtToken = await DanglIdentityTestServerManager.GetJwtClientCredentialsGrantTokenAsync(client.ClientId, client.ClientSecret, IntegrationTestConstants.REQUIRED_SCOPE);
             var httpClient = GetAnonymousClient();
             httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwtToken.AccessToken);
             return httpClient;

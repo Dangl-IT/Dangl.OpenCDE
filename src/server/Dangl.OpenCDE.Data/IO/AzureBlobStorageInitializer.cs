@@ -50,7 +50,7 @@ namespace Dangl.OpenCDE.Data.IO
 
             foreach (var container in containers)
             {
-                await azureBlobFileManager.EnsureContainerCreated(container).ConfigureAwait(false);
+                await azureBlobFileManager.EnsureContainerCreatedAsync(container).ConfigureAwait(false);
             }
         }
     }

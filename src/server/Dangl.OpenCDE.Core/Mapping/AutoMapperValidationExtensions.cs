@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Internal;
 using System;
 using System.Linq;
 
@@ -17,7 +18,7 @@ namespace Dangl.OpenCDE.Core.Mapping
         public static IMapperConfigurationExpression AddEnumCompatibilityValidator(this IMapperConfigurationExpression mapperConfig)
         {
             // The following checks that all enums have matching source and destination types
-            mapperConfig.Advanced.Validator(c =>
+            mapperConfig.Internal().Validator(c =>
             {
                 if (c.Types.SourceType.IsEnum && (c.TypeMap == null || c.TypeMap.ConfiguredMemberList == MemberList.Source))
                 {

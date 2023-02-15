@@ -40,7 +40,7 @@ namespace Dangl.OpenCDE.Core.Configuration
 
             app.UseStaticFiles();
 
-            app.UseDanglIdentityJwtTokenAuthentication(danglIdentitySettings.BaseUri, danglIdentitySettings.BaseUri, new System.Collections.Generic.List<string>
+            app.UseDanglIdentityJwtTokenAuthentication(danglIdentitySettings.BaseUri, new System.Collections.Generic.List<string>
             {
                 // The SignalR JavaScript library has a limitation, it can't set Bearer tokens via the 'Authorization' header
                 // on the initial connection, so it sends the bearer token as a query parameter with the name 'access_token'

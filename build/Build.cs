@@ -398,7 +398,7 @@ export const version = {{
         .DependsOn(Publish)
         .Executes(() =>
         {
-            DockerPull(c => c.SetName("mcr.microsoft.com/dotnet/core/aspnet:3.1-bionic"));
+            DockerPull(c => c.SetName("mcr.microsoft.com/dotnet/core/aspnet:7.0"));
 
             CopyDirectoryRecursively(PublishDirectory, OutputDirectory / "Docker");
 
