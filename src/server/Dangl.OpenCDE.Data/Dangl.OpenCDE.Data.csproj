@@ -10,10 +10,10 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="Dangl.Identity.Client.Mvc" Version="5.0.1" />
-    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Dangl.Identity.Client.Mvc" Version="6.0.1" />
+    <PackageReference Include="Dapper" Version="2.0.151" />
     <PackageReference Include="Dapper.Logging" Version="0.4.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.11" />
   </ItemGroup>
 
 </Project>
