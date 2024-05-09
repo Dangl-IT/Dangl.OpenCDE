@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { SettingsService } from '../../services/settings.service';
 import { SettingsType } from '../../settings/settings.type';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'opencde-client-manage-openid-configs-modal',
