@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 import { ManageServersModalComponent } from '../manage-servers-modal/manage-servers-modal.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
 import { SettingsService } from '../../services/settings.service';
 
