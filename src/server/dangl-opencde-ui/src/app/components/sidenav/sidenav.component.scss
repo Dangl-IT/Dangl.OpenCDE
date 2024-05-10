@@ -10,6 +10,8 @@ a {
   text-align: start;
   padding-top: 4px;
   padding-bottom: 2px;
+  background-color: $color-dark !important;
+  color: #fff !important;
 }
 
 mat-icon {
@@ -19,5 +21,5 @@ mat-icon {
 }
 
 a.active {
-  background-color: $color-primary;
+  background-color: $color-primary !important;
 }

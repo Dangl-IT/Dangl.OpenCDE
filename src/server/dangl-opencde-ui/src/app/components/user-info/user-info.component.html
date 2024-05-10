@@ -1,15 +1,22 @@
 <ng-container *ngIf="userInfo">
-  <button class="menu-btn" mat-button [matMenuTriggerFor]="menu">
+  <div class="user-info-container">
     <img
       class="profile-image"
       *ngIf="userInfo?.identiconId"
       [diIcon]="userInfo.identiconId"
       [rectangleSize]="30"
     />
-    <span id="username-nav">
-      {{ userInfo.username }}
-    </span>
-  </button>
+    <button
+      class="menu-btn"
+      mat-flat-button
+      color="primary"
+      [matMenuTriggerFor]="menu"
+    >
+      <span id="username-nav">
+        {{ userInfo.username }}
+      </span>
+    </button>
+  </div>
 </ng-container>
 <mat-menu #menu>
   <button mat-menu-item (click)="logout()">
