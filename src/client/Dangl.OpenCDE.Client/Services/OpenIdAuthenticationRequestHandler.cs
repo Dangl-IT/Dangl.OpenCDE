@@ -36,40 +36,33 @@ namespace Dangl.OpenCDE.Client.Services
             else
             {
                 var authenticationParameters = _openIdConnectCache.AuthenticationParametersByClientState[state];
-                if (string.IsNullOrWhiteSpace(authenticationParameters.ClientConfiguration.ClientSecret))
+                var httpClient = _httpClientFactory.CreateClient();
+                var redirectUri = _openIdConnectCache.UsedRedirectUrisByClientState[state];
+                var authRequestOptions = new AuthorizationCodeTokenRequest
+                {
+                    Address = authenticationParameters.ClientConfiguration.TokenEndpoint,
+                    ClientId = authenticationParameters.ClientConfiguration.ClientId,
+                    ClientSecret = authenticationParameters.ClientConfiguration.ClientSecret,
+                    Code = code,
+                    GrantType = "authorization_code",
+                    RedirectUri = redirectUri
+                };
+
+                if (authenticationParameters.ClientConfiguration.TokenEndpoint.Contains("trimble", System.StringComparison.InvariantCultureIgnoreCase))
+                {
+                    authRequestOptions.ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader;
+                }
+
+                var codeResponse = await httpClient.RequestAuthorizationCodeTokenAsync(authRequestOptions);
+
+                if (codeResponse.IsError)
                 {
                     await _openIdConnectResultPublisher.InformClientsAboutAuthenticationFailureAsync(state);
                 }
                 else
                 {
-                    var httpClient = _httpClientFactory.CreateClient();
-                    var redirectUri = _openIdConnectCache.UsedRedirectUrisByClientState[state];
-                    var authRequestOptions = new AuthorizationCodeTokenRequest
-                    {
-                        Address = authenticationParameters.ClientConfiguration.TokenEndpoint,
-                        ClientId = authenticationParameters.ClientConfiguration.ClientId,
-                        ClientSecret = authenticationParameters.ClientConfiguration.ClientSecret,
-                        Code = code,
-                        GrantType = "authorization_code",
-                        RedirectUri = redirectUri
-                    };
-
-                    if (authenticationParameters.ClientConfiguration.TokenEndpoint.Contains("trimble", System.StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        authRequestOptions.ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader;
-                    }
-
-                    var codeResponse = await httpClient.RequestAuthorizationCodeTokenAsync(authRequestOptions);
-
-                    if (codeResponse.IsError)
-                    {
-                        await _openIdConnectResultPublisher.InformClientsAboutAuthenticationFailureAsync(state);
-                    }
-                    else
-                    {
-                        await _openIdConnectResultPublisher
-                            .InformClientsAboutAuthenticationSuccess(state, codeResponse.AccessToken, codeResponse.ExpiresIn);
-                    }
+                    await _openIdConnectResultPublisher
+                        .InformClientsAboutAuthenticationSuccess(state, codeResponse.AccessToken, codeResponse.ExpiresIn);
                 }
             }
 

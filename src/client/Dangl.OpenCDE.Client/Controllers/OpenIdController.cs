@@ -1,6 +1,7 @@
 ﻿using Dangl.OpenCDE.Client.Hubs;
 using Dangl.OpenCDE.Client.Models;
 using Dangl.OpenCDE.Client.Services;
+using IdentityModel;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,12 +57,6 @@ namespace Dangl.OpenCDE.Client.Controllers
         private async Task InitiateCodeAuthenticationFlowAsync(OpenIdConnectAuthenticationParameters authenticationParameters)
         {
             if (authenticationParameters.Flow != OpenIdConnectFlowType.AuthorizationCode)
-            {
-                await _openIdConnectResultPublisher.InformClientsAboutAuthenticationFailureAsync(authenticationParameters.ClientState);
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(authenticationParameters.ClientConfiguration.ClientSecret))
             {
                 await _openIdConnectResultPublisher.InformClientsAboutAuthenticationFailureAsync(authenticationParameters.ClientState);
                 return;
