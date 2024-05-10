@@ -13,20 +13,10 @@ import { DocumentsComponent } from './components/documents/documents.component';
 import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { FileSizePipe } from './pipes/file-size.pipe';
 import { LoginComponent } from './components/login/login.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
 import { NewDocumentComponent } from './components/new-document/new-document.component';
 import { NewProjectComponent } from './components/new-project/new-project.component';
 import { NgDanglIconsModule } from 'ng-dangl-icons';
@@ -40,7 +30,16 @@ import { UploadProgressComponent } from './components/upload-progress/upload-pro
 import { UserInfoComponent } from './components/user-info/user-info.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { CdeFileUploadComponent } from './components/cde-file-upload/cde-file-upload.component';
-
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatInputModule } from '@angular/material/input';
 @NgModule({
   declarations: [
     AppComponent,
