@@ -52,7 +52,7 @@ pipeline {
         }
         stage ('Publish Docs & Assets') {
             steps {
-                sh 'bash build.sh UploadDocumentation+PublishGitHubRelease -Configuration Release'
+                powershell './build.ps1 UploadDocumentation+PublishGitHubRelease -Configuration Release'
             }
         }
         stage ('Deployment') {
