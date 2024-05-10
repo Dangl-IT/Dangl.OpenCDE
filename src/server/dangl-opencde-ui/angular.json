@@ -71,10 +71,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "dangl-opencde-ui:build:production"
+              "buildTarget": "dangl-opencde-ui:build:production"
             },
             "development": {
-              "browserTarget": "dangl-opencde-ui:build:development"
+              "buildTarget": "dangl-opencde-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -82,7 +82,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "dangl-opencde-ui:build"
+            "buildTarget": "dangl-opencde-ui:build"
           }
         },
         "test": {

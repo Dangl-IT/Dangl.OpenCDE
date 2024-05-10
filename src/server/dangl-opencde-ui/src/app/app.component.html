@@ -5,7 +5,8 @@
       <mat-sidenav
         #sidenav
         mode="side"
-        [(opened)]="sideNavOpened && userIsAuthenticated"
+        [opened]="sideNavOpened && userIsAuthenticated"
+        (openedChange)="sideNavOpened && (userIsAuthenticated = $event)"
         class="main-sidenav dark-bg"
       >
         <div class="list">
