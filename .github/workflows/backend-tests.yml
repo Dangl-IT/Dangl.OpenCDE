@@ -14,9 +14,7 @@ jobs:
     if: ${{ github.event.repository.owner.login  == 'Dangl-IT' }}
     steps:
       - uses: actions/checkout@v1
-      - name: Run './build.cmd CreateNuGetConfigForInternalPackages'
-        run: ./build.cmd CreateNuGetConfigForInternalPackages
-        env:
-          DanglInternalNuGetFeedReaderKey: ${{ secrets.DANGLINTERNALNUGETFEEDREADERKEY }}
+      - name: Configure Build Dependencies
+        run: dotnet nuget add source --username georgdangl --password ${{ secrets.FEEDZ_READER_API_KEY }} --store-password-in-clear-text --name "Dangl" "https://packages.dangl.dev/dangl-internal/nuget/index.json"
       - name: Run './build.cmd Coverage -Configuration Debug'
         run: ./build.cmd Coverage -Configuration Debug
