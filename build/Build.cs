@@ -611,7 +611,7 @@ export const version = {{
         Assert.True(!string.IsNullOrWhiteSpace(CodeSigningKeyVaultTenantId), "!string.IsNullOrWhitespace(CodeSigningKeyVaultTenantId)");
         Assert.True(!string.IsNullOrWhiteSpace(CodeSigningCertificateName), "!string.IsNullOrWhitespace(CodeSigningCertificateName)");
 
-        Serilog.Log.Debug("Searching for files to sign in " + folderPath);
+        Serilog.Log.Debug("Searching for files to sign in " + folderPath.ToString());
         var inputFiles = folderPath.GlobFiles("*.exe");
 
         if (!inputFiles.Any())
@@ -718,7 +718,7 @@ export const version = {{
         .Requires(() => ExecutablesToSignFolder)
         .Executes(() =>
         {
-            Serilog.Log.Information("Signing: " + ExecutablesToSignFolder);
+            Serilog.Log.Information("Signing: " + ExecutablesToSignFolder.ToString());
             SignExecutablesInFolder(ExecutablesToSignFolder);
         });
 
