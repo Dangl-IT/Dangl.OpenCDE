@@ -1,4 +1,4 @@
-<div fxFlexFill fxLayoutAlign="center center">
+<div class="welcome-container">
   <mat-card>
     <mat-card-header>
       <h1>
@@ -15,8 +15,8 @@
       </div>
     </mat-card-content>
     <mat-card-actions *ngIf="!userInfo">
-      <div fxLayout="row">
-        <a fxFlex="100" mat-button (click)="login()">Login</a>
+      <div class="login-container">
+        <a mat-button (click)="login()">Login</a>
       </div>
     </mat-card-actions>
   </mat-card>

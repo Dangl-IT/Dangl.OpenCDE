@@ -12,7 +12,6 @@ import { DocumentSelectionStartComponent } from './components/document-selection
 import { DocumentsComponent } from './components/documents/documents.component';
 import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { FileSizePipe } from './pipes/file-size.pipe';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { LoginComponent } from './components/login/login.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -76,7 +75,6 @@ import { CdeFileUploadComponent } from './components/cde-file-upload/cde-file-up
     MatMenuModule,
     MatIconModule,
     MatCardModule,
-    FlexLayoutModule,
     MatTableModule,
     MatPaginatorModule,
     FormsModule,

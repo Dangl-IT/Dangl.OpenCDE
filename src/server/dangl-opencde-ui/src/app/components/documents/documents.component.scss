@@ -3,6 +3,11 @@ input {
   width: 100%;
 }
 
+.documents-filter {
+  display: flex;
+  gap: 12px;
+}
+
 .mat-form-field {
   font-size: 14px;
   width: 100%;
