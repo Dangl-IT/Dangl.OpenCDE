@@ -6,7 +6,7 @@
 <mat-card class="card">
   <form [formGroup]="newProjectForm" (ngSubmit)="createProject()">
     <mat-card-content>
-      <div fxLayout="row" class="p10">
+      <div class="p10">
         <mat-form-field appearance="fill">
           <mat-label>Name</mat-label>
           <input matInput formControlName="name" required />
@@ -16,7 +16,7 @@
         </mat-form-field>
       </div>
       <mat-divider></mat-divider>
-      <div fxLayout="row" class="p10">
+      <div class="p10">
         <mat-form-field appearance="fill">
           <mat-label>Description</mat-label>
           <textarea matInput formControlName="description"></textarea>

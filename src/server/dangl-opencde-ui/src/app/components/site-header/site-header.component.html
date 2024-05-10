@@ -8,7 +8,7 @@
   [showPrerelease]="showPreReleaseHeader"
   [showMenuButton]="!!userInfo"
 >
-  <div fxLayout="row" fxLayoutGap="10px">
+  <div class="user-info-container">
     <ng-container *ngIf="userInfo; else notUser">
       <opencde-user-info [userInfo]="userInfo"></opencde-user-info>
     </ng-container>

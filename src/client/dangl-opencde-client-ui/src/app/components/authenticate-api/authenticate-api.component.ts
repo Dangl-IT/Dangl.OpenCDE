@@ -22,10 +22,10 @@ import { AuthGet } from '../../generated/opencde-client';
 import { CdeClientHubService } from '../../services/cde-client-hub.service';
 import { GuidGenerator } from '@dangl/angular-material-shared';
 import { ManageOpenidConfigsModalComponent } from '../manage-openid-configs-modal/manage-openid-configs-modal.component';
-import { MatDialog } from '@angular/material/dialog';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
 import { SettingsService } from '../../services/settings.service';
 import { Subject } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'opencde-client-authenticate-api',

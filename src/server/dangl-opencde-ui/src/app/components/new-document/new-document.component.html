@@ -6,7 +6,7 @@
 <mat-card class="card">
   <form [formGroup]="documentCreationForm" (ngSubmit)="createDocument()">
     <mat-card-content>
-      <div fxLayout="row">
+      <div>
         <mat-form-field appearance="fill">
           <mat-label>Name</mat-label>
           <input matInput formControlName="name" required />

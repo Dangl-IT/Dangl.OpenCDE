@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SettingsService } from '../../services/settings.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'opencde-client-manage-servers-modal',

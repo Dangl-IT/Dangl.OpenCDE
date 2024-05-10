@@ -26,7 +26,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
-import { MatTabsModule } from '@angular/material/tabs';
 import { NgDanglIconsModule } from 'ng-dangl-icons';
 import { NgModule } from '@angular/core';
 import { PrepareDocumentDownloadComponent } from './components/prepare-document-download/prepare-document-download.component';
@@ -38,6 +37,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { UploadStepperComponent } from './components/upload-stepper/upload-stepper.component';
 import { UserInfoComponent } from './components/user-info/user-info.component';
 import { ViewDocumentComponent } from './components/view-document/view-document.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
