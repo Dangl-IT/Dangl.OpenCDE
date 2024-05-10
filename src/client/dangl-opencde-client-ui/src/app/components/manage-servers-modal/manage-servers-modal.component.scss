@@ -1,0 +1,9 @@
+.item-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+::ng-deep .mat-mdc-dialog-surface {
+  padding: 20px !important;
+}
