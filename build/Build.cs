@@ -65,7 +65,7 @@ class Build : NukeBuild
 
     // This parameter is only required if we're just calling the sign target
     // to sign executables in a specific folder
-    [Parameter] string ExecutablesToSignFolder;
+    [Parameter] AbsolutePath ExecutablesToSignFolder;
 
     [Parameter] readonly bool BuildElectronWindowsTargets;
     [Parameter] readonly bool BuildElectronUnixTargets;
@@ -718,6 +718,7 @@ export const version = {{
         .Requires(() => ExecutablesToSignFolder)
         .Executes(() =>
         {
+            Serilog.Log.Information("Signing: " + ExecutablesToSignFolder);
             SignExecutablesInFolder(ExecutablesToSignFolder);
         });
 
