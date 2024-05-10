@@ -1,5 +1,5 @@
 ﻿using Dangl.Identity.TestHost.SetupData;
-using IdentityServer4.Models;
+using Duende.IdentityServer.Models;
 using System.Collections.Generic;
 using System.Linq;
 

@@ -1,7 +1,6 @@
 ﻿using Dangl.OpenCDE.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using NJsonSchema;
 using NSwag;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +16,7 @@ namespace Dangl.OpenCDE.Client
                 c.Description = "OpenCDE Client Specification";
                 c.Version = VersionsService.Version;
                 c.Title = $"OpenCDE Client {VersionsService.Version}";
+                c.DocumentProcessors.Add(new SignalRTypesProcessor());
 
                 c.PostProcess = (x) =>
                 {
@@ -51,22 +51,6 @@ namespace Dangl.OpenCDE.Client
                             property.AllOf.Clear();
                         }
                     }
-
-                    var signalrTypes = typeof(Dangl.OpenCDE.Client.Models.OpenIdConnectAuthenticationResult)
-                        .Assembly
-                        .DefinedTypes
-                        .Where(t => t.Namespace != null && t.Namespace
-                            .StartsWith(typeof(Dangl.OpenCDE.Client.Models.OpenIdConnectAuthenticationResult).Namespace));
-                    foreach (var type in signalrTypes)
-                    {
-                        if (!x.Definitions.ContainsKey(type.Name))
-                        {
-                            x.Definitions.Add(type.Name, JsonSchema.FromType(type, new NJsonSchema.Generation.JsonSchemaGeneratorSettings
-                            {
-                                SerializerSettings = c.SerializerSettings
-                            }));
-                        }
-                    }
                 };
             });
         }
@@ -75,7 +59,6 @@ namespace Dangl.OpenCDE.Client
         /// Adds the PfeifferAVA Swagger endpoints
         /// </summary>
         /// <param name="app"></param>
-        /// <param name="danglIdentitySettings"></param>
         /// <returns></returns>
         public static IApplicationBuilder UseCdeClientSwaggerUi(this IApplicationBuilder app)
         {

@@ -156,7 +156,7 @@ namespace Dangl.OpenCDE.Core.Configuration
         /// <returns></returns>
         public static IApplicationBuilder UseOpenCdeSwaggerUi(this IApplicationBuilder app, DanglIdentitySettings danglIdentitySettings)
         {
-            void ConfigureDanglIdentity(SwaggerUi3Settings settings)
+            void ConfigureDanglIdentity(SwaggerUiSettings settings)
             {
                 settings.OAuth2Client = new OAuth2ClientSettings
                 {
@@ -176,7 +176,7 @@ namespace Dangl.OpenCDE.Core.Configuration
                 };
             });
 
-            app.UseSwaggerUi3(settings =>
+            app.UseSwaggerUi(settings =>
             {
                 ConfigureDanglIdentity(settings);
 
@@ -208,7 +208,7 @@ namespace Dangl.OpenCDE.Core.Configuration
                 };
             });
 
-            app.UseSwaggerUi3(settings =>
+            app.UseSwaggerUi(settings =>
             {
                 ConfigureDanglIdentity(settings);
 
