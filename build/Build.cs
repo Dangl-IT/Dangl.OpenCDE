@@ -140,8 +140,8 @@ class Build : NukeBuild
         .Executes(() =>
         {
             (SourceDirectory / "client" / "dangl-opencde-client-ui" / "node_modules").CreateOrCleanDirectory();
-            FilterChildPaths(SourceDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(d => Directory.Delete(d));
-            FilterChildPaths(TestsDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(d => Directory.Delete(d));
+            FilterChildPaths(SourceDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(d => ((AbsolutePath)d).DeleteDirectory());
+            FilterChildPaths(TestsDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(d => ((AbsolutePath)d).DeleteDirectory());
             (OutputDirectory).CreateOrCleanDirectory();
         });
 
