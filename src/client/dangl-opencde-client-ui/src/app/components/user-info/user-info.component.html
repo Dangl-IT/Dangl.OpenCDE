@@ -1,5 +1,5 @@
 <ng-container *ngIf="userInfo">
-  <button mat-button [matMenuTriggerFor]="menu">
+  <button mat-flat-button color="primary" [matMenuTriggerFor]="menu">
     <span id="username-nav">
       {{ userInfo.username || userInfo.email }}
     </span>
