@@ -57,7 +57,6 @@ export class AuthenticationService {
       client_id: appConfig.danglIdentityClientId,
       redirect_uri: `${window.location.origin}/login`,
       scope: `${appConfig.requiredScope} openid`,
-      response_type: 'id_token token',
     });
   }
 }
