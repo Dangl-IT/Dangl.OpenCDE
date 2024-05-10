@@ -510,6 +510,7 @@ export const version = {{
                 .SetMarkdownChangelog(changeLog)
                 .SetSourceDirectory(OutputDirectory / "docs")
                 .SetVersion(GitVersion.NuGetVersion)
+                .SetSkipForVersionConflicts(true)
             );
         });
 
