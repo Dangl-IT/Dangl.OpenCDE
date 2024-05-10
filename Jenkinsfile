@@ -51,11 +51,6 @@ pipeline {
             }
         }
         stage ('Publish Docs & Assets') {
-			agent {
-				node {
-					label 'linux'
-				}
-			}
             steps {
                 sh 'bash build.sh UploadDocumentation+PublishGitHubRelease -Configuration Release'
             }
