@@ -33,7 +33,6 @@ using Nuke.Common.Tools.Teams;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Nuke.Common.Tools.Slack;
-using Nuke.Common.Tools.AzureKeyVault.Attributes;
 using Nuke.Common.Tools.AzureKeyVault;
 using static Nuke.GitHub.GitHubTasks;
 using static Nuke.GitHub.ChangeLogExtensions;
@@ -44,25 +43,25 @@ using static Nuke.WebDocu.WebDocuTasks;
 using Nuke.WebDocu;
 using Newtonsoft.Json;
 using Nuke.Common.Utilities;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Security.Policy;
 using System.Text;
 
 class Build : NukeBuild
 {
     public static int Main() => Execute<Build>(x => x.Compile);
 
-    [KeyVaultSettings(
+    [AzureKeyVaultConfiguration(
         BaseUrlParameterName = nameof(KeyVaultBaseUrl),
         ClientIdParameterName = nameof(KeyVaultClientId),
-        ClientSecretParameterName = nameof(KeyVaultClientSecret))]
-    readonly KeyVaultSettings KeyVaultSettings;
+        ClientSecretParameterName = nameof(KeyVaultClientSecret),
+        TenantId = nameof(KeyVaultTenantId))]
+    readonly AzureKeyVaultConfiguration KeyVaultSettings;
 
     [Parameter] string KeyVaultBaseUrl;
     [Parameter] string KeyVaultClientId;
     [Parameter] string KeyVaultClientSecret;
+    [Parameter] string KeyVaultTenantId;
 
     // This parameter is only required if we're just calling the sign target
     // to sign executables in a specific folder
@@ -77,17 +76,17 @@ class Build : NukeBuild
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
     [Parameter] readonly string DockerImageName = "danglopencde";
-    [KeyVaultSecret] string DanglCiCdSlackWebhookUrl;
-    [KeyVaultSecret] string DanglCiCdTeamsWebhookUrl;
-    [KeyVaultSecret] string DockerRegistryUrl;
-    [KeyVaultSecret] string DockerRegistryUsername;
-    [KeyVaultSecret] string DockerRegistryPassword;
-    [KeyVaultSecret] string GitHubAuthenticationToken;
-    [KeyVaultSecret] string DocuBaseUrl;
-    [KeyVaultSecret("DanglOpenCDE-DocuApiKey")] string DocuApiKey;
-    [KeyVaultSecret] string CodeSigningCertificateName;
-    [KeyVaultSecret] string CodeSigningCertificateKeyVaultBaseUrl;
-    [KeyVaultSecret] string CodeSigningKeyVaultTenantId;
+    [AzureKeyVaultSecret] string DanglCiCdSlackWebhookUrl;
+    [AzureKeyVaultSecret] string DanglCiCdTeamsWebhookUrl;
+    [AzureKeyVaultSecret] string DockerRegistryUrl;
+    [AzureKeyVaultSecret] string DockerRegistryUsername;
+    [AzureKeyVaultSecret] string DockerRegistryPassword;
+    [AzureKeyVaultSecret] string GitHubAuthenticationToken;
+    [AzureKeyVaultSecret] string DocuBaseUrl;
+    [AzureKeyVaultSecret("DanglOpenCDE-DocuApiKey")] string DocuApiKey;
+    [AzureKeyVaultSecret] string CodeSigningCertificateName;
+    [AzureKeyVaultSecret] string CodeSigningCertificateKeyVaultBaseUrl;
+    [AzureKeyVaultSecret] string CodeSigningKeyVaultTenantId;
 
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
@@ -101,7 +100,7 @@ class Build : NukeBuild
     AbsolutePath ChangelogFile => RootDirectory / "CHANGELOG.md";
     AbsolutePath PublishDirectory => OutputDirectory / "publish";
 
-    [PackageExecutable("AzureSignTool", "tools/netcoreapp3.1/any/AzureSignTool.dll")]
+    [NuGetPackage("AzureSignTool", "tools/net8.0/any/AzureSignTool.dll")]
     readonly Tool AzureSign;
 
     public Build()
@@ -140,10 +139,10 @@ class Build : NukeBuild
         .Before(Restore)
         .Executes(() =>
         {
-            EnsureCleanDirectory(SourceDirectory / "client" / "dangl-opencde-client-ui" / "node_modules");
-            FilterChildPaths(SourceDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(DeleteDirectory);
-            FilterChildPaths(TestsDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(DeleteDirectory);
-            EnsureCleanDirectory(OutputDirectory);
+            (SourceDirectory / "client" / "dangl-opencde-client-ui" / "node_modules").CreateOrCleanDirectory();
+            FilterChildPaths(SourceDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(d => Directory.Delete(d));
+            FilterChildPaths(TestsDirectory.GlobDirectories("**/bin", "**/obj")).ForEach(d => Directory.Delete(d));
+            (OutputDirectory).CreateOrCleanDirectory();
         });
 
     public static IEnumerable<string> FilterChildPaths(IReadOnlyCollection<AbsolutePath> src)
@@ -214,7 +213,7 @@ namespace Dangl.OpenCDE.Shared
         public static DateTime BuildDateUtc {{ get; }} = {currentDateUtc};
     }}
 }}";
-        WriteAllText(filePath, content);
+        filePath.WriteAllText(content);
     }
 
     void GenerateFrontendVersion(DateTime buildDate)
@@ -233,7 +232,7 @@ export const version = {{
     informationalVersion: ""{GitVersion.InformationalVersion}"",
     buildDateUtc: {currentDateUtc}
 }}";
-        WriteAllText(filePath, content);
+        filePath.WriteAllText(content);
     }
 
     Target BuildDocFxMetadata => _ => _
@@ -254,7 +253,7 @@ export const version = {{
             DocFXBuild(x => x
                 .SetProcessEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName)
                 .SetConfigFile(DocFxFile));
-            DeleteFile(DocsDirectory / "CHANGELOG.md");
+            (DocsDirectory / "CHANGELOG.md").DeleteFile();
         });
 
     Target Coverage => _ => _
@@ -265,9 +264,9 @@ export const version = {{
             Serilog.Log.Debug("Ensuring that latest SQL Docker image is present");
             DockerPull(c => c.SetName("dangl/mssql-tmpfs:latest"));
 
-            var testProjects = GlobFiles(TestsDirectory, "**/*.csproj")
+            var testProjects = TestsDirectory.GlobFiles("**/*.csproj")
                 // The test utilities are excluded as they don't contain any tests
-                .Where(t => !t.EndsWith("Dangl.OpenCDE.TestUtilities.csproj"));
+                .Where(t => !t.ToString().EndsWith("Dangl.OpenCDE.TestUtilities.csproj"));
             try
             {
                 DotNetTest(c => c
@@ -309,7 +308,7 @@ export const version = {{
 
     private void EnsureTestFilesHaveUniqueTimestamp()
     {
-        var testResults = GlobFiles(OutputDirectory, "*_testresults.xml").ToList();
+        var testResults = OutputDirectory.GlobFiles("*_testresults.xml").ToList();
         var runtime = DateTime.Now;
 
         foreach (var testResultFile in testResults)
@@ -362,8 +361,8 @@ export const version = {{
         .After(Clean)
         .Executes(() =>
         {
-            EnsureCleanDirectory(SourceDirectory / "server" / "dangl-opencde-ui" / "node_modules");
-            DeleteDirectory(SourceDirectory / "server" / "dangl-opencde-ui" / "node_modules");
+            (SourceDirectory / "server" / "dangl-opencde-ui" / "node_modules").CreateOrCleanDirectory();
+            (SourceDirectory / "server" / "dangl-opencde-ui" / "node_modules").DeleteDirectory();
             Npm("ci", SourceDirectory / "server" / "dangl-opencde-ui");
         });
 
@@ -372,14 +371,14 @@ export const version = {{
         .DependsOn(FrontEndRestore)
         .Executes(() =>
         {
-            EnsureCleanDirectory(SourceDirectory / "server" / "Dangl.OpenCDE" / "wwwroot" / "dist");
+            (SourceDirectory / "server" / "Dangl.OpenCDE" / "wwwroot" / "dist").CreateOrCleanDirectory();
             NpmRun(x => x
                 .SetProcessWorkingDirectory(SourceDirectory / "server" / "dangl-opencde-ui")
                 .SetCommand("build:production"));
 
             var assetsSrc = SourceDirectory / "server" / "dangl-opencde-ui" / "src" / "assets";
             var assetsDest = SourceDirectory / "server" / "Dangl.OpenCDE" / "wwwroot" / "assets";
-            EnsureCleanDirectory(assetsDest);
+            assetsDest.CreateOrCleanDirectory();
             CopyDirectoryRecursively(assetsSrc, assetsDest, DirectoryExistsPolicy.Merge);
         });
 
@@ -404,7 +403,7 @@ export const version = {{
 
             CopyDirectoryRecursively(PublishDirectory, OutputDirectory / "Docker");
 
-            foreach (var configFileToDelete in GlobFiles(OutputDirectory / "Docker", "web*.config"))
+            foreach (var configFileToDelete in (OutputDirectory / "Docker").GlobFiles("web*.config"))
             {
                 File.Delete(configFileToDelete);
             }
@@ -417,7 +416,7 @@ export const version = {{
                 .SetPath(".")
                 .SetProcessWorkingDirectory(OutputDirectory / "Docker"));
 
-            EnsureCleanDirectory(OutputDirectory / "Docker");
+            (OutputDirectory / "Docker").CreateOrCleanDirectory();
         });
 
     Target PushDocker => _ => _
@@ -597,7 +596,7 @@ export const version = {{
             SignExecutablesInFolder(OutputDirectory / "electron");
         });
 
-    private void SignExecutablesInFolder(string folderPath)
+    private void SignExecutablesInFolder(AbsolutePath folderPath)
     {
         if (!IsWin)
         {
@@ -612,7 +611,7 @@ export const version = {{
         Assert.True(!string.IsNullOrWhiteSpace(CodeSigningCertificateName), "!string.IsNullOrWhitespace(CodeSigningCertificateName)");
 
         Serilog.Log.Debug("Searching for files to sign in " + folderPath);
-        var inputFiles = GlobFiles(folderPath, "*.exe");
+        var inputFiles = folderPath.GlobFiles("*.exe");
 
         if (!inputFiles.Any())
         {
@@ -620,10 +619,10 @@ export const version = {{
             return;
         }
 
-        Serilog.Log.Debug("Signing " + inputFiles.Join(", "));
+        Serilog.Log.Debug("Signing " + inputFiles.Select(f => f.ToString()).Join(", "));
 
         var filesListPath = OutputDirectory / $"{Guid.NewGuid()}.txt";
-        WriteAllText(filesListPath, inputFiles.Join(Environment.NewLine) + Environment.NewLine);
+        filesListPath.WriteAllText(inputFiles.Select(f => f.ToString()).Join(Environment.NewLine) + Environment.NewLine);
 
         try
         {
@@ -642,13 +641,13 @@ export const version = {{
         }
         finally
         {
-            DeleteFile(filesListPath);
+            filesListPath.DeleteFile();
         }
     }
 
     void BuildElectronAppInternal(ElectronBuildConfig electronBuildConfig)
     {
-        EnsureCleanDirectory(SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin");
+        (SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin").CreateOrCleanDirectory();
 
         // Electron Build
         SetVersionInElectronManifest();
@@ -675,7 +674,7 @@ export const version = {{
                 .AssertWaitForExit();
         }
 
-        var clientFiles = GlobFiles(SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin" / "Desktop", "*.exe", "*.snap", "*.AppImage", "*.zip", "*.dmg");
+        var clientFiles = (SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "bin" / "Desktop").GlobFiles("*.exe", "*.snap", "*.AppImage", "*.zip", "*.dmg");
 
         foreach (var clientFile in clientFiles)
         {
@@ -703,15 +702,15 @@ export const version = {{
                 .SetDocuBaseUrl(DocuBaseUrl)
                 .SetDocuApiKey(DocuApiKey)
                 .SetVersion(GitVersion.NuGetVersion)
-                .SetAssetFilePaths(GlobFiles(OutputDirectory / "electron", "*").ToArray()));
+                .SetAssetFilePaths((OutputDirectory / "electron").GlobFiles("*").Select(f => f.ToString()).ToArray()));
         });
 
     private void SetVersionInElectronManifest()
     {
         var manifestPath = SourceDirectory / "client" / "Dangl.OpenCDE.Client" / "electron.manifest.json";
-        var manifestJson = JObject.Parse(ReadAllText(manifestPath));
+        var manifestJson = JObject.Parse(manifestPath.ReadAllText());
         manifestJson["build"]["buildVersion"] = GitVersion.SemVer;
-        WriteAllText(manifestPath, manifestJson.ToString(Formatting.Indented));
+        manifestPath.WriteAllText(manifestJson.ToString(Formatting.Indented));
     }
 
     Target SignExecutables => _ => _
@@ -733,7 +732,7 @@ export const version = {{
                 .SetOutput(OutputDirectory / "Dangl.OpenCDE.DataSeed"));
 
             ZipFile.CreateFromDirectory(OutputDirectory / "Dangl.OpenCDE.DataSeed", OutputDirectory / "Dangl.OpenCDE.DataSeed.zip");
-            DeleteDirectory(OutputDirectory / "Dangl.OpenCDE.DataSeed");
+            (OutputDirectory / "Dangl.OpenCDE.DataSeed").DeleteDirectory();
         });
 
     Target PublishDatabaseSeedUtility => _ => _
@@ -746,7 +745,7 @@ export const version = {{
                 .SetDocuBaseUrl(DocuBaseUrl)
                 .SetDocuApiKey(DocuApiKey)
                 .SetVersion(GitVersion.NuGetVersion)
-                .SetAssetFilePaths(GlobFiles(OutputDirectory, "*.zip").ToArray()));
+                .SetAssetFilePaths(OutputDirectory.GlobFiles("*.zip").Select(f => f.ToString()).ToArray()));
         });
 
     Target GenerateModelsFromSwagger => _ => _
@@ -794,7 +793,7 @@ export const version = {{
         using var zipArchive = new ZipArchive(generatedClientStream);
 
         var targetDirectory = SourceDirectory / "server" / "Dangl.OpenCDE.Shared" / "OpenCdeSwaggerGenerated";
-        EnsureCleanDirectory(targetDirectory);
+        targetDirectory.CreateOrCleanDirectory();
         var foldersToCopy = new[] { "Converters", "Models" };
         foreach (var folderToCopy in foldersToCopy)
         {
@@ -810,7 +809,7 @@ export const version = {{
                     fileContent = fileContent
                         .Replace($"Dangl.OpenCDE.Shared.{folder}", $"Dangl.OpenCDE.Shared.OpenCdeSwaggerGenerated.{folder}");
                 }
-                WriteAllText(targetDirectory / folderToCopy / entry.Name, fileContent);
+                (targetDirectory / folderToCopy / entry.Name).WriteAllText(fileContent);
             }
         }
     }
@@ -853,7 +852,7 @@ export const version = {{
         using var zipArchive = new ZipArchive(generatedClientStream);
 
         var targetDirectory = SourceDirectory / "client" / "dangl-opencde-client-ui" / "src" / "app" / "generated" / "open-cde-swagger";
-        EnsureCleanDirectory(targetDirectory);
+        targetDirectory.CreateOrCleanDirectory();
         var foldersToCopy = new[] { "model" };
         foreach (var folderToCopy in foldersToCopy)
         {
@@ -864,7 +863,7 @@ export const version = {{
                 using var entryStream = entry.Open();
                 using var streamReader = new StreamReader(entryStream);
                 var fileContent = await streamReader.ReadToEndAsync();
-                WriteAllText(targetDirectory / folderToCopy / entry.Name, fileContent);
+                (targetDirectory / folderToCopy / entry.Name).WriteAllText(fileContent);
             }
         }
     }
