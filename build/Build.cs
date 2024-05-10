@@ -55,7 +55,7 @@ class Build : NukeBuild
         BaseUrlParameterName = nameof(KeyVaultBaseUrl),
         ClientIdParameterName = nameof(KeyVaultClientId),
         ClientSecretParameterName = nameof(KeyVaultClientSecret),
-        TenantId = nameof(KeyVaultTenantId))]
+        TenantIdParameterName = nameof(KeyVaultTenantId))]
     readonly AzureKeyVaultConfiguration KeyVaultSettings;
 
     [Parameter] string KeyVaultBaseUrl;
