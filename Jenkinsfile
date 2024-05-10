@@ -12,6 +12,7 @@ pipeline {
         KeyVaultBaseUrl = credentials('AzureCiKeyVaultBaseUrl')
         KeyVaultClientId = credentials('AzureCiKeyVaultClientId')
         KeyVaultClientSecret = credentials('AzureCiKeyVaultClientSecret')
+        KeyVaultTenantId = credentials('AzureKeyVaultTenantId')
         IGNORE_NORMALISATION_GIT_HEAD_MOVE = 1
     }
     stages {
