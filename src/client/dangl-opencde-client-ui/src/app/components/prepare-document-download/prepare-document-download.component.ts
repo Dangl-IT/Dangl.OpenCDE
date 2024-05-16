@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { first, map } from 'rxjs/operators';
 
 import { DocumentsUploadHandlerClient } from '../../generated/backend-client';
-import { GuidGenerator } from '@dangl/angular-material-shared';
+import { GuidGenerator } from '@dangl/angular-material-shared/guid-generator';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
 import { combineLatest } from 'rxjs';

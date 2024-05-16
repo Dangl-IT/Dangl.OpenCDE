@@ -4,7 +4,10 @@ import {
 } from '@dangl/angular-dangl-identity-client';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { AngularMaterialSharedModule } from '@dangl/angular-material-shared';
+import {
+  HeaderComponent,
+  FooterComponent,
+} from '@dangl/angular-material-shared';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthenticateApiComponent } from './components/authenticate-api/authenticate-api.component';
@@ -63,7 +66,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatIconModule,
     MatMenuModule,
     NgDanglIconsModule,
-    AngularMaterialSharedModule,
+    HeaderComponent,
+    FooterComponent,
     DanglIdentityModule,
     MatButtonModule,
     BrowserAnimationsModule,

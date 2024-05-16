@@ -1,6 +1,9 @@
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { AngularMaterialSharedModule } from '@dangl/angular-material-shared';
+import {
+  FooterComponent,
+  HeaderComponent,
+} from '@dangl/angular-material-shared';
 import { ApiSpecComponent } from './components/api-spec/api-spec.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -63,10 +66,11 @@ import { MatInputModule } from '@angular/material/input';
     CdeFileUploadComponent,
   ],
   imports: [
+    HeaderComponent,
+    FooterComponent,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    AngularMaterialSharedModule,
     MatSidenavModule,
     MatButtonModule,
     DanglIdentityModule,

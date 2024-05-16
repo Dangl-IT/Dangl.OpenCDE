@@ -20,7 +20,7 @@ import { filter, first, takeUntil } from 'rxjs/operators';
 
 import { AuthGet } from '../../generated/opencde-client';
 import { CdeClientHubService } from '../../services/cde-client-hub.service';
-import { GuidGenerator } from '@dangl/angular-material-shared';
+import { GuidGenerator } from '@dangl/angular-material-shared/guid-generator';
 import { ManageOpenidConfigsModalComponent } from '../manage-openid-configs-modal/manage-openid-configs-modal.component';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
 import { SettingsService } from '../../services/settings.service';
