@@ -26,7 +26,7 @@
     "@angular/router": "^17.3.8",
     "@auth0/angular-jwt": "5.0.2",
     "@dangl/angular-dangl-identity-client": "^6.1.0",
-    "@dangl/angular-material-shared": "^2.5.0",
+    "@dangl/angular-material-shared": "^2.6.2-beta0016",
     "ng-dangl-icons": "^1.2.2",
     "ng-lightquery": "^2.2.2",
     "npm-check-updates": "^16.1.2",
