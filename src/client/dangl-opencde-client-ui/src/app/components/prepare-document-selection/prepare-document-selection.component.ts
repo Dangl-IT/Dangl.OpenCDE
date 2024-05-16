@@ -3,7 +3,7 @@ import { first, map } from 'rxjs/operators';
 
 import { DocumentSelectionService } from '../../services/document-selection.service';
 import { DocumentsSelectionHandlerClient } from '../../generated/backend-client';
-import { GuidGenerator } from '@dangl/angular-material-shared';
+import { GuidGenerator } from '@dangl/angular-material-shared/guid-generator';
 import { HttpClient } from '@angular/common/http';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
