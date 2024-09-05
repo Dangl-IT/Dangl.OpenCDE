@@ -1,12 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AuthenticationService } from './authentication.service';
+import { SharedTestingModule } from '../shared-tesing.module';
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      imports: [SharedTestingModule],
+    });
     service = TestBed.inject(AuthenticationService);
   });
 
