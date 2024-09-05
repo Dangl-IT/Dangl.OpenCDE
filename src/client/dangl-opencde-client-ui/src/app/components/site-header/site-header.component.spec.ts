@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SiteHeaderComponent } from './site-header.component';
+import { SharedTestingModule } from 'src/app/shared-tesing.module';
+import { AppModule } from 'src/app/app.module';
 
 describe('SiteHeaderComponent', () => {
   let component: SiteHeaderComponent;
@@ -8,7 +10,8 @@ describe('SiteHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SiteHeaderComponent ]
+      declarations: [ SiteHeaderComponent ],
+      imports: [SharedTestingModule, AppModule]
     })
     .compileComponents();
   });

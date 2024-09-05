@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SiteFooterComponent } from './site-footer.component';
+import { AppModule } from 'src/app/app.module';
 
 describe('SiteFooterComponent', () => {
   let component: SiteFooterComponent;
@@ -8,7 +9,8 @@ describe('SiteFooterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SiteFooterComponent ]
+      declarations: [ SiteFooterComponent ],
+      imports: [AppModule]
     })
     .compileComponents();
   });

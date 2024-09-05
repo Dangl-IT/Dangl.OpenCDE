@@ -7,7 +7,7 @@
     "build": "ng build",
     "build:production": "ng build --output-path ../Dangl.OpenCDE.Client/wwwroot/dist --deploy-url /dist/",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test --no-watch"
   },
   "private": true,
   "dependencies": {
