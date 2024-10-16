@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DownloadStepperComponent } from './download-stepper.component';
+import { AppModule } from 'src/app/app.module';
 
 describe('DownloadStepperComponent', () => {
   let component: DownloadStepperComponent;
@@ -9,6 +10,7 @@ describe('DownloadStepperComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [DownloadStepperComponent],
+      imports: [AppModule]
     }).compileComponents();
   });
 

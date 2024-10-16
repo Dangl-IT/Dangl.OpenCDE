@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SetOpencdeServerComponent } from './set-opencde-server.component';
+import { SharedTestingModule } from 'src/app/shared-tesing.module';
+import { AppModule } from 'src/app/app.module';
 
 describe('SetOpencdeServerComponent', () => {
   let component: SetOpencdeServerComponent;
@@ -8,7 +10,8 @@ describe('SetOpencdeServerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SetOpencdeServerComponent ]
+      declarations: [ SetOpencdeServerComponent ],
+      imports: [SharedTestingModule, AppModule]
     })
     .compileComponents();
   });

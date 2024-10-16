@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectsOverviewComponent } from './projects-overview.component';
+import { SharedTestingModule } from 'src/app/shared-tesing.module';
 
 describe('ProjectsOverviewComponent', () => {
   let component: ProjectsOverviewComponent;
@@ -8,9 +9,9 @@ describe('ProjectsOverviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ProjectsOverviewComponent ]
-    })
-    .compileComponents();
+      declarations: [ProjectsOverviewComponent],
+      imports: [SharedTestingModule],
+    }).compileComponents();
   });
 
   beforeEach(() => {

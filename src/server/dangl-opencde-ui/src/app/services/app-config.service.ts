@@ -7,6 +7,6 @@ import { FrontendConfigGet } from '../generated/backend-client';
 export class AppConfigService {
   getFrontendConfig(): FrontendConfigGet {
     const frontendConfig = (<any>window).danglOpenCdeFrontendConfig;
-    return JSON.parse(JSON.stringify(frontendConfig));
+    return frontendConfig ? JSON.parse(JSON.stringify(frontendConfig)) : {};
   }
 }

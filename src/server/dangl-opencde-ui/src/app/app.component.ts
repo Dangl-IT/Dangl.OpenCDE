@@ -16,6 +16,7 @@ import { takeUntil } from 'rxjs/operators';
 export class AppComponent implements OnInit, OnDestroy {
   sideNavOpened = false;
   userIsAuthenticated = false;
+  title = 'dangl-opencde-ui';
   private unsubscribe: Subject<void> = new Subject<void>();
 
   constructor(

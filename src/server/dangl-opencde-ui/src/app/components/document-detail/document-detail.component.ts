@@ -45,7 +45,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((sessionId) => (this.cdeSession = sessionId));
 
-    this.accessToken = this.jwtTokenService.getTokenFromStorage().accessToken;
+    this.accessToken = this.jwtTokenService.getTokenFromStorage()?.accessToken;
 
     this.route.params.pipe(first()).subscribe((p) => {
       if (p.projectId && p.documentId) {

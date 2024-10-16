@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NewDocumentComponent } from './new-document.component';
+import { AppModule } from 'src/app/app.module';
+import { SharedTestingModule } from 'src/app/shared-tesing.module';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 describe('NewDocumentComponent', () => {
   let component: NewDocumentComponent;
@@ -8,9 +11,9 @@ describe('NewDocumentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NewDocumentComponent ]
-    })
-    .compileComponents();
+      declarations: [NewDocumentComponent],
+      imports: [SharedTestingModule, AppModule, MatIconTestingModule],
+    }).compileComponents();
   });
 
   beforeEach(() => {
