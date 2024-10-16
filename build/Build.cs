@@ -14,14 +14,12 @@ using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
-using static Nuke.Common.Tools.DocFX.DocFXTasks;
 using static Nuke.Common.IO.TextTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 using static Nuke.Common.Tools.Docker.DockerTasks;
 using static Nuke.Common.Tools.Npm.NpmTasks;
 using static Nuke.Common.IO.HttpTasks;
 using Nuke.Common.Tools.Npm;
-using Nuke.Common.Tools.DocFX;
 using Nuke.Common.Tools.Docker;
 using Nuke.Common.Tools.Coverlet;
 using System.IO;
@@ -239,9 +237,10 @@ export const version = {{
         .DependsOn(Restore)
         .Executes(() =>
         {
-            DocFXMetadata(x => x
-                .SetProcessEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName)
-                .SetProjects(DocFxFile));
+            var environmentVariables = EnvironmentInfo.Variables.ToDictionary();
+            environmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName);
+            var docFxPath = NuGetToolPathResolver.GetPackageExecutable("docfx", "tools/net8.0/any/docfx.dll");
+            DotNet($"{docFxPath} metadata {DocFxFile}", environmentVariables: environmentVariables);
         });
 
     Target BuildDocumentation => _ => _
@@ -249,10 +248,13 @@ export const version = {{
         .DependsOn(BuildDocFxMetadata)
         .Executes(() =>
         {
-            CopyFile(ChangelogFile, DocsDirectory / "CHANGELOG.md");
-            DocFXBuild(x => x
-                .SetProcessEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName)
-                .SetConfigFile(DocFxFile));
+            ChangelogFile.Copy(DocsDirectory / "CHANGELOG.md");
+
+            var environmentVariables = EnvironmentInfo.Variables.ToDictionary();
+            environmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName);
+            var docFxPath = NuGetToolPathResolver.GetPackageExecutable("docfx", "tools/net8.0/any/docfx.dll");
+            DotNet($"{docFxPath} {DocFxFile}", environmentVariables: environmentVariables);
+
             (DocsDirectory / "CHANGELOG.md").DeleteFile();
         });
 
@@ -379,7 +381,7 @@ export const version = {{
             var assetsSrc = SourceDirectory / "server" / "dangl-opencde-ui" / "src" / "assets";
             var assetsDest = SourceDirectory / "server" / "Dangl.OpenCDE" / "wwwroot" / "assets";
             assetsDest.CreateOrCleanDirectory();
-            CopyDirectoryRecursively(assetsSrc, assetsDest, DirectoryExistsPolicy.Merge);
+            assetsSrc.Copy(assetsDest, ExistsPolicy.MergeAndOverwrite);
         });
 
     Target Publish => _ => _
@@ -401,14 +403,14 @@ export const version = {{
         {
             DockerPull(c => c.SetName("mcr.microsoft.com/dotnet/aspnet:7.0"));
 
-            CopyDirectoryRecursively(PublishDirectory, OutputDirectory / "Docker");
+            PublishDirectory.Copy(OutputDirectory / "Docker");
 
             foreach (var configFileToDelete in (OutputDirectory / "Docker").GlobFiles("web*.config"))
             {
                 File.Delete(configFileToDelete);
             }
 
-            CopyFile(SourceDirectory / "server" / "Dangl.OpenCDE" / "Dockerfile", OutputDirectory / "Docker" / "Dockerfile", Nuke.Common.IO.FileExistsPolicy.Overwrite);
+            (SourceDirectory / "server" / "Dangl.OpenCDE" / "Dockerfile").Copy(OutputDirectory / "Docker" / "Dockerfile", ExistsPolicy.FileOverwrite);
 
             DockerBuild(c => c
                 .SetFile(OutputDirectory / "Docker" / "Dockerfile")
@@ -680,7 +682,7 @@ export const version = {{
         foreach (var clientFile in clientFiles)
         {
             var fileName = Path.GetFileName(clientFile);
-            MoveFile(clientFile, OutputDirectory / "electron" / $"{electronBuildConfig.ReleaseIdentifier}_{fileName}");
+            clientFile.Move(OutputDirectory / "electron" / $"{electronBuildConfig.ReleaseIdentifier}_{fileName}");
         }
     }
 

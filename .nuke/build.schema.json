@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Build Schema",
   "$ref": "#/definitions/build",
+  "title": "Build Schema",
   "definitions": {
     "build": {
       "type": "object",
@@ -24,7 +24,10 @@
         "Configuration": {
           "type": "string",
           "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
-          "enum": ["Debug", "Release"]
+          "enum": [
+            "Debug",
+            "Release"
+          ]
         },
         "Continue": {
           "type": "boolean",
@@ -95,6 +98,9 @@
           "type": "string"
         },
         "KeyVaultClientSecret": {
+          "type": "string"
+        },
+        "KeyVaultTenantId": {
           "type": "string"
         },
         "NoLogo": {
@@ -189,7 +195,12 @@
         "Verbosity": {
           "type": "string",
           "description": "Logging verbosity during build execution. Default is 'Normal'",
-          "enum": ["Minimal", "Normal", "Quiet", "Verbose"]
+          "enum": [
+            "Minimal",
+            "Normal",
+            "Quiet",
+            "Verbose"
+          ]
         }
       }
     }
