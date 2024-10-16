@@ -15,13 +15,13 @@
     <PackageDownload Include="AzureSignTool" Version="[5.0.0]" />
     <PackageDownload Include="GitVersion.Tool" Version="[5.12.0]" />
     <PackageDownload Include="docfx" Version="[2.77.0]" />
-    <PackageReference Include="ReportGenerator" Version="5.2.5" />
-    <PackageReference Include="NSwag.MSBuild" Version="14.0.7">
+    <PackageReference Include="ReportGenerator" Version="5.3.11" />
+    <PackageReference Include="NSwag.MSBuild" Version="14.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Nuke.GitHub" Version="5.0.1" />
-    <PackageReference Include="Nuke.WebDocu" Version="5.0.1" />
+    <PackageReference Include="Nuke.GitHub" Version="6.0.0" />
+    <PackageReference Include="Nuke.WebDocu" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
