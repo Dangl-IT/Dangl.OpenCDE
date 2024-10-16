@@ -74,7 +74,7 @@ namespace Dangl.OpenCDE.Core.Configuration
                 }
                 else
                 {
-                    spa.Options.DefaultPage = "/dist/index.html";
+                    spa.Options.DefaultPage = "/dist/browser/index.html";
                 }
             });
 
