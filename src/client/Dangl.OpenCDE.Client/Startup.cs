@@ -60,7 +60,7 @@ namespace Dangl.OpenCDE.Client
                 }
                 else
                 {
-                    spa.Options.DefaultPage = "/dist/index.html";
+                    spa.Options.DefaultPage = "/dist/browser/index.html";
                 }
             });
 
