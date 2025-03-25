@@ -77,6 +77,9 @@
               "buildTarget": "dangl-opencde-ui:build:development"
             }
           },
+          "options": {
+            "hmr": false
+          },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
