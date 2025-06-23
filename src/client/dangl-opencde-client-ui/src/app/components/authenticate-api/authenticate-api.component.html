@@ -7,17 +7,19 @@
     <mat-label>Client Secret</mat-label>
     <input type="password" matInput formControlName="clientSecret" />
   </mat-form-field>
-  <mat-form-field appearance="fill" *ngIf="authenticationInformation">
+  @if (authenticationInformation) {
+  <mat-form-field appearance="fill">
     <mat-label>OAuth2 Flow</mat-label>
     <mat-select formControlName="flow">
-      <mat-option
-        *ngFor="let flow of authenticationInformation.supported_oauth2_flows"
-        [value]="flow"
-      >
+      @for (flow of authenticationInformation.supported_oauth2_flows; track
+      flow) {
+      <mat-option [value]="flow">
         {{ flow }}
       </mat-option>
+      }
     </mat-select>
   </mat-form-field>
+  }
   <mat-form-field appearance="fill">
     <mat-label>Required Scope</mat-label>
     <input matInput formControlName="requiredScope" />
@@ -52,7 +54,10 @@
   </button>
 </form>
 
-<mat-spinner *ngIf="authenticationInProgress"></mat-spinner>
-<p *ngIf="lastAuthenticationFailed">
+@if (authenticationInProgress) {
+<mat-spinner></mat-spinner>
+} @if (lastAuthenticationFailed) {
+<p>
   <strong> The last authentication attempt failed. </strong>
 </p>
+}

@@ -1,13 +1,15 @@
-<mat-spinner *ngIf="isLoading"></mat-spinner>
-<ng-container *ngIf="discoveredVersions">
-  <div *ngFor="let version of discoveredVersions">
-    <p>
-      Found <code>{{ version.api_id }} {{ version.version_id }}</code> API at
-      <code>{{ version.api_base_url ?? "NO_URL_PROVIDED" }}</code
-      >.
-    </p>
-  </div>
-</ng-container>
+@if (isLoading) {
+<mat-spinner></mat-spinner>
+} @if (discoveredVersions) { @for (version of discoveredVersions; track version)
+{
+<div>
+  <p>
+    Found <code>{{ version.api_id }} {{ version.version_id }}</code> API at
+    <code>{{ version.api_base_url ?? "NO_URL_PROVIDED" }}</code
+    >.
+  </p>
+</div>
+} }
 
 <button
   mat-raised-button
