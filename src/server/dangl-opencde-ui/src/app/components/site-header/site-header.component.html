@@ -9,13 +9,12 @@
   [showMenuButton]="!!userInfo"
 >
   <div class="user-info-container">
-    <ng-container *ngIf="userInfo; else notUser">
-      <opencde-user-info [userInfo]="userInfo"></opencde-user-info>
-    </ng-container>
-    <ng-template #notUser>
-      <button mat-flat-button color="primary" (click)="login()">
-        <span>Login / Register</span>
-      </button>
-    </ng-template>
+    @if (userInfo) {
+    <opencde-user-info [userInfo]="userInfo"></opencde-user-info>
+    } @else {
+    <button mat-flat-button color="primary" (click)="login()">
+      <span>Login / Register</span>
+    </button>
+    }
   </div>
 </dangl-header>
