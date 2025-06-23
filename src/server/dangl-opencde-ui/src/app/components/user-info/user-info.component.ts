@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { AuthenticationService } from '@dangl/angular-dangl-identity-client';
-import { UserInfo } from '@dangl/angular-dangl-identity-client/models/user-info';
+import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/models/user-info';
 
 @Component({
   selector: 'opencde-user-info',

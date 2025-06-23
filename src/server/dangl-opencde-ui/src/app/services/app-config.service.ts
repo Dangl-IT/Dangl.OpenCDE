@@ -5,8 +5,8 @@ import { FrontendConfigGet } from '../generated/backend-client';
   providedIn: 'root',
 })
 export class AppConfigService {
-  getFrontendConfig(): FrontendConfigGet {
+  getFrontendConfig(): FrontendConfigGet | null {
     const frontendConfig = (<any>window).danglOpenCdeFrontendConfig;
-    return frontendConfig ? JSON.parse(JSON.stringify(frontendConfig)) : {};
+    return frontendConfig ? JSON.parse(JSON.stringify(frontendConfig)) : null;
   }
 }
