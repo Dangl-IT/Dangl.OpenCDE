@@ -5,8 +5,8 @@ import {
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { Subject } from 'rxjs';
-import { UserInfo } from '@dangl/angular-dangl-identity-client/models/user-info';
 import { takeUntil } from 'rxjs/operators';
+import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/models/user-info';
 
 @Component({
   selector: 'opencde-client-user-info',
