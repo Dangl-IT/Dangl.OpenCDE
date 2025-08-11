@@ -5,8 +5,7 @@ import { SharedTestingModule } from './shared-tesing.module';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SharedTestingModule],
-      declarations: [AppComponent],
+      imports: [SharedTestingModule, AppComponent],
     }).compileComponents();
   });
 

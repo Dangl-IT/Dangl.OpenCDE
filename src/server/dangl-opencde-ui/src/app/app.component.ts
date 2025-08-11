@@ -7,12 +7,29 @@ import { IconRegistry } from './icon-registry';
 import { SidebarService } from './services/sidebar.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { SiteHeaderComponent } from './components/site-header/site-header.component';
+import {
+  MatSidenavContainer,
+  MatSidenav,
+  MatSidenavContent,
+} from '@angular/material/sidenav';
+import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { RouterOutlet } from '@angular/router';
+import { SiteFooterComponent } from './components/site-footer/site-footer.component';
 
 @Component({
   selector: 'opencde-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  standalone: false,
+  imports: [
+    SiteHeaderComponent,
+    MatSidenavContainer,
+    MatSidenav,
+    SidenavComponent,
+    MatSidenavContent,
+    RouterOutlet,
+    SiteFooterComponent,
+  ],
 })
 export class AppComponent implements OnInit, OnDestroy {
   sideNavOpened = false;
