@@ -10,6 +10,8 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import {
   OpenIdClient,
@@ -26,12 +28,31 @@ import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.servi
 import { SettingsService } from '../../services/settings.service';
 import { Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { NgIf, NgFor } from '@angular/common';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatButton } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'opencde-client-authenticate-api',
   templateUrl: './authenticate-api.component.html',
   styleUrls: ['./authenticate-api.component.scss'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    NgIf,
+    MatSelect,
+    NgFor,
+    MatOption,
+    MatButton,
+    MatProgressSpinner,
+  ],
 })
 export class AuthenticateApiComponent implements OnInit, OnDestroy {
   openIdForm: UntypedFormGroup;

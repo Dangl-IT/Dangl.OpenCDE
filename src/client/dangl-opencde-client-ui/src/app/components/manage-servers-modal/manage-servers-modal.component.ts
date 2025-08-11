@@ -2,12 +2,24 @@ import { Component, Inject, OnInit } from '@angular/core';
 
 import { SettingsService } from '../../services/settings.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { NgIf, NgFor } from '@angular/common';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatList, MatListItem } from '@angular/material/list';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'opencde-client-manage-servers-modal',
   templateUrl: './manage-servers-modal.component.html',
   styleUrls: ['./manage-servers-modal.component.scss'],
-  standalone: false,
+  imports: [
+    NgIf,
+    MatButton,
+    MatList,
+    NgFor,
+    MatIconButton,
+    MatIcon,
+    MatListItem,
+  ],
 })
 export class ManageServersModalComponent implements OnInit {
   savedServers: string[] = [];

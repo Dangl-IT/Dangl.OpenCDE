@@ -10,10 +10,8 @@ describe('DiscoverOpencdeApiComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DiscoverOpencdeApiComponent ],
-      imports: [SharedTestingModule, AppModule]
-    })
-    .compileComponents();
+      imports: [SharedTestingModule, AppModule, DiscoverOpencdeApiComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

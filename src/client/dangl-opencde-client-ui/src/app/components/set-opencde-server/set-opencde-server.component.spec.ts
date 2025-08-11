@@ -10,10 +10,8 @@ describe('SetOpencdeServerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SetOpencdeServerComponent ],
-      imports: [SharedTestingModule, AppModule]
-    })
-    .compileComponents();
+      imports: [SharedTestingModule, AppModule, SetOpencdeServerComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

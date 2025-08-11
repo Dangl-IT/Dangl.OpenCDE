@@ -11,13 +11,9 @@ describe('ManageServersModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ManageServersModalComponent ],
-      imports: [SharedTestingModule, AppModule],
-      providers: [
-        { provide: MAT_DIALOG_DATA, useValue: '' },
-      ]
-    })
-    .compileComponents();
+      imports: [SharedTestingModule, AppModule, ManageServersModalComponent],
+      providers: [{ provide: MAT_DIALOG_DATA, useValue: '' }],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -9,10 +9,8 @@ describe('PrepareDocumentSelectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PrepareDocumentSelectionComponent ],
-      imports: [SharedTestingModule]
-    })
-    .compileComponents();
+      imports: [SharedTestingModule, PrepareDocumentSelectionComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

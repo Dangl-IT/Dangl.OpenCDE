@@ -2,12 +2,20 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { DocumentSelectionService } from '../../services/document-selection.service';
 import { MatStepper } from '@angular/material/stepper';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { DownloadStepperComponent } from '../download-stepper/download-stepper.component';
+import { UploadStepperComponent } from '../upload-stepper/upload-stepper.component';
 
 @Component({
   selector: 'opencde-client-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
-  standalone: false,
+  imports: [
+    MatTabGroup,
+    MatTab,
+    DownloadStepperComponent,
+    UploadStepperComponent,
+  ],
 })
 export class MainComponent implements OnInit {
   hasSetBaseAddress = false;

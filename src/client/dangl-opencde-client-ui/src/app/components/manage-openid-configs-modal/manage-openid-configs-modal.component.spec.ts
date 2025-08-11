@@ -10,10 +10,12 @@ describe('ManageOpenidConfigsModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ManageOpenidConfigsModalComponent ],
-      imports: [SharedTestingModule, AppModule]
-    })
-    .compileComponents();
+      imports: [
+        SharedTestingModule,
+        AppModule,
+        ManageOpenidConfigsModalComponent,
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -10,12 +10,15 @@ import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.servi
 import { Subject } from 'rxjs';
 import { VersionGet } from '../../generated/opencde-client';
 import { takeUntil } from 'rxjs/operators';
+import { NgIf, NgFor } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'opencde-client-discover-opencde-api',
   templateUrl: './discover-opencde-api.component.html',
   styleUrls: ['./discover-opencde-api.component.scss'],
-  standalone: false,
+  imports: [NgIf, MatProgressSpinner, NgFor, MatButton],
 })
 export class DiscoverOpencdeApiComponent implements OnInit, OnDestroy {
   isLoading = true;

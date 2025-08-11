@@ -8,12 +8,13 @@ import { HttpClient } from '@angular/common/http';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
 import { combineLatest } from 'rxjs';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'opencde-client-prepare-document-selection',
   templateUrl: './prepare-document-selection.component.html',
   styleUrls: ['./prepare-document-selection.component.scss'],
-  standalone: false,
+  imports: [MatButton],
 })
 export class PrepareDocumentSelectionComponent implements OnInit {
   @Output() onDocumentSelected = new EventEmitter<void>();

@@ -9,8 +9,7 @@ describe('DownloadStepperComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DownloadStepperComponent],
-      imports: [AppModule]
+      imports: [AppModule, DownloadStepperComponent],
     }).compileComponents();
   });
 

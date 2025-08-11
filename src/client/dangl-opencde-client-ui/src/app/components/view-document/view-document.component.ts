@@ -14,12 +14,16 @@ import {
   DocumentVersions,
   SelectedDocuments,
 } from '../../generated/open-cde-swagger/model/models';
+import { NgIf, JsonPipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatButton } from '@angular/material/button';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
 
 @Component({
   selector: 'opencde-client-view-document',
   templateUrl: './view-document.component.html',
   styleUrls: ['./view-document.component.scss'],
-  standalone: false,
+  imports: [NgIf, MatProgressSpinner, MatButton, MatTabGroup, MatTab, JsonPipe],
 })
 export class ViewDocumentComponent implements OnInit, OnDestroy {
   isLoading = true;

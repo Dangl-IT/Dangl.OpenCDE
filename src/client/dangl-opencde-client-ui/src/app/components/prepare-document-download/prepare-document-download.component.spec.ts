@@ -9,8 +9,7 @@ describe('PrepareDocumentDownloadComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PrepareDocumentDownloadComponent],
-      imports: [SharedTestingModule]
+      imports: [SharedTestingModule, PrepareDocumentDownloadComponent],
     }).compileComponents();
   });
 

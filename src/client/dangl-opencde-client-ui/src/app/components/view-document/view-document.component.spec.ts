@@ -10,10 +10,8 @@ describe('ViewDocumentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ViewDocumentComponent ],
-      imports: [SharedTestingModule, AppModule]
-    })
-    .compileComponents();
+      imports: [SharedTestingModule, AppModule, ViewDocumentComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

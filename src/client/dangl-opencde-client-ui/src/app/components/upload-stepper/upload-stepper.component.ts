@@ -2,15 +2,29 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { CdeClientHubService } from '../../services/cde-client-hub.service';
 import { DocumentSelectionService } from '../../services/document-selection.service';
-import { MatStepper } from '@angular/material/stepper';
+import { MatStepper, MatStep, MatStepLabel } from '@angular/material/stepper';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { SetOpencdeServerComponent } from '../set-opencde-server/set-opencde-server.component';
+import { DiscoverOpencdeApiComponent } from '../discover-opencde-api/discover-opencde-api.component';
+import { AuthenticateApiComponent } from '../authenticate-api/authenticate-api.component';
+import { PrepareDocumentDownloadComponent } from '../prepare-document-download/prepare-document-download.component';
+import { ViewDocumentComponent } from '../view-document/view-document.component';
 
 @Component({
   selector: 'opencde-client-upload-stepper',
   templateUrl: './upload-stepper.component.html',
   styleUrls: ['./upload-stepper.component.scss'],
-  standalone: false,
+  imports: [
+    MatStepper,
+    MatStep,
+    MatStepLabel,
+    SetOpencdeServerComponent,
+    DiscoverOpencdeApiComponent,
+    AuthenticateApiComponent,
+    PrepareDocumentDownloadComponent,
+    ViewDocumentComponent,
+  ],
 })
 export class UploadStepperComponent implements OnInit, OnDestroy {
   hasSetBaseAddress = false;

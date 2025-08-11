@@ -43,23 +43,7 @@ import { ViewDocumentComponent } from './components/view-document/view-document.
 import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    SiteHeaderComponent,
-    SiteFooterComponent,
-    UserInfoComponent,
-    MainComponent,
-    SetOpencdeServerComponent,
-    DiscoverOpencdeApiComponent,
-    AuthenticateApiComponent,
-    PrepareDocumentSelectionComponent,
-    ViewDocumentComponent,
-    ManageServersModalComponent,
-    ManageOpenidConfigsModalComponent,
-    UploadStepperComponent,
-    DownloadStepperComponent,
-    PrepareDocumentDownloadComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -85,6 +69,20 @@ import { MatTabsModule } from '@angular/material/tabs';
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
     }),
+    SiteHeaderComponent,
+    SiteFooterComponent,
+    UserInfoComponent,
+    MainComponent,
+    SetOpencdeServerComponent,
+    DiscoverOpencdeApiComponent,
+    AuthenticateApiComponent,
+    PrepareDocumentSelectionComponent,
+    ViewDocumentComponent,
+    ManageServersModalComponent,
+    ManageOpenidConfigsModalComponent,
+    UploadStepperComponent,
+    DownloadStepperComponent,
+    PrepareDocumentDownloadComponent,
   ],
   providers: [
     {

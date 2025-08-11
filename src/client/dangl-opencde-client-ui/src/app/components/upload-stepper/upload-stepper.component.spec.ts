@@ -10,8 +10,7 @@ describe('UploadStepperComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [UploadStepperComponent],
-      imports: [SharedTestingModule, AppModule]
+      imports: [SharedTestingModule, AppModule, UploadStepperComponent],
     }).compileComponents();
   });
 

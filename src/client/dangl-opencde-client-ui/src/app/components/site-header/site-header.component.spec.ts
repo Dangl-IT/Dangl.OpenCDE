@@ -10,10 +10,8 @@ describe('SiteHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SiteHeaderComponent ],
-      imports: [SharedTestingModule, AppModule]
-    })
-    .compileComponents();
+      imports: [SharedTestingModule, AppModule, SiteHeaderComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

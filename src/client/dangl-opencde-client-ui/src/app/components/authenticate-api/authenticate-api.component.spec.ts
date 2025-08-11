@@ -10,10 +10,8 @@ describe('AuthenticateApiComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AuthenticateApiComponent ],
-      imports: [SharedTestingModule, AppModule]
-    })
-    .compileComponents();
+      imports: [SharedTestingModule, AppModule, AuthenticateApiComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

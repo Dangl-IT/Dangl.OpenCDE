@@ -6,12 +6,13 @@ import { GuidGenerator } from '@dangl/angular-material-shared/guid-generator';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
 import { combineLatest } from 'rxjs';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'opencde-client-prepare-document-download',
   templateUrl: './prepare-document-download.component.html',
   styleUrls: ['./prepare-document-download.component.scss'],
-  standalone: false,
+  imports: [MatButton],
 })
 export class PrepareDocumentDownloadComponent implements OnInit {
   constructor(
