@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DiscoverOpencdeApiComponent } from './discover-opencde-api.component';
 import { SharedTestingModule } from 'src/app/shared-tesing.module';
-import { AppModule } from 'src/app/app.module';
 
 describe('DiscoverOpencdeApiComponent', () => {
   let component: DiscoverOpencdeApiComponent;
@@ -10,7 +9,7 @@ describe('DiscoverOpencdeApiComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SharedTestingModule, AppModule, DiscoverOpencdeApiComponent],
+      imports: [SharedTestingModule, DiscoverOpencdeApiComponent],
     }).compileComponents();
   });
 

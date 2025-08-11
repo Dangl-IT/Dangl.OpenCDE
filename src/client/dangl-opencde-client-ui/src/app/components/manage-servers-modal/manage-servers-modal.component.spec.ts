@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ManageServersModalComponent } from './manage-servers-modal.component';
 import { SharedTestingModule } from 'src/app/shared-tesing.module';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { AppModule } from 'src/app/app.module';
 
 describe('ManageServersModalComponent', () => {
   let component: ManageServersModalComponent;
@@ -11,7 +10,7 @@ describe('ManageServersModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SharedTestingModule, AppModule, ManageServersModalComponent],
+      imports: [SharedTestingModule, ManageServersModalComponent],
       providers: [{ provide: MAT_DIALOG_DATA, useValue: '' }],
     }).compileComponents();
   });

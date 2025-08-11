@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ViewDocumentComponent } from './view-document.component';
 import { SharedTestingModule } from 'src/app/shared-tesing.module';
-import { AppModule } from 'src/app/app.module';
 
 describe('ViewDocumentComponent', () => {
   let component: ViewDocumentComponent;
@@ -10,7 +9,7 @@ describe('ViewDocumentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SharedTestingModule, AppModule, ViewDocumentComponent],
+      imports: [SharedTestingModule, ViewDocumentComponent],
     }).compileComponents();
   });
 
