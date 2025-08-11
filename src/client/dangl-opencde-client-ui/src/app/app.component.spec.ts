@@ -1,13 +1,11 @@
 import { AppComponent } from './app.component';
 import { TestBed } from '@angular/core/testing';
 import { SharedTestingModule } from './shared-tesing.module';
-import { AppModule } from './app.module';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SharedTestingModule, AppModule],
-      declarations: [AppComponent],
+      imports: [SharedTestingModule, AppComponent],
     }).compileComponents();
   });
 
@@ -22,5 +20,4 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
     expect(app.title).toEqual('dangl-opencde-client-ui');
   });
-
 });
