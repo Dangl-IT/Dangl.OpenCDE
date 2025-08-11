@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormControl,
@@ -46,6 +46,11 @@ import { MatButton } from '@angular/material/button';
   ],
 })
 export class NewProjectComponent implements OnInit, OnDestroy {
+  private projectsClient = inject(ProjectsClient);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private projectsService = inject(ProjectsService);
+
   private unsubscribe: Subject<void> = new Subject<void>();
   newProjectForm: UntypedFormGroup;
   settingsProgress: ProgressSettings = {
@@ -55,13 +60,9 @@ export class NewProjectComponent implements OnInit, OnDestroy {
     isLoading: false,
   };
 
-  constructor(
-    private projectsClient: ProjectsClient,
-    formBuilder: UntypedFormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private projectsService: ProjectsService
-  ) {
+  constructor() {
+    const formBuilder = inject(UntypedFormBuilder);
+
     this.newProjectForm = formBuilder.group({
       name: new UntypedFormControl('', [Validators.required]),
       description: new UntypedFormControl(''),

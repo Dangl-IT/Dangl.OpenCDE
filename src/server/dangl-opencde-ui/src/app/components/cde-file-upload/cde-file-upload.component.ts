@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatSort, Sort, MatSortHeader } from '@angular/material/sort';
 import {
   OpenCdeUploadIntegrationClient,
@@ -64,6 +64,14 @@ import { NgIf } from '@angular/common';
   ],
 })
 export class CdeFileUploadComponent implements OnInit, OnDestroy {
+  projectsService = inject(ProjectsService);
+  private route = inject(ActivatedRoute);
+  private openCdeUploadIntegrationClient = inject(
+    OpenCdeUploadIntegrationClient
+  );
+  private cdeSessionService = inject(CdeSessionService);
+  private jwtTokenService = inject(JwtTokenService);
+
   @ViewChild(MatSort, { static: true }) private sort: MatSort | null = null;
   private _filter: string | null = null;
   set filter(value: string | null) {
@@ -78,14 +86,6 @@ export class CdeFileUploadComponent implements OnInit, OnDestroy {
   displayedColumns = ['identiconId', 'name', 'description'];
   private unsubscribe: Subject<void> = new Subject<void>();
   private filterSource: Subject<string | null> = new Subject<string | null>();
-
-  constructor(
-    public projectsService: ProjectsService,
-    private route: ActivatedRoute,
-    private openCdeUploadIntegrationClient: OpenCdeUploadIntegrationClient,
-    private cdeSessionService: CdeSessionService,
-    private jwtTokenService: JwtTokenService
-  ) {}
 
   ngOnInit(): void {
     this.route.queryParams

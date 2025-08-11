@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatSort, Sort, MatSortHeader } from '@angular/material/sort';
 import { Subject, of } from 'rxjs';
 import {
@@ -61,6 +61,9 @@ import { FileSizePipe } from '../../pipes/file-size.pipe';
   ],
 })
 export class DocumentsComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  documentsService = inject(DocumentsService);
+
   private unsubscribe: Subject<void> = new Subject<void>();
   private projectId: string | null = null;
   @ViewChild(MatSort, { static: true }) private sort: MatSort | null = null;
@@ -83,11 +86,6 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     'createdAtUtc',
     'contentAvailable',
   ];
-
-  constructor(
-    private route: ActivatedRoute,
-    public documentsService: DocumentsService
-  ) {}
 
   ngOnInit(): void {
     this.documentsService.paginationResult

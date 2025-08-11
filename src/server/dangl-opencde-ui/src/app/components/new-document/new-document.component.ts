@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   DocumentContentSasUploadResultGet,
   DocumentGet,
@@ -60,6 +60,12 @@ import { FileSizePipe } from '../../pipes/file-size.pipe';
   ],
 })
 export class NewDocumentComponent implements OnInit, OnDestroy {
+  private formBuilder = inject(UntypedFormBuilder);
+  private route = inject(ActivatedRoute);
+  private documentsService = inject(DocumentsService);
+  private documentsClient = inject(DocumentsClient);
+  private router = inject(Router);
+
   private unsubscribe: Subject<void> = new Subject<void>();
   projectId: string | null = null;
   documentCreationForm: UntypedFormGroup;
@@ -70,13 +76,7 @@ export class NewDocumentComponent implements OnInit, OnDestroy {
     isLoading: false,
   };
 
-  constructor(
-    private formBuilder: UntypedFormBuilder,
-    private route: ActivatedRoute,
-    private documentsService: DocumentsService,
-    private documentsClient: DocumentsClient,
-    private router: Router
-  ) {
+  constructor() {
     this.documentCreationForm = this.formBuilder.group({
       name: new UntypedFormControl('', Validators.required),
       description: new UntypedFormControl(''),

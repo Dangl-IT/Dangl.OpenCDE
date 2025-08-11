@@ -1,5 +1,5 @@
 import { AppConfigService } from './app-config.service';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
@@ -10,11 +10,9 @@ import { UserManager } from 'oidc-client-ts';
   providedIn: 'root',
 })
 export class AuthenticationService {
-  constructor(
-    private appConfigService: AppConfigService,
-    private jwtTokenService: JwtTokenService,
-    private router: Router
-  ) {}
+  private appConfigService = inject(AppConfigService);
+  private jwtTokenService = inject(JwtTokenService);
+  private router = inject(Router);
 
   initiateOpenIdImplicitLogin(): void {
     const userManager = this.getUserManager();

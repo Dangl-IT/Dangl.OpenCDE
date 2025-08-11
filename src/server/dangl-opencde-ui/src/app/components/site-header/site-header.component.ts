@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { AppConfigService } from '../../services/app-config.service';
 import { AuthenticationMessenger } from '@dangl/angular-dangl-identity-client';
@@ -20,6 +20,10 @@ import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/mode
   imports: [HeaderComponent, NgIf, UserInfoComponent, MatButton],
 })
 export class SiteHeaderComponent implements OnInit, OnDestroy {
+  private sidebarService = inject(SidebarService);
+  private authenticationService = inject(AuthenticationService);
+  private authenticationMessenger = inject(AuthenticationMessenger);
+
   preReleaseVersion: string = '';
   preReleaseBuildDate: Date;
   showPreReleaseHeader = false;
@@ -27,13 +31,10 @@ export class SiteHeaderComponent implements OnInit, OnDestroy {
   userInfo: UserInfo | null = null;
   private unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(
-    private sidebarService: SidebarService,
-    private authenticationService: AuthenticationService,
-    private authenticationMessenger: AuthenticationMessenger,
-    appConfigService: AppConfigService
-  ) {
-    if (appConfigService.getFrontendConfig()?.environment !== 'Production') {
+  constructor() {
+    const appConfigService = inject(AppConfigService);
+
+    if (appConfigService.getFrontendConfig().environment !== 'Production') {
       this.showPreReleaseHeader = true;
     }
     this.preReleaseVersion = version.version;

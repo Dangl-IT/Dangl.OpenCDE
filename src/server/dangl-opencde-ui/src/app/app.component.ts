@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { AppConfigService } from './services/app-config.service';
 import { AuthenticationMessenger } from '@dangl/angular-dangl-identity-client';
@@ -32,18 +32,19 @@ import { SiteFooterComponent } from './components/site-footer/site-footer.compon
   ],
 })
 export class AppComponent implements OnInit, OnDestroy {
+  private sidebarService = inject(SidebarService);
+  private authenticationMessenger = inject(AuthenticationMessenger);
+
   sideNavOpened = false;
   userIsAuthenticated = false;
   title = 'dangl-opencde-ui';
   private unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(
-    appConfigService: AppConfigService,
-    danglIconsConfigService: DanglIconsConfigService,
-    private sidebarService: SidebarService,
-    private authenticationMessenger: AuthenticationMessenger,
-    iconRegistry: IconRegistry
-  ) {
+  constructor() {
+    const appConfigService = inject(AppConfigService);
+    const danglIconsConfigService = inject(DanglIconsConfigService);
+    const iconRegistry = inject(IconRegistry);
+
     danglIconsConfigService.setConfig({
       baseUrl: appConfigService.getFrontendConfig()?.danglIconsBaseUrl || '',
     });

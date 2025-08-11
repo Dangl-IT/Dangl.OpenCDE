@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/table';
 import { DocumentGet } from '../generated/backend-client';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PaginationBaseService } from 'ng-lightquery';
 import { map } from 'rxjs/operators';
@@ -13,10 +13,15 @@ export class DocumentsService
   extends PaginationBaseService<DocumentGet>
   implements DataSource<DocumentGet>
 {
+  protected http: HttpClient;
+
   private projectId: string | null = null;
 
-  constructor(protected http: HttpClient) {
+  constructor() {
+    const http = inject(HttpClient);
+
     super(http);
+    this.http = http;
   }
 
   connect(): Observable<DocumentGet[]> {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 
 import { AuthenticationService } from '@dangl/angular-dangl-identity-client';
 import { UserInfo } from '@dangl/angular-dangl-identity-client/models/user-info';
@@ -24,9 +24,9 @@ import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/mode
   ],
 })
 export class UserInfoComponent {
-  @Input() userInfo: UserInfo | null = null;
+  private authenticationService = inject(AuthenticationService);
 
-  constructor(private authenticationService: AuthenticationService) {}
+  @Input() userInfo: UserInfo | null = null;
 
   logout(): void {
     this.authenticationService.logout();

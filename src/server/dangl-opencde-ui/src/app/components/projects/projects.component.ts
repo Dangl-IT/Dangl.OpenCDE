@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatSort, Sort, MatSortHeader } from '@angular/material/sort';
 import { Subject, of } from 'rxjs';
 import {
@@ -60,6 +60,8 @@ import { NgIf } from '@angular/common';
   ],
 })
 export class ProjectsComponent implements OnInit, OnDestroy {
+  projectsService = inject(ProjectsService);
+
   @ViewChild(MatSort, { static: true }) private sort: MatSort | null = null;
   private _filter: string | null = null;
   set filter(value: string | null) {
@@ -75,8 +77,6 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   projectsPaginated: PaginationResult<ProjectGet> | null = null;
   pageSizeOptions = [1, 5, 10, 25, 100];
   displayedColumns = ['identiconId', 'name', 'description'];
-
-  constructor(public projectsService: ProjectsService) {}
 
   ngOnInit(): void {
     this.projectsService.paginationResult
