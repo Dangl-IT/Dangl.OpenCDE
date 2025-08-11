@@ -8,9 +8,8 @@ describe('ApiSpecComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ApiSpecComponent ]
-    })
-    .compileComponents();
+      imports: [ApiSpecComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

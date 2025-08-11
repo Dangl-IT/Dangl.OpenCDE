@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CdeFileUploadComponent } from './cde-file-upload.component';
 import { SharedTestingModule } from 'src/app/shared-tesing.module';
-import { AppModule } from 'src/app/app.module';
 
 describe('CdeFileUploadComponent', () => {
   let component: CdeFileUploadComponent;
@@ -10,8 +9,7 @@ describe('CdeFileUploadComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CdeFileUploadComponent],
-      imports: [SharedTestingModule, AppModule],
+      imports: [SharedTestingModule, CdeFileUploadComponent],
     }).compileComponents();
   });
 

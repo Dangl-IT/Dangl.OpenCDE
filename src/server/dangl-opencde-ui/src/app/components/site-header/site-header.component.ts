@@ -7,13 +7,17 @@ import { SidebarService } from '../../services/sidebar.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { version } from '../../version';
+import { HeaderComponent } from '@dangl/angular-material-shared';
+import { NgIf } from '@angular/common';
+import { UserInfoComponent } from '../user-info/user-info.component';
+import { MatButton } from '@angular/material/button';
 import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/models/user-info';
 
 @Component({
   selector: 'opencde-site-header',
   templateUrl: './site-header.component.html',
   styleUrls: ['./site-header.component.scss'],
-  standalone: false,
+  imports: [HeaderComponent, NgIf, UserInfoComponent, MatButton],
 })
 export class SiteHeaderComponent implements OnInit, OnDestroy {
   preReleaseVersion: string = '';

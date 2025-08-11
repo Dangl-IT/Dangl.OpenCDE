@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 
 import { AuthenticationService } from '../../services/authentication.service';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'opencde-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  standalone: false,
+  imports: [NgIf],
 })
 export class LoginComponent implements OnInit {
   processingLoginResponse = true;

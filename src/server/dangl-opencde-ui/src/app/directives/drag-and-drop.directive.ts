@@ -6,10 +6,7 @@ import {
   Output,
 } from '@angular/core';
 
-@Directive({
-  selector: '[opencdeDragAndDrop]',
-  standalone: false,
-})
+@Directive({ selector: '[opencdeDragAndDrop]' })
 export class DragAndDropDirective {
   @HostBinding('class.fileover') fileOver: boolean = false;
   @Output() fileDropped = new EventEmitter<any>();

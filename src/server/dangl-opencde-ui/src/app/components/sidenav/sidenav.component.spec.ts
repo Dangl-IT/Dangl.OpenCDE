@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SidenavComponent } from './sidenav.component';
-import { AppModule } from 'src/app/app.module';
+import { SharedTestingModule } from 'src/app/shared-tesing.module';
 
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
@@ -9,8 +9,7 @@ describe('SidenavComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SidenavComponent],
-      imports: [AppModule],
+      imports: [SharedTestingModule, SidenavComponent],
     }).compileComponents();
   });
 

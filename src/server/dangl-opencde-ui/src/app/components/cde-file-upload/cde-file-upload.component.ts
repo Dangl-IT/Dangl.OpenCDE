@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatSort, Sort, MatSortHeader } from '@angular/material/sort';
 import {
   OpenCdeUploadIntegrationClient,
   ProjectGet,
@@ -17,15 +17,51 @@ import { ActivatedRoute } from '@angular/router';
 import { CdeSessionService } from '../../services/cde-session.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { PaginationResult } from 'ng-lightquery';
 import { ProjectsService } from '../../services/projects.service';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
+import { NgDanglIconsModule } from 'ng-dangl-icons';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'opencde-cde-file-upload',
   templateUrl: './cde-file-upload.component.html',
   styleUrls: ['./cde-file-upload.component.scss'],
-  standalone: false,
+  imports: [
+    MatFormField,
+    MatInput,
+    FormsModule,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    NgDanglIconsModule,
+    MatSortHeader,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    NgIf,
+    MatPaginator,
+  ],
 })
 export class CdeFileUploadComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, { static: true }) private sort: MatSort | null = null;

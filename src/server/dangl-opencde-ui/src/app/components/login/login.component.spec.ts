@@ -9,8 +9,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LoginComponent],
-      imports: [SharedTestingModule],
+      imports: [SharedTestingModule, LoginComponent],
     }).compileComponents();
   });
 

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatSort, Sort, MatSortHeader } from '@angular/material/sort';
 import { Subject, of } from 'rxjs';
 import {
   delay,
@@ -8,16 +8,56 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { PaginationResult } from 'ng-lightquery';
 import { ProjectGet } from '../../generated/backend-client';
 import { ProjectsService } from '../../services/projects.service';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
+import { NgDanglIconsModule } from 'ng-dangl-icons';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'opencde-projects',
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.scss'],
-  standalone: false,
+  imports: [
+    MatFormField,
+    MatInput,
+    FormsModule,
+    MatButton,
+    RouterLink,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    NgDanglIconsModule,
+    MatSortHeader,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    NgIf,
+    MatPaginator,
+  ],
 })
 export class ProjectsComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, { static: true }) private sort: MatSort | null = null;

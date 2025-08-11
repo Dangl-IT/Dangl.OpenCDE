@@ -5,18 +5,45 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 
 import { ProgressSettings } from '../../models/progress-settings';
 import { ProjectsClient } from '../../generated/backend-client';
 import { ProjectsService } from '../../services/projects.service';
 import { Subject } from 'rxjs';
+import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
+import { MatDivider } from '@angular/material/divider';
+import {
+  MatCard,
+  MatCardContent,
+  MatCardActions,
+} from '@angular/material/card';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { NgIf } from '@angular/common';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'opencde-new-project',
   templateUrl: './new-project.component.html',
   styleUrls: ['./new-project.component.scss'],
-  standalone: false,
+  imports: [
+    UploadProgressComponent,
+    MatDivider,
+    MatCard,
+    FormsModule,
+    ReactiveFormsModule,
+    MatCardContent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    NgIf,
+    MatError,
+    MatCardActions,
+    MatButton,
+  ],
 })
 export class NewProjectComponent implements OnInit, OnDestroy {
   private unsubscribe: Subject<void> = new Subject<void>();

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserInfoComponent } from './user-info.component';
-import { AppModule } from 'src/app/app.module';
+import { SharedTestingModule } from 'src/app/shared-tesing.module';
 
 describe('UserInfoComponent', () => {
   let component: UserInfoComponent;
@@ -9,10 +9,8 @@ describe('UserInfoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ UserInfoComponent ],
-      imports: [AppModule]
-    })
-    .compileComponents();
+      imports: [SharedTestingModule, UserInfoComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

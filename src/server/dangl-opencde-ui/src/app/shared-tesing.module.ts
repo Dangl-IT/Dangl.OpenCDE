@@ -6,11 +6,12 @@ import {
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NgModule } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
-  exports: [CommonModule, RouterModule],
-  imports: [CommonModule, RouterModule.forRoot([])],
+  exports: [CommonModule, RouterModule, NoopAnimationsModule],
+  imports: [CommonModule, RouterModule.forRoot([]), NoopAnimationsModule],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
     provideHttpClientTesting(),
