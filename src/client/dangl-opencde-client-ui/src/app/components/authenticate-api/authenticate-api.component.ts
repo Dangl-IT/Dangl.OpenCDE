@@ -4,6 +4,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  inject,
 } from '@angular/core';
 import {
   UntypedFormBuilder,
@@ -55,6 +56,12 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
   ],
 })
 export class AuthenticateApiComponent implements OnInit, OnDestroy {
+  private openCdeDiscoveryService = inject(OpenCdeDiscoveryService);
+  private cdeClientHubService = inject(CdeClientHubService);
+  private openIdClient = inject(OpenIdClient);
+  private settingsService = inject(SettingsService);
+  private matDialog = inject(MatDialog);
+
   openIdForm: UntypedFormGroup;
   authenticationInformation: AuthGet | null = null;
   authenticationInProgress = false;
@@ -63,14 +70,9 @@ export class AuthenticateApiComponent implements OnInit, OnDestroy {
   @Output() onAuthentication = new EventEmitter<void>();
   private unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(
-    private openCdeDiscoveryService: OpenCdeDiscoveryService,
-    formBuilder: UntypedFormBuilder,
-    private cdeClientHubService: CdeClientHubService,
-    private openIdClient: OpenIdClient,
-    private settingsService: SettingsService,
-    private matDialog: MatDialog
-  ) {
+  constructor() {
+    const formBuilder = inject(UntypedFormBuilder);
+
     this.openIdForm = formBuilder.group({
       clientId: new UntypedFormControl('', Validators.required),
       clientSecret: new UntypedFormControl(''),

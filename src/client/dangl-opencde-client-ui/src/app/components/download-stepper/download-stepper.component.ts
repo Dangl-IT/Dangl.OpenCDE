@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 
-import { DocumentSelectionService } from '../../services/document-selection.service';
 import { MatStepper, MatStep, MatStepLabel } from '@angular/material/stepper';
 import { SetOpencdeServerComponent } from '../set-opencde-server/set-opencde-server.component';
 import { DiscoverOpencdeApiComponent } from '../discover-opencde-api/discover-opencde-api.component';
@@ -27,8 +26,6 @@ export class DownloadStepperComponent implements OnInit {
   hasSetBaseAddress = false;
 
   @ViewChild('mainStepper') stepper: MatStepper | null = null;
-
-  constructor(private documentSelectionService: DocumentSelectionService) {}
 
   ngOnInit(): void {}
 

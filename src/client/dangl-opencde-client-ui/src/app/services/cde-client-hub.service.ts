@@ -3,7 +3,7 @@ import { ReplaySubject, Subject } from 'rxjs';
 
 import { DocumentSelectionService } from './document-selection.service';
 import { DocumentVersion } from '../generated/open-cde-swagger/model/documentVersion';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { NotificationService } from './notification.service';
 import { OpenIdConnectAuthenticationResult } from '../generated/backend-client';
@@ -12,6 +12,10 @@ import { OpenIdConnectAuthenticationResult } from '../generated/backend-client';
   providedIn: 'root',
 })
 export class CdeClientHubService {
+  private jwtTokenService = inject(JwtTokenService);
+  private documentSelectionService = inject(DocumentSelectionService);
+  private notificationService = inject(NotificationService);
+
   private connection: HubConnection | null = null;
   isAuthenticaed = false;
   private lastClientState: string | null = null;
@@ -27,11 +31,7 @@ export class CdeClientHubService {
   documentVersionUploadResultReceived =
     this.documentVersionUploadResultReceivedSource.asObservable();
 
-  constructor(
-    private jwtTokenService: JwtTokenService,
-    private documentSelectionService: DocumentSelectionService,
-    private notificationService: NotificationService
-  ) {
+  constructor() {
     this.buildConnection();
     this.setUpMessageListeners();
     this.connection?.start();

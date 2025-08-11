@@ -2,7 +2,7 @@ import {
   AuthenticationMessenger,
   AuthenticationService,
 } from '@dangl/angular-dangl-identity-client';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -19,13 +19,11 @@ import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/mode
   imports: [NgIf, MatButton, MatMenuTrigger, MatMenu, MatMenuItem, MatIcon],
 })
 export class UserInfoComponent implements OnInit, OnDestroy {
+  private authenticationService = inject(AuthenticationService);
+  private authenticationMessenger = inject(AuthenticationMessenger);
+
   @Input() userInfo: UserInfo | null = null;
   private unsubscribe: Subject<void> = new Subject<void>();
-
-  constructor(
-    private authenticationService: AuthenticationService,
-    private authenticationMessenger: AuthenticationMessenger
-  ) {}
 
   logout(): void {
     this.authenticationService.logout();

@@ -4,6 +4,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  inject,
 } from '@angular/core';
 
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
@@ -21,12 +22,12 @@ import { MatButton } from '@angular/material/button';
   imports: [NgIf, MatProgressSpinner, NgFor, MatButton],
 })
 export class DiscoverOpencdeApiComponent implements OnInit, OnDestroy {
+  private openCdeDiscoveryService = inject(OpenCdeDiscoveryService);
+
   isLoading = true;
   @Output() onFinishedDiscovery = new EventEmitter<void>();
   discoveredVersions: VersionGet[] | null = null;
   private unsubscribe: Subject<void> = new Subject<void>();
-
-  constructor(private openCdeDiscoveryService: OpenCdeDiscoveryService) {}
 
   ngOnInit(): void {
     this.openCdeDiscoveryService.foundationsAuthentication

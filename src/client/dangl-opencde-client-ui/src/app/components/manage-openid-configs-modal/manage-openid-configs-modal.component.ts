@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { SettingsService } from '../../services/settings.service';
 import { SettingsType } from '../../settings/settings.type';
@@ -15,13 +15,12 @@ import { MatIcon } from '@angular/material/icon';
   imports: [MatList, NgFor, MatListItem, MatIconButton, MatIcon, MatButton],
 })
 export class ManageOpenidConfigsModalComponent implements OnInit {
+  private settingsService = inject(SettingsService);
+  private matDialogRef =
+    inject<MatDialogRef<ManageOpenidConfigsModalComponent>>(MatDialogRef);
+
   private currentSettings: SettingsType | null = null;
   servers: string[] = [];
-
-  constructor(
-    private settingsService: SettingsService,
-    private matDialogRef: MatDialogRef<ManageOpenidConfigsModalComponent>
-  ) {}
 
   ngOnInit(): void {
     this.loadSettings();

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { first, map } from 'rxjs/operators';
 
 import { DocumentSelectionService } from '../../services/document-selection.service';
@@ -17,14 +17,14 @@ import { MatButton } from '@angular/material/button';
   imports: [MatButton],
 })
 export class PrepareDocumentSelectionComponent implements OnInit {
-  @Output() onDocumentSelected = new EventEmitter<void>();
+  private documentsSelectionHandlerClient = inject(
+    DocumentsSelectionHandlerClient
+  );
+  private documentSelectionService = inject(DocumentSelectionService);
+  private openCdeDiscoveryService = inject(OpenCdeDiscoveryService);
+  private jwtTokenService = inject(JwtTokenService);
 
-  constructor(
-    private documentsSelectionHandlerClient: DocumentsSelectionHandlerClient,
-    private documentSelectionService: DocumentSelectionService,
-    private openCdeDiscoveryService: OpenCdeDiscoveryService,
-    private jwtTokenService: JwtTokenService
-  ) {}
+  @Output() onDocumentSelected = new EventEmitter<void>();
 
   ngOnInit(): void {}
 

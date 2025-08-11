@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 
-import { DocumentSelectionService } from '../../services/document-selection.service';
 import { MatStepper } from '@angular/material/stepper';
 import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { DownloadStepperComponent } from '../download-stepper/download-stepper.component';
@@ -21,8 +20,6 @@ export class MainComponent implements OnInit {
   hasSetBaseAddress = false;
 
   @ViewChild('mainStepper') stepper: MatStepper | null = null;
-
-  constructor(private documentSelectionService: DocumentSelectionService) {}
 
   ngOnInit(): void {}
 

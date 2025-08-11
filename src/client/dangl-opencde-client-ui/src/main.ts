@@ -37,25 +37,9 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(
-      BrowserModule,
       AppRoutingModule,
-      MatIconModule,
-      MatMenuModule,
       NgDanglIconsModule,
-      HeaderComponent,
-      FooterComponent,
       DanglIdentityModule,
-      MatButtonModule,
-      MatStepperModule,
-      MatInputModule,
-      FormsModule,
-      MatProgressSpinnerModule,
-      MatFormFieldModule,
-      ReactiveFormsModule,
-      MatSelectModule,
-      MatTabsModule,
-      MatDialogModule,
-      MatListModule,
       ToastrModule.forRoot({
         positionClass: 'toast-bottom-right',
         preventDuplicates: true,

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 
 import { ManageServersModalComponent } from '../manage-servers-modal/manage-servers-modal.component';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
@@ -30,14 +30,12 @@ import { MatIcon } from '@angular/material/icon';
   ],
 })
 export class SetOpencdeServerComponent implements OnInit {
+  private openCdeDiscoveryService = inject(OpenCdeDiscoveryService);
+  private settingsService = inject(SettingsService);
+  private matDialog = inject(MatDialog);
+
   serverBaseAddress: string | null = null;
   @Output() onHasSelectedServerBaseAddress = new EventEmitter<void>();
-
-  constructor(
-    private openCdeDiscoveryService: OpenCdeDiscoveryService,
-    private settingsService: SettingsService,
-    private matDialog: MatDialog
-  ) {}
 
   ngOnInit(): void {
     const lastUsedServer = this.settingsService.getLastUsedCdeServerAddress();

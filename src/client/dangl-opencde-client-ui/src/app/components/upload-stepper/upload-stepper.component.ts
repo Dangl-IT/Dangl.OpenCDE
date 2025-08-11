@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 
 import { CdeClientHubService } from '../../services/cde-client-hub.service';
 import { DocumentSelectionService } from '../../services/document-selection.service';
@@ -27,12 +27,12 @@ import { ViewDocumentComponent } from '../view-document/view-document.component'
   ],
 })
 export class UploadStepperComponent implements OnInit, OnDestroy {
+  private cdeClientHubService = inject(CdeClientHubService);
+
   hasSetBaseAddress = false;
   private unsubscribe: Subject<void> = new Subject<void>();
 
   @ViewChild('mainStepper') stepper: MatStepper | null = null;
-
-  constructor(private cdeClientHubService: CdeClientHubService) {}
 
   ngOnInit(): void {
     this.cdeClientHubService.documentVersionUploadResultReceived

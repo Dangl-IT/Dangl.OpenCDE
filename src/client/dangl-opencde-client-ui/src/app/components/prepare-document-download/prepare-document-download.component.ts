@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { first, map } from 'rxjs/operators';
 
 import { DocumentsUploadHandlerClient } from '../../generated/backend-client';
@@ -15,11 +15,9 @@ import { MatButton } from '@angular/material/button';
   imports: [MatButton],
 })
 export class PrepareDocumentDownloadComponent implements OnInit {
-  constructor(
-    private documentsUploadHandlerClient: DocumentsUploadHandlerClient,
-    private openCdeDiscoveryService: OpenCdeDiscoveryService,
-    private jwtTokenService: JwtTokenService
-  ) {}
+  private documentsUploadHandlerClient = inject(DocumentsUploadHandlerClient);
+  private openCdeDiscoveryService = inject(OpenCdeDiscoveryService);
+  private jwtTokenService = inject(JwtTokenService);
 
   ngOnInit(): void {}
 

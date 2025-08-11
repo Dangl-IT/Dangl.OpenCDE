@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { DocumentSelectionService } from '../../services/document-selection.service';
 import { FileDownloadClient } from '../../generated/backend-client';
@@ -26,20 +26,18 @@ import { MatTabGroup, MatTab } from '@angular/material/tabs';
   imports: [NgIf, MatProgressSpinner, MatButton, MatTabGroup, MatTab, JsonPipe],
 })
 export class ViewDocumentComponent implements OnInit, OnDestroy {
+  private documentSelectionService = inject(DocumentSelectionService);
+  private http = inject(HttpClient);
+  private fileSaverService = inject(FileSaverService);
+  private fileDownloadClient = inject(FileDownloadClient);
+  private jwtTokenService = inject(JwtTokenService);
+  private cdeClientHubService = inject(CdeClientHubService);
+
   isLoading = true;
   documentVersion: DocumentVersion | null = null;
   documentMetadata: DocumentMetadata | null = null;
   documentVersions: DocumentVersions | null = null;
   private unsubscribe: Subject<void> = new Subject<void>();
-
-  constructor(
-    private documentSelectionService: DocumentSelectionService,
-    private http: HttpClient,
-    private fileSaverService: FileSaverService,
-    private fileDownloadClient: FileDownloadClient,
-    private jwtTokenService: JwtTokenService,
-    private cdeClientHubService: CdeClientHubService
-  ) {}
 
   ngOnInit(): void {
     const getProxyUrl = (actualUrl: string) => {
