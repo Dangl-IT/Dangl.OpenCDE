@@ -3,15 +3,15 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { AppConfigService } from '../../services/app-config.service';
 import { AuthenticationMessenger } from '@dangl/angular-dangl-identity-client';
 import { AuthenticationService } from '../../services/authentication.service';
+import { HeaderComponent } from '@dangl/angular-material-shared';
+import { MatButton } from '@angular/material/button';
+import { NgIf } from '@angular/common';
 import { SidebarService } from '../../services/sidebar.service';
 import { Subject } from 'rxjs';
+import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/models/user-info';
+import { UserInfoComponent } from '../user-info/user-info.component';
 import { takeUntil } from 'rxjs/operators';
 import { version } from '../../version';
-import { HeaderComponent } from '@dangl/angular-material-shared';
-import { NgIf } from '@angular/common';
-import { UserInfoComponent } from '../user-info/user-info.component';
-import { MatButton } from '@angular/material/button';
-import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/models/user-info';
 
 @Component({
   selector: 'opencde-site-header',
@@ -34,7 +34,10 @@ export class SiteHeaderComponent implements OnInit, OnDestroy {
   constructor() {
     const appConfigService = inject(AppConfigService);
 
-    if (appConfigService.getFrontendConfig().environment !== 'Production') {
+    if (
+      appConfigService &&
+      appConfigService.getFrontendConfig()?.environment !== 'Production'
+    ) {
       this.showPreReleaseHeader = true;
     }
     this.preReleaseVersion = version.version;
