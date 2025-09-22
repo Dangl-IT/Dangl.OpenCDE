@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSort, Sort } from '@angular/material/sort';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { MatSort, Sort, MatSortHeader } from '@angular/material/sort';
 import { Subject, of } from 'rxjs';
 import {
   delay,
@@ -8,19 +8,62 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DocumentGet } from '../../generated/backend-client';
 import { DocumentsService } from '../../services/documents.service';
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { PaginationResult } from 'ng-lightquery';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
+import { NgIf, DatePipe } from '@angular/common';
+import { FileSizePipe } from '../../pipes/file-size.pipe';
 
 @Component({
   selector: 'opencde-documents',
   templateUrl: './documents.component.html',
   styleUrls: ['./documents.component.scss'],
-  standalone: false,
+  imports: [
+    MatFormField,
+    MatInput,
+    FormsModule,
+    MatButton,
+    RouterLink,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatSortHeader,
+    MatCellDef,
+    MatCell,
+    NgIf,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatPaginator,
+    DatePipe,
+    FileSizePipe,
+  ],
 })
 export class DocumentsComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  documentsService = inject(DocumentsService);
+
   private unsubscribe: Subject<void> = new Subject<void>();
   private projectId: string | null = null;
   @ViewChild(MatSort, { static: true }) private sort: MatSort | null = null;
@@ -43,11 +86,6 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     'createdAtUtc',
     'contentAvailable',
   ];
-
-  constructor(
-    private route: ActivatedRoute,
-    public documentsService: DocumentsService
-  ) {}
 
   ngOnInit(): void {
     this.documentsService.paginationResult

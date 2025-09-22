@@ -1,12 +1,37 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { enableProdMode, importProvidersFrom } from '@angular/core';
 
-import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+import {
+  DANGL_IDENTITY_REQUEST_VALIDATOR,
+  DanglIdentityModule,
+} from '@dangl/angular-dangl-identity-client';
+import { JwtRequestValidatorService } from './app/services/jwt-request-validator.service';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppRoutingModule } from './app/app-routing.module';
+import { NgDanglIconsModule } from 'ng-dangl-icons';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+import { AppComponent } from './app/app.component';
 
 if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    importProvidersFrom(
+      AppRoutingModule,
+      NgDanglIconsModule,
+      DanglIdentityModule,
+      ToastrModule.forRoot({
+        positionClass: 'toast-bottom-right',
+        preventDuplicates: true,
+      })
+    ),
+    {
+      provide: DANGL_IDENTITY_REQUEST_VALIDATOR,
+      useClass: JwtRequestValidatorService,
+    },
+    provideAnimations(),
+  ],
+}).catch((err) => console.error(err));

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { first, map } from 'rxjs/operators';
 
 import { DocumentsUploadHandlerClient } from '../../generated/backend-client';
@@ -6,19 +6,18 @@ import { GuidGenerator } from '@dangl/angular-material-shared/guid-generator';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
 import { combineLatest } from 'rxjs';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'opencde-client-prepare-document-download',
   templateUrl: './prepare-document-download.component.html',
   styleUrls: ['./prepare-document-download.component.scss'],
-  standalone: false,
+  imports: [MatButton],
 })
 export class PrepareDocumentDownloadComponent implements OnInit {
-  constructor(
-    private documentsUploadHandlerClient: DocumentsUploadHandlerClient,
-    private openCdeDiscoveryService: OpenCdeDiscoveryService,
-    private jwtTokenService: JwtTokenService
-  ) {}
+  private documentsUploadHandlerClient = inject(DocumentsUploadHandlerClient);
+  private openCdeDiscoveryService = inject(OpenCdeDiscoveryService);
+  private jwtTokenService = inject(JwtTokenService);
 
   ngOnInit(): void {}
 

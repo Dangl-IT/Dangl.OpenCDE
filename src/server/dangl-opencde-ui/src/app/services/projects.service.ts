@@ -1,6 +1,6 @@
 import { DataSource } from '@angular/cdk/table';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PaginationBaseService } from 'ng-lightquery';
 import { ProjectGet } from '../generated/backend-client';
@@ -13,8 +13,14 @@ export class ProjectsService
   extends PaginationBaseService<ProjectGet>
   implements DataSource<ProjectGet>
 {
-  constructor(protected http: HttpClient) {
+  protected http: HttpClient;
+
+  constructor() {
+    const http = inject(HttpClient);
+
     super(http);
+    this.http = http;
+
     this.baseUrl = '/api/projects';
   }
 

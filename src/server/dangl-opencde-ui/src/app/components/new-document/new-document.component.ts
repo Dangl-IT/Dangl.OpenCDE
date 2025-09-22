@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   DocumentContentSasUploadResultGet,
   DocumentGet,
@@ -11,20 +11,61 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 
 import { DocumentsService } from '../../services/documents.service';
 import { ProgressSettings } from '../../models/progress-settings';
 import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
+import { MatDivider } from '@angular/material/divider';
+import {
+  MatCard,
+  MatCardContent,
+  MatCardActions,
+} from '@angular/material/card';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { NgIf } from '@angular/common';
+import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { FileSizePipe } from '../../pipes/file-size.pipe';
 
 @Component({
   selector: 'opencde-new-document',
   templateUrl: './new-document.component.html',
   styleUrls: ['./new-document.component.scss'],
-  standalone: false,
+  imports: [
+    UploadProgressComponent,
+    MatDivider,
+    MatCard,
+    FormsModule,
+    ReactiveFormsModule,
+    MatCardContent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    MatCheckbox,
+    NgIf,
+    DragAndDropDirective,
+    MatIcon,
+    MatButton,
+    MatCardActions,
+    FileSizePipe,
+  ],
 })
 export class NewDocumentComponent implements OnInit, OnDestroy {
+  private formBuilder = inject(UntypedFormBuilder);
+  private route = inject(ActivatedRoute);
+  private documentsService = inject(DocumentsService);
+  private documentsClient = inject(DocumentsClient);
+  private router = inject(Router);
+
   private unsubscribe: Subject<void> = new Subject<void>();
   projectId: string | null = null;
   documentCreationForm: UntypedFormGroup;
@@ -35,13 +76,7 @@ export class NewDocumentComponent implements OnInit, OnDestroy {
     isLoading: false,
   };
 
-  constructor(
-    private formBuilder: UntypedFormBuilder,
-    private route: ActivatedRoute,
-    private documentsService: DocumentsService,
-    private documentsClient: DocumentsClient,
-    private router: Router
-  ) {
+  constructor() {
     this.documentCreationForm = this.formBuilder.group({
       name: new UntypedFormControl('', Validators.required),
       description: new UntypedFormControl(''),

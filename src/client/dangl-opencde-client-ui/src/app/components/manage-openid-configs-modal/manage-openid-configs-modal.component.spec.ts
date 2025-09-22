@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ManageOpenidConfigsModalComponent } from './manage-openid-configs-modal.component';
 import { SharedTestingModule } from 'src/app/shared-tesing.module';
-import { AppModule } from 'src/app/app.module';
 
 describe('ManageOpenidConfigsModalComponent', () => {
   let component: ManageOpenidConfigsModalComponent;
@@ -10,10 +9,8 @@ describe('ManageOpenidConfigsModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ManageOpenidConfigsModalComponent ],
-      imports: [SharedTestingModule, AppModule]
-    })
-    .compileComponents();
+      imports: [SharedTestingModule, ManageOpenidConfigsModalComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

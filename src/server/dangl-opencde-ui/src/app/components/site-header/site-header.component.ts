@@ -1,21 +1,29 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { AppConfigService } from '../../services/app-config.service';
 import { AuthenticationMessenger } from '@dangl/angular-dangl-identity-client';
 import { AuthenticationService } from '../../services/authentication.service';
+import { HeaderComponent } from '@dangl/angular-material-shared';
+import { MatButton } from '@angular/material/button';
+import { NgIf } from '@angular/common';
 import { SidebarService } from '../../services/sidebar.service';
 import { Subject } from 'rxjs';
+import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/models/user-info';
+import { UserInfoComponent } from '../user-info/user-info.component';
 import { takeUntil } from 'rxjs/operators';
 import { version } from '../../version';
-import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/models/user-info';
 
 @Component({
   selector: 'opencde-site-header',
   templateUrl: './site-header.component.html',
   styleUrls: ['./site-header.component.scss'],
-  standalone: false,
+  imports: [HeaderComponent, NgIf, UserInfoComponent, MatButton],
 })
 export class SiteHeaderComponent implements OnInit, OnDestroy {
+  private sidebarService = inject(SidebarService);
+  private authenticationService = inject(AuthenticationService);
+  private authenticationMessenger = inject(AuthenticationMessenger);
+
   preReleaseVersion: string = '';
   preReleaseBuildDate: Date;
   showPreReleaseHeader = false;
@@ -23,13 +31,13 @@ export class SiteHeaderComponent implements OnInit, OnDestroy {
   userInfo: UserInfo | null = null;
   private unsubscribe: Subject<void> = new Subject<void>();
 
-  constructor(
-    private sidebarService: SidebarService,
-    private authenticationService: AuthenticationService,
-    private authenticationMessenger: AuthenticationMessenger,
-    appConfigService: AppConfigService
-  ) {
-    if (appConfigService.getFrontendConfig()?.environment !== 'Production') {
+  constructor() {
+    const appConfigService = inject(AppConfigService);
+
+    if (
+      appConfigService &&
+      appConfigService.getFrontendConfig()?.environment !== 'Production'
+    ) {
       this.showPreReleaseHeader = true;
     }
     this.preReleaseVersion = version.version;

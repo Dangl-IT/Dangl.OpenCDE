@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WelcomeComponent } from './welcome.component';
 import { SharedTestingModule } from 'src/app/shared-tesing.module';
-import { AppModule } from 'src/app/app.module';
 
 describe('WelcomeComponent', () => {
   let component: WelcomeComponent;
@@ -10,8 +9,7 @@ describe('WelcomeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [WelcomeComponent],
-      imports: [SharedTestingModule, AppModule],
+      imports: [SharedTestingModule, WelcomeComponent],
     }).compileComponents();
   });
 

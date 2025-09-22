@@ -1,24 +1,56 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormControl,
   UntypedFormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 
 import { ProgressSettings } from '../../models/progress-settings';
 import { ProjectsClient } from '../../generated/backend-client';
 import { ProjectsService } from '../../services/projects.service';
 import { Subject } from 'rxjs';
+import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
+import { MatDivider } from '@angular/material/divider';
+import {
+  MatCard,
+  MatCardContent,
+  MatCardActions,
+} from '@angular/material/card';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { NgIf } from '@angular/common';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'opencde-new-project',
   templateUrl: './new-project.component.html',
   styleUrls: ['./new-project.component.scss'],
-  standalone: false,
+  imports: [
+    UploadProgressComponent,
+    MatDivider,
+    MatCard,
+    FormsModule,
+    ReactiveFormsModule,
+    MatCardContent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    NgIf,
+    MatError,
+    MatCardActions,
+    MatButton,
+  ],
 })
 export class NewProjectComponent implements OnInit, OnDestroy {
+  private projectsClient = inject(ProjectsClient);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private projectsService = inject(ProjectsService);
+
   private unsubscribe: Subject<void> = new Subject<void>();
   newProjectForm: UntypedFormGroup;
   settingsProgress: ProgressSettings = {
@@ -28,13 +60,9 @@ export class NewProjectComponent implements OnInit, OnDestroy {
     isLoading: false,
   };
 
-  constructor(
-    private projectsClient: ProjectsClient,
-    formBuilder: UntypedFormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private projectsService: ProjectsService
-  ) {
+  constructor() {
+    const formBuilder = inject(UntypedFormBuilder);
+
     this.newProjectForm = formBuilder.group({
       name: new UntypedFormControl('', [Validators.required]),
       description: new UntypedFormControl(''),

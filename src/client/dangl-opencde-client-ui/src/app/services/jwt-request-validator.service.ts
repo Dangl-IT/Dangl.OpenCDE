@@ -1,6 +1,6 @@
 import { HttpRequest } from '@angular/common/http';
 import { IDanglIdentityRequestValidator } from '@dangl/angular-dangl-identity-client';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { OpenCdeDiscoveryService } from './open-cde-discovery.service';
 
 @Injectable({
@@ -11,7 +11,9 @@ export class JwtRequestValidatorService
 {
   private openCdeBaseUrl: string | null = null;
 
-  constructor(openCdeDiscoveryService: OpenCdeDiscoveryService) {
+  constructor() {
+    const openCdeDiscoveryService = inject(OpenCdeDiscoveryService);
+
     openCdeDiscoveryService.openCdeBaseUrl.subscribe((cdeBaseUrl) => {
       if (!cdeBaseUrl) {
         this.openCdeBaseUrl = null;

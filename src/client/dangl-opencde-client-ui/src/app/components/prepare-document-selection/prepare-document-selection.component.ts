@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { first, map } from 'rxjs/operators';
 
 import { DocumentSelectionService } from '../../services/document-selection.service';
@@ -8,22 +8,23 @@ import { HttpClient } from '@angular/common/http';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { OpenCdeDiscoveryService } from '../../services/open-cde-discovery.service';
 import { combineLatest } from 'rxjs';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'opencde-client-prepare-document-selection',
   templateUrl: './prepare-document-selection.component.html',
   styleUrls: ['./prepare-document-selection.component.scss'],
-  standalone: false,
+  imports: [MatButton],
 })
 export class PrepareDocumentSelectionComponent implements OnInit {
-  @Output() onDocumentSelected = new EventEmitter<void>();
+  private documentsSelectionHandlerClient = inject(
+    DocumentsSelectionHandlerClient
+  );
+  private documentSelectionService = inject(DocumentSelectionService);
+  private openCdeDiscoveryService = inject(OpenCdeDiscoveryService);
+  private jwtTokenService = inject(JwtTokenService);
 
-  constructor(
-    private documentsSelectionHandlerClient: DocumentsSelectionHandlerClient,
-    private documentSelectionService: DocumentSelectionService,
-    private openCdeDiscoveryService: OpenCdeDiscoveryService,
-    private jwtTokenService: JwtTokenService
-  ) {}
+  @Output() onDocumentSelected = new EventEmitter<void>();
 
   ngOnInit(): void {}
 

@@ -1,5 +1,5 @@
 import { DomSanitizer } from '@angular/platform-browser';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { environment } from '../environments/environment';
 
@@ -7,10 +7,8 @@ import { environment } from '../environments/environment';
   providedIn: 'root',
 })
 export class IconRegistry {
-  constructor(
-    private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer
-  ) {}
+  private matIconRegistry = inject(MatIconRegistry);
+  private domSanitizer = inject(DomSanitizer);
 
   private readonly iconPrefix = 'opencde_';
 

@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AuthenticateApiComponent } from './authenticate-api.component';
 import { SharedTestingModule } from 'src/app/shared-tesing.module';
-import { AppModule } from 'src/app/app.module';
 
 describe('AuthenticateApiComponent', () => {
   let component: AuthenticateApiComponent;
@@ -10,10 +9,8 @@ describe('AuthenticateApiComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AuthenticateApiComponent ],
-      imports: [SharedTestingModule, AppModule]
-    })
-    .compileComponents();
+      imports: [SharedTestingModule, AuthenticateApiComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

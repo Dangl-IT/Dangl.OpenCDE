@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   DocumentGet,
   DocumentsClient,
@@ -11,14 +11,26 @@ import { CdeSessionService } from '../../services/cde-session.service';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { ProgressSettings } from '../../models/progress-settings';
 import { Subject } from 'rxjs';
+import { NgIf } from '@angular/common';
+import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
+import { MatAnchor, MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'opencde-document-detail',
   templateUrl: './document-detail.component.html',
   styleUrls: ['./document-detail.component.scss'],
-  standalone: false,
+  imports: [NgIf, UploadProgressComponent, MatAnchor, MatButton],
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private documentsClient = inject(DocumentsClient);
+  private jwtTokenService = inject(JwtTokenService);
+  private cdeSessionService = inject(CdeSessionService);
+  private openCdeDownloadIntegrationClient = inject(
+    OpenCdeDownloadIntegrationClient
+  );
+  private router = inject(Router);
+
   projectId: string | null = null;
   documentId: string | null = null;
   document: DocumentGet | null = null;
@@ -31,15 +43,6 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   };
   cdeSession: string | null = null;
   private unsubscribe: Subject<void> = new Subject<void>();
-
-  constructor(
-    private route: ActivatedRoute,
-    private documentsClient: DocumentsClient,
-    private jwtTokenService: JwtTokenService,
-    private cdeSessionService: CdeSessionService,
-    private openCdeDownloadIntegrationClient: OpenCdeDownloadIntegrationClient,
-    private router: Router
-  ) {}
 
   ngOnInit(): void {
     this.cdeSessionService.sessionId

@@ -6,13 +6,15 @@ import {
 } from '../generated/opencde-client';
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OpenCdeDiscoveryService {
+  private http = inject(HttpClient);
+
   private foundationsVersionsSource = new ReplaySubject<VersionGet[]>(1);
   foundationsVersions = this.foundationsVersionsSource.asObservable();
 
@@ -27,7 +29,7 @@ export class OpenCdeDiscoveryService {
   foundationsAuthentication =
     this.foundationsAuthenticationInfoSource.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.foundationsBaseUrl.subscribe((baseUrl) => {
       this.foundationsAuthenticationInfoSource.next(null);
 
