@@ -10,14 +10,18 @@
         Dangl.<strong>OpenCDE</strong> is a service intended to demonstrate the
         buildingSMART International OpenCDE Documents API specification.
       </p>
-      <div *ngIf="!userInfo">
+      @if (!userInfo) {
+      <div>
         <p>Please login in or register a new account to access this service.</p>
       </div>
+      }
     </mat-card-content>
-    <mat-card-actions *ngIf="!userInfo">
+    @if (!userInfo) {
+    <mat-card-actions>
       <div class="login-container">
         <a mat-button (click)="login()">Login</a>
       </div>
     </mat-card-actions>
+    }
   </mat-card>
 </div>

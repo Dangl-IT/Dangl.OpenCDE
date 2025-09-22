@@ -1,10 +1,10 @@
-<ng-container *ngIf="userInfo">
-  <button mat-flat-button color="primary" [matMenuTriggerFor]="menu">
-    <span id="username-nav">
-      {{ userInfo.username || userInfo.email }}
-    </span>
-  </button>
-</ng-container>
+@if (userInfo) {
+<button mat-flat-button color="primary" [matMenuTriggerFor]="menu">
+  <span id="username-nav">
+    {{ userInfo.username || userInfo.email }}
+  </span>
+</button>
+}
 <mat-menu #menu>
   <button mat-menu-item (click)="logout()">
     <mat-icon>power_settings_new</mat-icon>

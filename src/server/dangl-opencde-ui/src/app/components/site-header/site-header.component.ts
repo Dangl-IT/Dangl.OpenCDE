@@ -5,9 +5,9 @@ import { AuthenticationMessenger } from '@dangl/angular-dangl-identity-client';
 import { AuthenticationService } from '../../services/authentication.service';
 import { SidebarService } from '../../services/sidebar.service';
 import { Subject } from 'rxjs';
-import { UserInfo } from '@dangl/angular-dangl-identity-client/models/user-info';
 import { takeUntil } from 'rxjs/operators';
 import { version } from '../../version';
+import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/models/user-info';
 
 @Component({
   selector: 'opencde-site-header',
@@ -29,7 +29,7 @@ export class SiteHeaderComponent implements OnInit, OnDestroy {
     private authenticationMessenger: AuthenticationMessenger,
     appConfigService: AppConfigService
   ) {
-    if (appConfigService.getFrontendConfig().environment !== 'Production') {
+    if (appConfigService.getFrontendConfig()?.environment !== 'Production') {
       this.showPreReleaseHeader = true;
     }
     this.preReleaseVersion = version.version;

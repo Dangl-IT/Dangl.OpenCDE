@@ -1,16 +1,15 @@
 <h1>Document Detail</h1>
 
+@if (settingsProgress.isLoading) {
 <opencde-upload-progress
-  *ngIf="settingsProgress.isLoading"
   [settings]="settingsProgress"
 ></opencde-upload-progress>
-
-<div *ngIf="!settingsProgress.isLoading && document">
-  <p *ngIf="!document.contentAvailable">
-    This document does not yet have content available
-  </p>
+} @if (!settingsProgress.isLoading && document) {
+<div>
+  @if (!document.contentAvailable) {
+  <p>This document does not yet have content available</p>
+  } @if (document.contentAvailable && !cdeSession) {
   <a
-    *ngIf="document.contentAvailable && !cdeSession"
     mat-raised-button
     color="primary"
     href="/api/projects/{{ document.projectId }}/documents/{{
@@ -19,20 +18,12 @@
   >
     Download
   </a>
-  <a
-    *ngIf="document.contentAvailable && !cdeSession"
-    mat-raised-button
-    color="warn"
-    (click)="deleteDocument()"
-  >
-    Delete
-  </a>
-  <button
-    *ngIf="document.contentAvailable && cdeSession"
-    mat-raised-button
-    color="primary"
-    (click)="sendDocumentToClient()"
-  >
+  } @if (document.contentAvailable && !cdeSession) {
+  <a mat-raised-button color="warn" (click)="deleteDocument()"> Delete </a>
+  } @if (document.contentAvailable && cdeSession) {
+  <button mat-raised-button color="primary" (click)="sendDocumentToClient()">
     Send to Client
   </button>
+  }
 </div>
+}

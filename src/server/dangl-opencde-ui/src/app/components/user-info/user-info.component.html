@@ -1,23 +1,24 @@
-<ng-container *ngIf="userInfo">
-  <div class="user-info-container">
-    <img
-      class="profile-image"
-      *ngIf="userInfo?.identiconId"
-      [diIcon]="userInfo.identiconId"
-      [rectangleSize]="30"
-    />
-    <button
-      class="menu-btn"
-      mat-flat-button
-      color="primary"
-      [matMenuTriggerFor]="menu"
-    >
-      <span id="username-nav">
-        {{ userInfo.username }}
-      </span>
-    </button>
-  </div>
-</ng-container>
+@if (userInfo) {
+<div class="user-info-container">
+  @if (userInfo.identiconId) {
+  <img
+    class="profile-image"
+    [diIcon]="userInfo.identiconId"
+    [rectangleSize]="30"
+  />
+  }
+  <button
+    class="menu-btn"
+    mat-flat-button
+    color="primary"
+    [matMenuTriggerFor]="menu"
+  >
+    <span id="username-nav">
+      {{ userInfo.username }}
+    </span>
+  </button>
+</div>
+}
 <mat-menu #menu>
   <button mat-menu-item (click)="logout()">
     <mat-icon>power_settings_new</mat-icon>

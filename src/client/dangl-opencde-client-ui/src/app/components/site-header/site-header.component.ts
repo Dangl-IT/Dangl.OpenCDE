@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { AuthenticationMessenger } from '@dangl/angular-dangl-identity-client';
+import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/models/user-info';
 import { Subject } from 'rxjs';
-import { UserInfo } from '@dangl/angular-dangl-identity-client/models/user-info';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({

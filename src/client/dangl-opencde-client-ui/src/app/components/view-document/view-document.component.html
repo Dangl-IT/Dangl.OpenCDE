@@ -1,25 +1,34 @@
-<mat-spinner *ngIf="isLoading"></mat-spinner>
-<button mat-raised-button (click)="downloadDocument()" *ngIf="documentVersion">
+@if (isLoading) {
+<mat-spinner></mat-spinner>
+} @if (documentVersion) {
+<button mat-raised-button (click)="downloadDocument()">
   Download Document
 </button>
+}
 
 <mat-tab-group>
   <mat-tab label="Reference">
-    <pre *ngIf="documentVersion"
+    @if (documentVersion) {
+    <pre
       >{{ documentVersion | json }}
-</pre
+        </pre
     >
+    }
   </mat-tab>
   <mat-tab label="Metadata">
-    <pre *ngIf="documentMetadata"
+    @if (documentMetadata) {
+    <pre
       >{{ documentMetadata | json }}
-</pre
+          </pre
     >
+    }
   </mat-tab>
   <mat-tab label="Versions">
-    <pre *ngIf="documentVersions"
+    @if (documentVersions) {
+    <pre
       >{{ documentVersions | json }}
-</pre
+            </pre
     >
+    }
   </mat-tab>
 </mat-tab-group>

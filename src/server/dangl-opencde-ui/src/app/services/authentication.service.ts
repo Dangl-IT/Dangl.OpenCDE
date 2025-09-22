@@ -53,10 +53,10 @@ export class AuthenticationService {
   private getUserManager(): UserManager {
     const appConfig = this.appConfigService.getFrontendConfig();
     return new UserManager({
-      authority: appConfig.danglIdentityUrl,
-      client_id: appConfig.danglIdentityClientId,
+      authority: appConfig?.danglIdentityUrl || '',
+      client_id: appConfig?.danglIdentityClientId || '',
       redirect_uri: `${window.location.origin}/login`,
-      scope: `${appConfig.requiredScope} openid`,
+      scope: `${appConfig?.requiredScope} openid`,
     });
   }
 }

@@ -45,8 +45,8 @@
     [routerLink]="row.id"
   ></tr>
 </table>
+@if (projectsPaginated) {
 <mat-paginator
-  *ngIf="projectsPaginated"
   [length]="projectsPaginated.totalCount"
   [pageSize]="projectsPaginated.pageSize"
   [pageIndex]="projectsService.page - 1"
@@ -54,3 +54,4 @@
   (page)="onPage($event)"
 >
 </mat-paginator>
+}

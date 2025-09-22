@@ -20,8 +20,8 @@
       </div>
       <mat-divider></mat-divider>
       <div>
+        @if (!documentCreationForm.value.documentFile) {
         <div
-          *ngIf="!documentCreationForm.value.documentFile"
           class="container"
           opencdeDragAndDrop
           (fileDropped)="onFileDropped($any($event))"
@@ -48,7 +48,8 @@
             Browse for file
           </button>
         </div>
-        <div class="files-list" *ngIf="documentCreationForm.value.documentFile">
+        } @if (documentCreationForm.value.documentFile) {
+        <div class="files-list">
           <div class="single-file">
             <mat-icon class="file-icon" svgIcon="opencde_file"></mat-icon>
             <div class="info">
@@ -66,6 +67,7 @@
             </div>
           </div>
         </div>
+        }
       </div>
       <mat-divider></mat-divider>
     </mat-card-content>

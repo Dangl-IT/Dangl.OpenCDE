@@ -6,10 +6,8 @@
   [showMenuButton]="false"
 >
   <div>
-    <ng-container *ngIf="userInfo">
-      <opencde-client-user-info
-        [userInfo]="userInfo"
-      ></opencde-client-user-info>
-    </ng-container>
+    @if (userInfo) {
+    <opencde-client-user-info [userInfo]="userInfo"></opencde-client-user-info>
+    }
   </div>
 </dangl-header>

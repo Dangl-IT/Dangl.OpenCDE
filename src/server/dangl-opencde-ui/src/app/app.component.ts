@@ -28,7 +28,7 @@ export class AppComponent implements OnInit, OnDestroy {
     iconRegistry: IconRegistry
   ) {
     danglIconsConfigService.setConfig({
-      baseUrl: appConfigService.getFrontendConfig().danglIconsBaseUrl,
+      baseUrl: appConfigService.getFrontendConfig()?.danglIconsBaseUrl || '',
     });
 
     iconRegistry.registerSvgIcons();
