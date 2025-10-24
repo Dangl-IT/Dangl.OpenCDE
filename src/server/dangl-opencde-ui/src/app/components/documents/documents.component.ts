@@ -29,7 +29,7 @@ import {
   MatRowDef,
   MatRow,
 } from '@angular/material/table';
-import { NgIf, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FileSizePipe } from '../../pipes/file-size.pipe';
 
 @Component({
@@ -50,7 +50,6 @@ import { FileSizePipe } from '../../pipes/file-size.pipe';
     MatSortHeader,
     MatCellDef,
     MatCell,
-    NgIf,
     MatHeaderRowDef,
     MatHeaderRow,
     MatRowDef,

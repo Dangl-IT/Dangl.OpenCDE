@@ -5,7 +5,6 @@ import { AuthenticationMessenger } from '@dangl/angular-dangl-identity-client';
 import { AuthenticationService } from '../../services/authentication.service';
 import { HeaderComponent } from '@dangl/angular-material-shared';
 import { MatButton } from '@angular/material/button';
-import { NgIf } from '@angular/common';
 import { SidebarService } from '../../services/sidebar.service';
 import { Subject } from 'rxjs';
 import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/models/user-info';
@@ -17,7 +16,7 @@ import { version } from '../../version';
   selector: 'opencde-site-header',
   templateUrl: './site-header.component.html',
   styleUrls: ['./site-header.component.scss'],
-  imports: [HeaderComponent, NgIf, UserInfoComponent, MatButton],
+  imports: [HeaderComponent, UserInfoComponent, MatButton],
 })
 export class SiteHeaderComponent implements OnInit, OnDestroy {
   private sidebarService = inject(SidebarService);

@@ -11,7 +11,6 @@ import { CdeSessionService } from '../../services/cde-session.service';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
 import { ProgressSettings } from '../../models/progress-settings';
 import { Subject } from 'rxjs';
-import { NgIf } from '@angular/common';
 import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
 import { MatAnchor, MatButton } from '@angular/material/button';
 
@@ -19,7 +18,7 @@ import { MatAnchor, MatButton } from '@angular/material/button';
   selector: 'opencde-document-detail',
   templateUrl: './document-detail.component.html',
   styleUrls: ['./document-detail.component.scss'],
-  imports: [NgIf, UploadProgressComponent, MatAnchor, MatButton],
+  imports: [UploadProgressComponent, MatAnchor, MatButton],
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
