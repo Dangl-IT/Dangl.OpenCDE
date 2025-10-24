@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 
 import { SettingsService } from '../../services/settings.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { NgIf, NgFor } from '@angular/common';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatList, MatListItem } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
@@ -11,15 +10,7 @@ import { MatIcon } from '@angular/material/icon';
   selector: 'opencde-client-manage-servers-modal',
   templateUrl: './manage-servers-modal.component.html',
   styleUrls: ['./manage-servers-modal.component.scss'],
-  imports: [
-    NgIf,
-    MatButton,
-    MatList,
-    NgFor,
-    MatIconButton,
-    MatIcon,
-    MatListItem,
-  ],
+  imports: [MatButton, MatList, MatIconButton, MatIcon, MatListItem],
 })
 export class ManageServersModalComponent implements OnInit {
   private settingsService = inject(SettingsService);
