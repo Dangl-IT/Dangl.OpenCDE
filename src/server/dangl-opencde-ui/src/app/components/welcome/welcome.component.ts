@@ -10,7 +10,6 @@ import {
   MatCardContent,
   MatCardActions,
 } from '@angular/material/card';
-import { NgIf } from '@angular/common';
 import { MatAnchor } from '@angular/material/button';
 import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/models/user-info';
 
@@ -18,14 +17,7 @@ import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/mode
   selector: 'opencde-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.scss'],
-  imports: [
-    MatCard,
-    MatCardHeader,
-    MatCardContent,
-    NgIf,
-    MatCardActions,
-    MatAnchor,
-  ],
+  imports: [MatCard, MatCardHeader, MatCardContent, MatCardActions, MatAnchor],
 })
 export class WelcomeComponent implements OnInit, OnDestroy {
   private authenticationMessenger = inject(AuthenticationMessenger);

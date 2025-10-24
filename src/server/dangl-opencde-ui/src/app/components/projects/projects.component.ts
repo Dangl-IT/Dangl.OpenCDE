@@ -30,7 +30,6 @@ import {
   MatRow,
 } from '@angular/material/table';
 import { NgDanglIconsModule } from 'ng-dangl-icons';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'opencde-projects',
@@ -55,7 +54,6 @@ import { NgIf } from '@angular/common';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    NgIf,
     MatPaginator,
   ],
 })

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { MatStepper } from '@angular/material/stepper';
 import { MatTabGroup, MatTab } from '@angular/material/tabs';

@@ -7,6 +7,19 @@ import {
   platformBrowserDynamicTesting,
 } from '@angular/platform-browser-dynamic/testing';
 
+const originalError = console.error;
+console.error = (...args: any[]) => {
+  const message = args.join(' ');
+  if (
+    message.includes('SignalR') ||
+    message.includes('Failed to complete negotiation') ||
+    message.includes('NOT FOUND')
+  ) {
+    return;
+  }
+  originalError(...args);
+};
+
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
