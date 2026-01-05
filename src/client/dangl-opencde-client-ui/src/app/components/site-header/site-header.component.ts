@@ -5,14 +5,13 @@ import { UserInfo } from 'node_modules/@dangl/angular-dangl-identity-client/mode
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HeaderComponent } from '@dangl/angular-material-shared';
-import { NgIf } from '@angular/common';
 import { UserInfoComponent } from '../user-info/user-info.component';
 
 @Component({
   selector: 'opencde-client-site-header',
   templateUrl: './site-header.component.html',
   styleUrls: ['./site-header.component.scss'],
-  imports: [HeaderComponent, NgIf, UserInfoComponent],
+  imports: [HeaderComponent, UserInfoComponent],
 })
 export class SiteHeaderComponent implements OnInit, OnDestroy {
   private authenticationMessenger = inject(AuthenticationMessenger);

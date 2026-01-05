@@ -4,7 +4,6 @@ import {
   DocumentContentSasUploadResultGet,
   DocumentGet,
   DocumentsClient,
-  SasUploadLink,
 } from '../../generated/backend-client';
 import {
   UntypedFormBuilder,
@@ -29,7 +28,6 @@ import {
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { NgIf } from '@angular/common';
 import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
@@ -51,7 +49,6 @@ import { FileSizePipe } from '../../pipes/file-size.pipe';
     MatInput,
     MatError,
     MatCheckbox,
-    NgIf,
     DragAndDropDirective,
     MatIcon,
     MatButton,

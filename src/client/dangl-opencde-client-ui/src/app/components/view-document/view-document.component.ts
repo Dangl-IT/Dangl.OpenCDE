@@ -5,8 +5,8 @@ import { FileDownloadClient } from '../../generated/backend-client';
 import { FileSaverService } from '../../services/file-saver.service';
 import { HttpClient } from '@angular/common/http';
 import { JwtTokenService } from '@dangl/angular-dangl-identity-client';
-import { merge, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { CdeClientHubService } from '../../services/cde-client-hub.service';
 import {
   DocumentVersion,
@@ -14,7 +14,7 @@ import {
   DocumentVersions,
   SelectedDocuments,
 } from '../../generated/open-cde-swagger/model/models';
-import { NgIf, JsonPipe } from '@angular/common';
+import { JsonPipe } from '@angular/common';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatButton } from '@angular/material/button';
 import { MatTabGroup, MatTab } from '@angular/material/tabs';
@@ -23,7 +23,7 @@ import { MatTabGroup, MatTab } from '@angular/material/tabs';
   selector: 'opencde-client-view-document',
   templateUrl: './view-document.component.html',
   styleUrls: ['./view-document.component.scss'],
-  imports: [NgIf, MatProgressSpinner, MatButton, MatTabGroup, MatTab, JsonPipe],
+  imports: [MatProgressSpinner, MatButton, MatTabGroup, MatTab, JsonPipe],
 })
 export class ViewDocumentComponent implements OnInit, OnDestroy {
   private documentSelectionService = inject(DocumentSelectionService);

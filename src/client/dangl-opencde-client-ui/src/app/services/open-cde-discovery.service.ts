@@ -1,9 +1,4 @@
-import {
-  AuthGet,
-  VersionGet,
-  VersionsClient,
-  VersionsGet,
-} from '../generated/opencde-client';
+import { AuthGet, VersionGet, VersionsGet } from '../generated/opencde-client';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';

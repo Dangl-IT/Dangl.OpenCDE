@@ -4,7 +4,6 @@ import { SettingsService } from '../../services/settings.service';
 import { SettingsType } from '../../settings/settings.type';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatList, MatListItem } from '@angular/material/list';
-import { NgFor } from '@angular/common';
 import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 
@@ -12,7 +11,7 @@ import { MatIcon } from '@angular/material/icon';
   selector: 'opencde-client-manage-openid-configs-modal',
   templateUrl: './manage-openid-configs-modal.component.html',
   styleUrls: ['./manage-openid-configs-modal.component.scss'],
-  imports: [MatList, NgFor, MatListItem, MatIconButton, MatIcon, MatButton],
+  imports: [MatList, MatListItem, MatIconButton, MatIcon, MatButton],
 })
 export class ManageOpenidConfigsModalComponent implements OnInit {
   private settingsService = inject(SettingsService);

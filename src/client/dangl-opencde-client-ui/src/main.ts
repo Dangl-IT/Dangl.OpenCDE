@@ -1,4 +1,8 @@
-import { enableProdMode, importProvidersFrom } from '@angular/core';
+import {
+  enableProdMode,
+  importProvidersFrom,
+  provideZoneChangeDetection,
+} from '@angular/core';
 
 import { environment } from './environments/environment';
 import {
@@ -19,6 +23,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZoneChangeDetection(),
     importProvidersFrom(
       AppRoutingModule,
       NgDanglIconsModule,
