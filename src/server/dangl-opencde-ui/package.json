@@ -29,7 +29,7 @@
     "@dangl/angular-material-shared": "^2.7.2",
     "ng-dangl-icons": "^1.2.2",
     "ng-lightquery": "^2.2.2",
-    "npm-check-updates": "^16.1.2",
+    "npm-check-updates": "^19.3.2",
     "oidc-client-ts": "2.4.0",
     "rxjs": "^7.5.6",
     "tslib": "^2.4.0",
@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@angular/build": "^20.0.3",
-    "@angular/cli": "^20.0.3",
+    "@angular/cli": "^20.3.15",
     "@angular/compiler-cli": "^20.0.4",
     "@types/jasmine": "~4.3.0",
     "@types/node": "^18.7.18",
