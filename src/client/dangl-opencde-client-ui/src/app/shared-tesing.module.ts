@@ -8,6 +8,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { CdeClientHubService } from './services/cde-client-hub.service';
+import { vi } from 'vitest';
+import { of } from 'rxjs';
 
 @NgModule({
   exports: [RouterModule, ToastrModule, NoopAnimationsModule],
@@ -18,6 +21,15 @@ import { ToastrModule, ToastrService } from 'ngx-toastr';
     { provide: MatDialogRef, useValue: { close: () => {} } },
     { provide: MAT_DIALOG_DATA, useValue: [] },
     { provide: ToastrService, useValue: {} },
+    {
+      provide: CdeClientHubService,
+      useValue: {
+        start: vi.fn().mockResolvedValue(undefined),
+        stop: vi.fn(),
+        on: vi.fn(),
+        documentVersionUploadResultReceived: of({ links: [] }),
+      },
+    },
   ],
 })
 export class SharedTestingModule {}
