@@ -40,6 +40,7 @@
     "@angular/cli": "^21.0.4",
     "@angular/compiler-cli": "^21.0.6",
     "@types/node": "^25.6.0",
+    "@vitest/coverage-v8": "^4.1.4",
     "husky": "^8.0.1",
     "jsdom": "^29.0.2",
     "pretty-quick": "3.1.3",
